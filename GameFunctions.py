@@ -1,7 +1,6 @@
 import models
 from app import db
-from sqlalchemy.orm.exc import NoResultFound
-from sqlalchemy.orm.exc import MultipleResultsFound
+from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
 
 
 # Parameters: id of game to spawn an instance of, id list of players joining game
