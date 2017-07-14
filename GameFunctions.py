@@ -3,8 +3,12 @@ from app import db
 from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
 
 
-# Parameters: id of game to spawn an instance of, id list of players joining game
-# Returns: The id of the newly created GameInstance
+# Creates a GameInstance based on a Game, and creates any CardInstance and Pile
+#   required to play. Adds all players to PlayersInGame.
+# Parameters:
+#   baseGameID: ID of game to spawn an instance of
+#   playerList: list of ID for players joining game
+# Returns: The ID of the newly created GameInstance
 def initGameInstance(baseGameID, playerList):
     # Confirm base game exists
     try:
@@ -50,9 +54,31 @@ def fetchGameInstance(instanceID):
     # Query everything and build a huge JSON object, probably
     return
 
+
+# Deletes a GameInstance and any CardInstance, Pile, and PlayersInGame entries
+# associated with it
+# Parameters:
+#   instanceID: the ID of the GameInstance to delete
 def deleteGameInstance(instanceID):
-    # Delete all CardInstances
-    # Delete all Piles
+    # Get all Piles associated with this GameInstance
+    piles = models.Pile.query.filter_by(game_instance=instanceID).all()
+    db.session.commit()
+
+    for pile in piles:
+        # Delete all CardInstances in this pile
+        models.CardInstance.query.filter_by(in_pile=pile.id).delete()
+        db.session.commit()
+
+    # Delete Piles
+    models.Pile.query.filter_by(game_instance=instanceID).delete()
+    db.session.commit()
+
     # Remove all PlayersInGame
+    models.PlayersInGame.query.filter_by(game_instance=instanceID).delete()
+    db.session.commit()
+
     # Delete Game Instance
+    models.GameInstance.query.filter_by(id=instanceID).delete()
+    db.session.commit()
+
     return
