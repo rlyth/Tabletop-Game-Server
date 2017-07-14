@@ -1,0 +1,158 @@
+<html>
+	<head>
+		<title>Game DB Sandbox</title>
+	</head>
+	<body>
+		<h1>Game Function Testing Grounds</h1>
+
+		<p>{{ dump }}</p>
+
+		<form action="/gameDB/initGI/" method="POST">
+		    Base Game: <input type="text" name="bg">
+            <br><input type="submit" value="initGameInstance">
+        </form>
+
+    <div>
+        {% if games %}
+		<b>Game</b>
+		<table border=1 cellpadding=5>
+		    <tr>
+		        <td>ID</td>
+		        <td>Name</td>
+		        <td>Description</td>
+		        <td>Min Players</td>
+		        <td>Max Players</td>
+		    </tr>
+		    {% for game in games %}
+		    <tr>
+		        <td>{{ game.id }}</td>
+		        <td>{{ game.name }}</td>
+		        <td>{{ game.description }}</td>
+		        <td>{{ game.min_players}}</td>
+		        <td>{{ game.max_players}}</td>
+    		</tr>
+    		{% endfor %}
+		</table>
+		{% endif %}
+
+        {% if ginstance %}
+		<p><b>Game Instance</b>
+		<table border=1 cellpadding=5>
+		    <tr>
+		        <td>ID</td>
+		        <td>Base Game</td>
+		        <td>Num Players</td>
+		    </tr>
+    		{% for igame in ginstance %}
+    		<tr>
+    		    <td>{{ igame.id }}</td>
+    		    <td>{{ igame.base_game }}</td>
+    		    <td>{{ igame.num_players }}</td>
+    		    <td><form action="/gameDB/deleteGI/" method="POST">
+    		        <input type="hidden" name="delete" value="{{ igame.id }}">
+    		        <input type="submit" value="deleteGameInstance">
+    		    </form></td>
+    		</tr>
+    		{% endfor %}
+		</table>
+		{% endif %}
+    </div>
+
+		{% if pgame %}
+		<p><b>PlayersInGame</b>
+		<table border=1 cellpadding=5>
+		    <tr>
+		        <td>Player ID</td>
+		        <td>Game ID</td>
+		        <td>Turn Order</td>
+		    </tr>
+		    {% for p in pgame %}
+		        <tr>
+		            <td>{{ p.user_id }}</td>
+		            <td>{{ p.game_instance }}</td>
+		            <td>{{ p.turn_order }}</td>
+		        </tr>
+    		{% endfor %}
+    	</table>
+		{% endif %}
+
+		{% if cards %}
+		<p><b>Card</b>
+		<table border=1 cellpadding=5>
+		    <tr>
+		        <td>ID</td>
+		        <td>Name</td>
+		        <td>Description</td>
+		        <td>Card Type</td>
+		    </tr>
+		    {% for c in cards %}
+		        <tr>
+		            <td>{{ c.id }}</td>
+		            <td>{{ c.name }}</td>
+		            <td>{{ c.description }}</td>
+		            <td>{{ c.card_type }}</td>
+		        </tr>
+    		{% endfor %}
+    	</table>
+		{% endif %}
+
+		{% if gcard %}
+		<p><b>CardsInGame</b>
+		<table border=1 cellpadding=5>
+		    <tr>
+		        <td>Card ID</td>
+		        <td>Game ID</td>
+		        <td>Quantity</td>
+		    </tr>
+		    {% for c in gcard %}
+		        <tr>
+		            <td>{{ c.card_id }}</td>
+		            <td>{{ c.game_id }}</td>
+		            <td>{{ c.quantity }}</td>
+		        </tr>
+    		{% endfor %}
+    	</table>
+		{% endif %}
+
+		{% if icard %}
+		<p><b>CardInstance</b>
+		<table border=1 cellpadding=5>
+		    <tr>
+		        <td>ID</td>
+		        <td>Base Card</td>
+		        <td>In Pile</td>
+		        <td>Card Value</td>
+		    </tr>
+		    {% for c in icard %}
+		        <tr>
+		            <td>{{ c.id }}</td>
+		            <td>{{ c.base_card }}</td>
+		            <td>{{ c.in_pile }}</td>
+		            <td>{{ c.card_value }}</td>
+		        </tr>
+    		{% endfor %}
+    	</table>
+		{% endif %}
+
+		{% if piles %}
+		<p><b>Pile</b>
+		<table border=1 cellpadding=5>
+		    <tr>
+		        <td>ID</td>
+		        <td>Game Instance</td>
+		        <td>Pile Type</td>
+		        <td>Pile Owner</td>
+		    </tr>
+		    {% for c in piles %}
+		        <tr>
+		            <td>{{ c.id }}</td>
+		            <td>{{ c.game_instance }}</td>
+		            <td>{{ c.pile_type }}</td>
+		            <td>{{ c.pile_owner }}</td>
+		        </tr>
+    		{% endfor %}
+    	</table>
+		{% endif %}
+
+	</body>
+</html>

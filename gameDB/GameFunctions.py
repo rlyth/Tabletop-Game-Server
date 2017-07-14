@@ -1,4 +1,4 @@
-import models
+import gameDB.models as models
 from app import db
 from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
 
