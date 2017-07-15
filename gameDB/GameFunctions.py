@@ -50,9 +50,67 @@ def initGameInstance(baseGameID, playerList):
     return newGame.id
 
 
+# Retrieves information about a GameInstance and outputs it as a Python object
+# Parameters:
+#   instanceID: the ID of the GameInstance to retrieve
+# Returns: a Python object containing information about a GameInstance
 def fetchGameInstance(instanceID):
-    # Query everything and build a huge JSON object, probably
-    return
+    gameInfo = {}
+
+    try:
+        gameInstance = models.GameInstance.query.filter_by(id=instanceID).one()
+    except MultipleResultsFound:
+            # id is unique, this shouldnt happen
+            return None
+    except NoResultFound:
+            return None
+
+    gameInfo["ID"] = gameInstance.id
+    gameInfo["Num Players"] = gameInstance.num_players
+    gameInfo["Turns Played"] = gameInstance.turns_played
+    gameInfo["Turn Order"] = gameInstance.current_turn_order
+
+    baseGame = models.Game.query.filter_by(id=gameInstance.base_game).one()
+    gameInfo["Base Game"] = {}
+    gameInfo["Base Game"]["ID"] = baseGame.id
+    gameInfo["Base Game"]["Name"] = baseGame.name
+    gameInfo["Base Game"]["Description"] = baseGame.description
+    gameInfo["Base Game"]["Minimum Players"] = baseGame.min_players
+    gameInfo["Base Game"]["Maximum Players"] = baseGame.max_players
+
+    players = models.PlayersInGame.query.filter_by(game_instance=instanceID).all()
+    gameInfo["Players"] = []
+    for p in players:
+        newPlayer = {}
+        newPlayer["ID"] = p.user_id
+        newPlayer["Turn Order"] = p.turn_order
+        gameInfo["Players"].append(newPlayer)
+
+    piles = models.Pile.query.filter_by(game_instance=instanceID).all()
+    gameInfo["Piles"] = []
+    for p in piles:
+        newPile = {}
+        newPile["ID"] = p.id
+        newPile["Type"] = p.pile_type
+        newPile["Owner"] = p.pile_owner
+
+        cards = models.CardInstance.query.filter_by(in_pile=p.id).all()
+        newPile["Cards"] = []
+        # Note: consider refactoring CardInstance to copy over name/desc info
+        #   from Card to reduce extraneous queries
+        for c in cards:
+            newCard = {}
+
+            newCard["ID"] = c.id
+            newCard["Base Card"] = c.base_card
+            newCard["In Pile"] = c.in_pile
+            newCard["Card Value"] = c.card_value
+
+            newPile["Cards"].append(newCard)
+
+        gameInfo["Piles"].append(newPile)
+
+    return gameInfo
 
 
 # Deletes a GameInstance and any CardInstance, Pile, and PlayersInGame entries

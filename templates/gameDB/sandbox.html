@@ -52,6 +52,10 @@
     		        <input type="hidden" name="delete" value="{{ igame.id }}">
     		        <input type="submit" value="deleteGameInstance">
     		    </form></td>
+				<td><form action="/gameDB/fetchGI/" method="POST">
+    		        <input type="hidden" name="fetch" value="{{ igame.id }}">
+    		        <input type="submit" value="fetchGameInstance">
+    		    </form></td>
     		</tr>
     		{% endfor %}
 		</table>

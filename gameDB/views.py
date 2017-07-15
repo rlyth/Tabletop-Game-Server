@@ -1,6 +1,7 @@
 from flask import Blueprint, request, render_template, url_for, redirect
 
 import gameDB.models as models
+import json
 
 gameDB = Blueprint('gameDB', __name__, url_prefix='/gameDB')
 
@@ -32,3 +33,9 @@ def deleteGI():
         if(request.form["delete"]):
             GameFunctions.deleteGameInstance(request.form["delete"])
         return redirect(url_for('gameDB.index'))
+
+@gameDB.route("/fetchGI/", methods=['post'])
+def fetchGI():
+    if(request.form["fetch"]):
+        g = GameFunctions.fetchGameInstance(request.form["fetch"])
+        return render_template("gameDB/fetch.html", dump=json.dumps(g))
