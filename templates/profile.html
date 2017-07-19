@@ -2,7 +2,7 @@
 <html lang="en">
  
 <head>
-    <title>{{ userName }}'s Games</title> 
+    <title>{{ userName }}'s Profile</title> 
  
     <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
 
@@ -18,30 +18,23 @@
                 <ul class="nav nav-pills pull-right">
                     <li role="button" class="active"><a href="index.html">Home</a>
                     </li>
-                    <li role="button"><a href="profile.html">Profile</a>
+                    <li role="button"><a href="login.html">My Page</a>
                     </li>
                     <li role="button"><a href="logout.html">Log Out</a>
                     </li>
                 </ul>
             </nav>
-            <h3 class="text-muted">Welcome {{ userName }}</h3>
+            <h3 class="text-muted">Update Profile</h3>
         </div>
  
         <div class="row marketing">
-            <div class="col-sm-6 col-md-6 col-lg-6">
-                <h4>Continue Game</h4>
-                <p>List of games</p>
- 
-                <h4>Invitations To Games</h4>
-                <p>List of games</p>
- 
-            </div>
- 
-            <div class="col-sm-6 col-md-6 col-lg-6">
-                <h2 role="button"><a  href="newgame.html"> New Game</a></h2>
- 
-                <h2 role="button"><a href="statistics.html">Statistics </a></h2>
-            </div>
+            <form action="" method="get" id="loginForm">
+                <h2> Update Password: <input type="text" name="password" minLength="5"></h2><br>
+                <h2> Check Password: <input type="text" name="password" minLength="5"></h2><br>
+                <!-- Check \password fits requirements -->
+                <input type="submit" value="Submit">  <!-- on successful submit open login.html -->
+            </form>
+            <h2 role="button"><a href="login.html">Back </a></h2>
         </div>
  
         <footer class="footer">

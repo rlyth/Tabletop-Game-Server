@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+ 
+<head>
+    <title>Game Server Login</title> 
+ 
+    <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="style.css">
+ 
+</head>
+ 
+<body>
+ 
+    <div class="container">
+        <div class="header">
+            <nav>
+                <ul class="nav nav-pills pull-right">
+                    <li role="button" class="active"><a href="index.html">Home</a>
+                    </li>
+                </ul>
+            </nav>
+            <h3 class="text-muted">Login to the Game Server</h3>
+        </div>
+ 
+        <div class="row marketing">
+            <form action="" method="get" id="loginForm">
+                <h2> User Name: <input type="text" name="username"> </h2>
+                <h2> Password: <input type="text" name="password" minLength="5"></h2><br>
+                <!-- Check against the exisiting user database -->
+                <input type="submit" value="Submit">  <!-- on successful submit open login.html-->
+            </form>
+        </div>
+ 
+        <footer class="footer">
+            <p>Assignment for CS467 by Leanne Vermillion, Rebecca Thompson and James Palmer.</p>
+        </footer>
+ 
+    </div>
+</body>
+ 
+</html>

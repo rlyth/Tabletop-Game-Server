@@ -2,7 +2,7 @@
 <html lang="en">
  
 <head>
-    <title>Serpens Game Server</title> 
+    <title>Game Server New User</title> 
  
     <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
 
@@ -16,23 +16,23 @@
         <div class="header">
             <nav>
                 <ul class="nav nav-pills pull-right">
-                    <li role="presentation" class="active"><a href="index.html">Home</a>
+                    <li role="button" class="active"><a href="index.html">Home</a>
                     </li>
                     <li role="button"><a href="signin.html">Log In</a>
                     </li>
-                    <li role="button"><a href="newuser.html">New User</a>
-                    </li>
                 </ul>
             </nav>
-            <h3 class="text-muted">Welcome to Serpens Game Server</h3>
+            <h3 class="text-muted">Create a User Account</h3>
         </div>
  
         <div class="row marketing">
-                <h2>About The Game Server</h2>
-                <p>This site is currently under construction.</p>
-                <p>The Serpens team is working on the game Uno.</p>
-                <p>This game server when complete, should let an individual log in, play games, create new games, and see their win/loss statistics.</p>
-
+            <form action="" method="get" id="loginForm">
+                <h2> New User Name: <input type="text" name="username"> </h2>
+                <h2> Create Password: <input type="text" name="password" minLength="5"></h2>
+                <h2> Check Password: <input type="text" name="password" minLength="5"></h2><br>
+                <!-- Check against the exisiting user database that user name is unique and password fits requirements -->
+                <input type="submit" value="Submit">  <!-- on successful submit open login.html -->
+            </form>
         </div>
  
         <footer class="footer">

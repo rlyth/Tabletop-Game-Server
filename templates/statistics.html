@@ -2,7 +2,7 @@
 <html lang="en">
  
 <head>
-    <title>{{ userName }}'s Games</title> 
+    <title>{{ userName }}'s Statisctics</title> 
  
     <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
 
@@ -20,27 +20,25 @@
                     </li>
                     <li role="button"><a href="profile.html">Profile</a>
                     </li>
+                    <li role="button"><a href="login.html">My Page</a>
+                    </li>
                     <li role="button"><a href="logout.html">Log Out</a>
                     </li>
                 </ul>
             </nav>
-            <h3 class="text-muted">Welcome {{ userName }}</h3>
+            <h3 class="text-muted">{{ userName }}'s Statisctics</h3>
         </div>
  
         <div class="row marketing">
-            <div class="col-sm-6 col-md-6 col-lg-6">
-                <h4>Continue Game</h4>
-                <p>List of games</p>
  
-                <h4>Invitations To Games</h4>
-                <p>List of games</p>
- 
-            </div>
- 
-            <div class="col-sm-6 col-md-6 col-lg-6">
-                <h2 role="button"><a  href="newgame.html"> New Game</a></h2>
- 
-                <h2 role="button"><a href="statistics.html">Statistics </a></h2>
+            <div class="col-lg-6">
+                <!-- Get the information from the user's information -->        
+                <h4 > Games Played: </h4>  
+                <h4 > Won Played: </h4>
+                <!-- do the math -->                                
+                <h4 > Winning Percent: </h4>
+
+                <h2 role="button"><a href="login.html">Back </a></h2>
             </div>
         </div>
  

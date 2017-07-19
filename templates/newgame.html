@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+ 
+<head>
+    <title>{{ userName }}'s Games</title> 
+ 
+    <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="style.css">
+ 
+</head>
+ 
+<body>
+ 
+    <div class="container">
+        <div class="header">
+            <nav>
+                <ul class="nav nav-pills pull-right">
+                    <li role="button" class="active"><a href="index.html">Home</a>
+                    </li>
+                    <li role="button"><a href="profile.html">Profile</a>
+                    </li>                   
+                    <li role="button"><a href="login.html">My Page</a>
+                    </li>
+                    <li role="button"><a href="logout.html">Log Out</a>
+                    </li>
+                </ul>
+            </nav>
+            <h3 class="text-muted">Welcome {{ userName }}</h3>
+        </div>
+ 
+        <div class="row marketing">
+            <form action="" method="get" id="loginForm">
+                <h2> Select Game:</h2> <p><select name="game">  
+                <option value="00">Select</option>
+                <!-- for each kind of game this should be a loop-->                   
+                <option value="uno">Uno</option>                            
+                </select> </p>
+                <h2> Select Number of Users:</h2> <p><select name="numofusers">
+                <!-- for each  game choose the correct possible players -->   
+                <option value="00">Select</option>
+                <!-- for each  game choose the correct possible players -->   
+                <option value="02">2</option>
+                <option value="03">3</option>
+                <option value="04">4</option>                                                                 
+                </select> </p> 
+                <!-- for each kind of game this should be a loop-->                   
+                <h2> Player 2:</h2> <p><select name="player2">
+                <!-- for each  game choose the correct possible players -->   
+                <option value="00">Select</option>
+                <!-- for each  game pick a from a list of players -->                                                                  
+                </select> </p>                
+                <input type="submit" value="Submit">  <!-- on successful submit open login.html -->
+            </form>
+            <h2 role="button"><a href="login.html">Back </a></h2>
+        </div>
+ 
+        <footer class="footer">
+            <p>Assignment for CS467 by Leanne Vermillion, Rebecca Thompson and James Palmer.</p>
+        </footer>
+ 
+    </div>
+</body>
+ 
+</html>
