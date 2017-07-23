@@ -1,4 +1,5 @@
 import gameDB.models as models
+import random
 from app import db
 from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
 
@@ -42,7 +43,8 @@ def initGameInstance(baseGameID, playerList):
     for card in gameCards:
         # Create (qty) instance(s) of all cards
         for x in range(0, card.quantity):
-            newCard = models.CardInstance(in_pile=tempPile.id,base_card=card.card_id)
+            #newCard = models.CardInstance(in_pile=tempPile.id,base_card=card.card_id)
+            newCard = models.CardInstance(newGame.id, card.card_id, tempPile.id)
 
             db.session.add(newCard)
             db.session.commit()
@@ -118,14 +120,9 @@ def fetchGameInstance(instanceID):
 # Parameters:
 #   instanceID: the ID of the GameInstance to delete
 def deleteGameInstance(instanceID):
-    # Get all Piles associated with this GameInstance
-    piles = models.Pile.query.filter_by(game_instance=instanceID).all()
+    # Delete all CardInstances associated with this GameInstance
+    models.CardInstance.query.filter_by(game_instance=instanceID).delete()
     db.session.commit()
-
-    for pile in piles:
-        # Delete all CardInstances in this pile
-        models.CardInstance.query.filter_by(in_pile=pile.id).delete()
-        db.session.commit()
 
     # Delete Piles
     models.Pile.query.filter_by(game_instance=instanceID).delete()
@@ -140,3 +137,94 @@ def deleteGameInstance(instanceID):
     db.session.commit()
 
     return
+
+
+# Once instantiated with a valid instanceID, various functions can be called on
+#   this object in order to progress the game state
+class thisGame:
+    def __init__(self, instanceID):
+        #self.id = instanceID
+
+        try:
+            self.game = models.GameInstance.query.filter_by(id=instanceID).one()
+        except MultipleResultsFound:
+                return None
+        except NoResultFound:
+                return None
+
+    ## Higher level functions
+    # Functions that call other functions, or perform multiple actions at once
+
+    # Calls incrementTurnsPlayed() and getNextTurn()
+    def endTurn(self):
+        self.incrementTurnsPlayed()
+
+        self.getNextTurn()
+
+    # Randomly assigns a turn_order to all players in this GameInstance
+    def randomizePlayers(self):
+        order = []
+
+        # Make a list with all possible turn order values
+        for i in range(1, self.game.num_players + 1):
+            order.append(i)
+
+        random.shuffle(order)
+
+        players = models.PlayersInGame.query.filter_by(
+            game_instance = self.game.id).all()
+
+        for i, player in enumerate(players):
+            player.turn_order = order[i]
+            db.session.commit()
+
+
+    ## Lower level functions
+    # More elemental functions, meant to perform smaller/single tasks
+
+    # Increases turns_played by 1
+    def incrementTurnsPlayed(self):
+        self.game.turns_played = self.game.turns_played + 1
+        db.session.commit()
+
+    # Sets current_turn_order to next player in line (loops back to start when
+    #   end is reached)
+    def getNextTurn(self):
+        if (self.game.current_turn_order < self.game.num_players):
+            self.game.current_turn_order = self.game.current_turn_order + 1
+            db.session.commit()
+        else:
+            self.game.current_turn_order = 1
+            db.session.commit()
+
+    # Sets current_turn_order to new value if valid
+    # Parameters:
+    #   new_order: the value current_turn_order should be set to
+    def setTurnOrder(self, newOrder):
+        # New order must be in range 1 .. num_players
+        if (newOrder > self.game.num_players) or (newOrder < 1):
+            return False
+
+        self.game.current_turn_order = newOrder
+        db.session.commit()
+
+    # Sets the turn_order for a PlayersInGame entry to the specified value
+    # Parameters:
+    #   playerID: the ID of the player whose turn_order will change
+    #   newOrder: the new turn order for this player
+    # This function is not responsible for ensuring that each player has a unique
+    #   turn order
+    def setPlayerTurn(self, playerID, newOrder):
+        newOrder = int(newOrder)
+
+        # New order must be in range 1 .. num_players
+        if (newOrder > self.game.num_players) or (newOrder < 1):
+            return False
+
+        # Get the entry for this player in this game instance
+        playerGame = models.PlayersInGame.query.filter_by(
+            user_id = playerID,
+            game_instance = self.game.id).one()
+
+        playerGame.turn_order = newOrder
+        db.session.commit()

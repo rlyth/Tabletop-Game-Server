@@ -35,6 +35,7 @@ class GameInstance(db.Model):
     num_players = db.Column(db.Integer)
     turns_played = db.Column(db.Integer, default=0)
     current_turn_order = db.Column(db.Integer, default=1)
+    #last_played datetime
 
     Game = db.relationship('Game', primaryjoin='GameInstance.base_game == Game.id', backref='game_instances')
 
@@ -62,12 +63,20 @@ class CardInstance(db.Model):
     __tablename__ = 'CardInstance'
 
     id = db.Column(db.Integer, primary_key=True)
+    game_instance = db.Column(db.ForeignKey('GameInstance.id', ondelete='CASCADE', onupdate='CASCADE'), nullable=False)
     base_card = db.Column(db.ForeignKey('Card.id', ondelete='CASCADE', onupdate='CASCADE'), nullable=False, index=True)
     in_pile = db.Column(db.ForeignKey('Pile.id', ondelete='CASCADE', onupdate='CASCADE'), nullable=False, index=True)
     card_value = db.Column(db.Integer)
 
     Card = db.relationship('Card', primaryjoin='CardInstance.base_card == Card.id', backref='card_instances')
     Pile = db.relationship('Pile', primaryjoin='CardInstance.in_pile == Pile.id', backref='card_instances')
+    GameInstance = db.relationship('GameInstance', primaryjoin='CardInstance.game_instance == GameInstance.id', backref='card_instances')
+
+    def __init__(self, game_instance, base_card, in_pile):
+        self.base_card = base_card
+        self.in_pile = in_pile
+        self.game_instance = game_instance
+        # copy over info from base_card
 
 
 # A list of all the Cards needed to play a Game
