@@ -15,7 +15,6 @@ def initGameInstance(baseGameID, playerList):
     try:
         models.Game.query.filter_by(id=baseGameID).one()
     except MultipleResultsFound:
-            # id is unique, this shouldnt happen
             return None
     except NoResultFound:
             return None
@@ -32,10 +31,12 @@ def initGameInstance(baseGameID, playerList):
         db.session.add(newPlayer)
         db.session.commit()
 
+    """
     # Initialize pile(s)
     tempPile = models.Pile(game_instance=newGame.id, pile_type="Init_Temp_Pile")
     db.session.add(tempPile)
     db.session.commit()
+    """
 
     # Retrieve list of cards associated with baseGame
     gameCards = models.CardsInGame.query.filter_by(game_id=baseGameID).all()
@@ -43,8 +44,7 @@ def initGameInstance(baseGameID, playerList):
     for card in gameCards:
         # Create (qty) instance(s) of all cards
         for x in range(0, card.quantity):
-            #newCard = models.CardInstance(in_pile=tempPile.id,base_card=card.card_id)
-            newCard = models.CardInstance(newGame.id, card.card_id, tempPile.id)
+            newCard = models.CardInstance(newGame.id, card.card_id)
 
             db.session.add(newCard)
             db.session.commit()
@@ -66,6 +66,8 @@ def fetchGameInstance(instanceID):
             return None
     except NoResultFound:
             return None
+
+    # -- consolidate queries using joins
 
     gameInfo["ID"] = gameInstance.id
     gameInfo["Num Players"] = gameInstance.num_players
@@ -136,15 +138,11 @@ def deleteGameInstance(instanceID):
     models.GameInstance.query.filter_by(id=instanceID).delete()
     db.session.commit()
 
-    return
-
 
 # Once instantiated with a valid instanceID, various functions can be called on
 #   this object in order to progress the game state
-class thisGame:
+class gamePlay:
     def __init__(self, instanceID):
-        #self.id = instanceID
-
         try:
             self.game = models.GameInstance.query.filter_by(id=instanceID).one()
         except MultipleResultsFound:
@@ -152,8 +150,6 @@ class thisGame:
         except NoResultFound:
                 return None
 
-    ## Higher level functions
-    # Functions that call other functions, or perform multiple actions at once
 
     # Calls incrementTurnsPlayed() and getNextTurn()
     def endTurn(self):
@@ -161,31 +157,44 @@ class thisGame:
 
         self.getNextTurn()
 
-    # Randomly assigns a turn_order to all players in this GameInstance
-    def randomizePlayers(self):
-        order = []
 
+    # Randomly assigns a unique turn_order to all players in this GameInstance
+    def randomizePlayers(self):
         # Make a list with all possible turn order values
-        for i in range(1, self.game.num_players + 1):
-            order.append(i)
+        order = list(range(1, self.game.num_players + 1))
 
         random.shuffle(order)
 
-        players = models.PlayersInGame.query.filter_by(
-            game_instance = self.game.id).all()
+        players = models.PlayersInGame.query \
+                    .filter_by(game_instance = self.game.id) \
+                    .all()
 
         for i, player in enumerate(players):
             player.turn_order = order[i]
             db.session.commit()
 
+    # Randomizes the order of the CardInstances associated with a pile
+    # Parameters:
+    #   pileID: the ID of the pile to shuffle
+    def shufflePile(self, pileID):
+        cards = models.CardInstance.query \
+                    .filter_by(in_pile=pileID) \
+                    .all()
 
-    ## Lower level functions
-    # More elemental functions, meant to perform smaller/single tasks
+        order = list(range(1, len(cards) + 1))
+
+        random.shuffle(order)
+
+        for i, card in enumerate(cards):
+            card.pile_order = order[i]
+            db.session.commit()
+
 
     # Increases turns_played by 1
     def incrementTurnsPlayed(self):
         self.game.turns_played = self.game.turns_played + 1
         db.session.commit()
+
 
     # Sets current_turn_order to next player in line (loops back to start when
     #   end is reached)
@@ -197,6 +206,7 @@ class thisGame:
             self.game.current_turn_order = 1
             db.session.commit()
 
+
     # Sets current_turn_order to new value if valid
     # Parameters:
     #   new_order: the value current_turn_order should be set to
@@ -207,6 +217,7 @@ class thisGame:
 
         self.game.current_turn_order = newOrder
         db.session.commit()
+
 
     # Sets the turn_order for a PlayersInGame entry to the specified value
     # Parameters:
@@ -228,3 +239,106 @@ class thisGame:
 
         playerGame.turn_order = newOrder
         db.session.commit()
+
+
+    # Draws the top (highest pile_order) card from the specified pile and moves it
+    #   to another pile
+    # Parameters:
+    #   pileFrom: the pile to take the top card from
+    #   pileTo: the pile to move the top card to
+    # The card will be placed on the top of its destination pile
+    def drawTopCard(self, pileFrom, pileTo):
+        # Check that the Pile is not empty
+        if not models.CardInstance.query.filter_by(in_pile=pileFrom).first():
+            return None
+
+        # Retrieves card from pile with the highest pile_order
+        card = models.CardInstance.query \
+                .filter_by(in_pile=pileFrom) \
+                .order_by(models.CardInstance.pile_order.desc()) \
+                .first()
+
+        # Card's new order at destination is one higher than current highest
+        newOrder = self.getMaxOrder(pileTo) + 1
+
+        card.pile_order = newOrder
+        card.in_pile = pileTo
+        db.session.commit()
+
+
+    # Moves the specified CardInstance to a different Pile
+    # Parameters:
+    #   cardID: the ID of the CardInstance to move
+    #   pileTo: the destination Pile
+    # The card will be placed on the top of its destination pile
+    def moveCard(self, cardID, pileTo):
+        # Check that the CardInstance exists
+        try:
+            card = models.CardInstance.query.filter_by(id=cardID).one()
+        except NoResultFound:
+            return None
+
+        # Check that the destination Pile exists
+        try:
+            models.Pile.query.filter_by(id=pileTo).one()
+        except NoResultFound:
+            return None
+
+        card.pile_order = self.getMaxOrder(pileTo) + 1
+        card.in_pile = pileTo
+        db.session.commit()
+
+
+    # Moves every card in a Pile to a different Pile
+    # Parameters:
+    #   pileFrom: the source pile to move all cards from
+    #   pileTo: the destination pile for the moved cards
+    # The moved cards will be added to the top of the destination Pile, starting
+    #   from the top of the source pile
+    def moveAll(self, pileFrom, pileTo):
+        try:
+            models.Pile.query.filter_by(id=pileFrom).one()
+            models.Pile.query.filter_by(id=pileTo).one()
+        except NoResultFound:
+            return None
+
+        cardsFrom = models.CardInstance.query.filter_by(in_pile=pileFrom).all()
+        for card in cardsFrom:
+            self.moveCard(card.id, pileTo)
+
+
+    # Allows changes to data fields of a CardInstance. To update in_pile, use the
+    #   moveCard function instead.
+    # Parameters:
+    #   cardID: the ID of the CardInstance to update
+    #   card_value: (optional) an integer value
+    #   card_type: (optional) a string
+    def updateCardInstance(self, cardID, card_value=None, card_type=None, card_status=None):
+        try:
+            card = models.CardInstance.query.filter_by(id = cardID).one()
+        except NoResultFound:
+            return None
+
+        if card_value:
+            card.card_value = card_value
+        if card_type:
+            card.card_type = card_type
+        if card_status:
+            card.card_status = card_status
+
+        db.session.commit()
+
+
+    # Returns the largest pile_order of every CardInstance in specified Pile
+    # Parameters:
+    #   pile: the ID of the pile to get the maximum pile_order of
+    # Returns: the maximum pile_order in the Pile as an integer
+    def getMaxOrder(self, pile):
+        if not models.CardInstance.query.filter_by(in_pile=pile).first():
+            # Pile is empty
+            return 0
+        else:
+            return models.CardInstance.query \
+                .filter_by(in_pile=pile) \
+                .order_by(models.CardInstance.pile_order.desc()) \
+                .first().pile_order

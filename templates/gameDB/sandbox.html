@@ -7,9 +7,10 @@
 
 		<p>{{ dump }}</p>
 
-		<form action="/gameDB/initGI/" method="POST">
+		<form action="/gameDB/" method="POST">
 		    Base Game: <input type="text" name="bg">
-            <br><input type="submit" value="initGameInstance">
+		    <input type="hidden" name="initGI">
+            <br><input type="submit" value="initGameInstance()">
         </form>
 
     <div>
@@ -33,51 +34,6 @@
     		</tr>
     		{% endfor %}
 		</table>
-		{% endif %}
-
-        {% if ginstance %}
-		<p><b>Game Instance</b>
-		<table border=1 cellpadding=5>
-		    <tr>
-		        <td>ID</td>
-		        <td>Base Game</td>
-		        <td>Num Players</td>
-		    </tr>
-    		{% for igame in ginstance %}
-    		<tr>
-    		    <td>{{ igame.id }}</td>
-    		    <td>{{ igame.base_game }}</td>
-    		    <td>{{ igame.num_players }}</td>
-    		    <td><form action="/gameDB/deleteGI/" method="POST">
-    		        <input type="hidden" name="delete" value="{{ igame.id }}">
-    		        <input type="submit" value="deleteGameInstance">
-    		    </form></td>
-				<td><form action="/gameDB/fetchGI/" method="POST">
-    		        <input type="hidden" name="fetch" value="{{ igame.id }}">
-    		        <input type="submit" value="fetchGameInstance">
-    		    </form></td>
-    		</tr>
-    		{% endfor %}
-		</table>
-		{% endif %}
-    </div>
-
-		{% if pgame %}
-		<p><b>PlayersInGame</b>
-		<table border=1 cellpadding=5>
-		    <tr>
-		        <td>Player ID</td>
-		        <td>Game ID</td>
-		        <td>Turn Order</td>
-		    </tr>
-		    {% for p in pgame %}
-		        <tr>
-		            <td>{{ p.user_id }}</td>
-		            <td>{{ p.game_instance }}</td>
-		            <td>{{ p.turn_order }}</td>
-		        </tr>
-    		{% endfor %}
-    	</table>
 		{% endif %}
 
 		{% if cards %}
@@ -118,27 +74,75 @@
     	</table>
 		{% endif %}
 
-		{% if icard %}
-		<p><b>CardInstance</b>
+        {% if ginstance %}
+		<p><b>Game Instance</b>
 		<table border=1 cellpadding=5>
 		    <tr>
 		        <td>ID</td>
-		        <td>Base Card</td>
-		        <td>In Pile</td>
-		        <td>Card Value</td>
+		        <td>Base Game</td>
+		        <td>Num Players</td>
+		        <td>Turns Played</td>
+		        <td>Current Turn Order</td>
 		    </tr>
-		    {% for c in icard %}
+    		{% for igame in ginstance %}
+    		<tr>
+    		    <td>{{ igame.id }}</td>
+    		    <td>{{ igame.base_game }}</td>
+    		    <td>{{ igame.num_players }}</td>
+    		    <td>{{ igame.turns_played }}</td>
+    		    <td>{{ igame.current_turn_order }}</td>
+    		    <td><form action="/gameDB/" method="POST">
+    		        <input type="hidden" name="fetchGI">
+    		        <input type="hidden" name="gid" value="{{ igame.id }}">
+    		        <input type="submit" value="fetchGameInstance()">
+    		        </form>
+
+    		        <form action="/gameDB/" method="POST">
+    		        <input type="hidden" name="deleteGI">
+    		        <input type="hidden" name="gid" value="{{ igame.id }}">
+    		        <input type="submit" value="deleteGameInstance()">
+    		    </form></td>
+    		    <td><form action="/gameDB/" method="POST">
+        		        <input type="hidden" name="endTurn">
+        		        <input type="hidden" name="gid" value="{{ igame.id }}">
+        		        <input type="submit" value="endTurn()">
+        		</form></td>
+    		    <td><form action="/gameDB/" method="POST">
+        		        <input type="hidden" name="randomizePlayers">
+        		        <input type="hidden" name="gid" value="{{ igame.id }}">
+        		        <input type="submit" value="randomizePlayers()">
+        		</form></td>
+    		</tr>
+    		{% endfor %}
+		</table>
+		{% endif %}
+    </div>
+
+		{% if pgame %}
+		<p><b>PlayersInGame</b>
+		<table border=1 cellpadding=5>
+		    <tr>
+		        <td>Player ID</td>
+		        <td>Game ID</td>
+		        <td>Turn Order</td>
+		    </tr>
+		    {% for p in pgame %}
 		        <tr>
-		            <td>{{ c.id }}</td>
-		            <td>{{ c.base_card }}</td>
-		            <td>{{ c.in_pile }}</td>
-		            <td>{{ c.card_value }}</td>
+		            <td>{{ p.user_id }}</td>
+		            <td>{{ p.game_instance }}</td>
+		            <td>{{ p.turn_order }}</td>
+		            <td><form action="/gameDB/" method="POST">
+		                <input type="number" name="turn">
+        		        <input type="hidden" name="setPlayerTurn" value="{{ p.user_id }}">
+        		        <input type="hidden" name="gid" value="{{ p.game_instance }}">
+        		        <br><input type="submit" value="setPlayerTurn()">
+        		    </form></td>
 		        </tr>
     		{% endfor %}
     	</table>
 		{% endif %}
 
-		{% if piles %}
+        {% if piles %}
 		<p><b>Pile</b>
 		<table border=1 cellpadding=5>
 		    <tr>
@@ -146,6 +150,7 @@
 		        <td>Game Instance</td>
 		        <td>Pile Type</td>
 		        <td>Pile Owner</td>
+		        <td>Pile Status</d>
 		    </tr>
 		    {% for c in piles %}
 		        <tr>
@@ -153,10 +158,61 @@
 		            <td>{{ c.game_instance }}</td>
 		            <td>{{ c.pile_type }}</td>
 		            <td>{{ c.pile_owner }}</td>
+		            <td>{{ c.pile_status }}</td>
+		            <td><form action="/gameDB/" method="POST">
+        		        <input type="hidden" name="shufflePile" value="TRUE">
+        		        <input type="hidden" name="pid" value="{{ c.id }}">
+        		        <input type="submit" value="shufflePile()">
+        		    </form></td>
+        		    <td><form action="/gameDB/" method="POST">
+        		        <input type="hidden" name="drawTopCard" value="TRUE">
+        		        <input type="hidden" name="pid" value="{{ c.id }}">
+        		        <input type="submit" value="drawTopCard()">
+        		    </form></td>
 		        </tr>
     		{% endfor %}
     	</table>
 		{% endif %}
+
+
+		{% if icard %}
+		<p><b>CardInstance</b>
+		<table border=1 cellpadding=5>
+		    <tr>
+		        <td>ID</td>
+		        <td>Base Card</td>
+		        <td>Game Instance</td>
+		        <td>In Pile</td>
+		        <td>Pile Order</td>
+		        <td>Card Value</td>
+		        <td>Card Status</td>
+		    </tr>
+		    {% for c in icard %}
+		        <tr>
+		            <td>{{ c.id }}</td>
+		            <td>{{ c.base_card }}</td>
+		            <td>{{ c.game_instance }}</td>
+		            <td>{{ c.in_pile }}</td>
+		            <td>{{ c.pile_order }}</td>
+		            <td>{{ c.card_value }}</td>
+		            <td>{{ c.card_status }}</td>
+		            <td><form action="/gameDB/" method="POST">
+        		        <input type="hidden" name="moveCard">
+        		        <input type="hidden" name="cid" value="{{ c.id }}">
+        		        <input type="submit" value="moveCard()">
+        		    </form></td>
+        		    <td><form action="/gameDB/" method="POST">
+        		        Val: <input type="number" name="value">
+        		        Stat: <input type="text" name="status">
+        		        <input type="hidden" name="updateCard">
+        		        <input type="hidden" name="cid" value="{{ c.id }}">
+        		        <input type="submit" value="updateCard()">
+        		    </form></td>
+		        </tr>
+    		{% endfor %}
+    	</table>
+		{% endif %}
+
 
 	</body>
 </html>
