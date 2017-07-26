@@ -11,6 +11,9 @@ db = SQLAlchemy(app)
 from gameDB import gameDB
 app.register_blueprint(gameDB)
 
+from userDB import userDB
+app.register_blueprint(userDB)
+
 @app.route("/")
 def main():
     return render_template('index.html')
