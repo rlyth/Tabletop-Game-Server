@@ -5,8 +5,7 @@
     <title>{{ userName }}'s Statisctics</title> 
  
     <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <link rel="stylesheet" type="text/css" href="style.css">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/style.css') }}">
  
 </head>
  
@@ -16,13 +15,13 @@
         <div class="header">
             <nav>
                 <ul class="nav nav-pills pull-right">
-                    <li role="button" class="active"><a href="index.html">Home</a>
+                    <li role="button" class="active"><a href="/">Home</a>
                     </li>
-                    <li role="button"><a href="profile.html">Profile</a>
+                    <li role="button"><a href="profile">Profile</a>
                     </li>
-                    <li role="button"><a href="login.html">My Page</a>
+                    <li role="button"><a href="login">My Page</a>
                     </li>
-                    <li role="button"><a href="logout.html">Log Out</a>
+                    <li role="button"><a href="logout">Log Out</a>
                     </li>
                 </ul>
             </nav>
@@ -38,12 +37,12 @@
                 <!-- do the math -->                                
                 <h4 > Winning Percent: </h4>
 
-                <h2 role="button"><a href="login.html">Back </a></h2>
+                <h2 role="button"><a href="login">Back </a></h2>
             </div>
         </div>
  
         <footer class="footer">
-            <p>Assignment for CS467 by Leanne Vermillion, Rebecca Thompson and James Palmer.</p>
+            <p>Assignment for CS467 by Leanne Vermillion and Rebecca Thompson.</p>
         </footer>
  
     </div>

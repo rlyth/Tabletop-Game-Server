@@ -1,0 +1,48 @@
+/*CSS Comment*/
+
+h1 {
+	text-align: center;
+
+}
+
+h2 {
+	color: DarkSlateGray;
+	text-align: left;
+	font-size: 22px;
+
+}
+h4 {
+	color: DarkSlateGray;
+	text-align: left;
+
+}
+
+body {
+    background-color: Gainsboro;
+}
+
+p {
+	font-size: 12px;
+}
+.footer {
+	padding-top: 19px;
+ 	color: #777;
+  	border-top: 1px solid DarkSlateGray;
+}
+.header {
+  	padding-top: 19px;
+  	padding-bottom: 20px;
+  	border-bottom: 1px solid DarkSlateGray;
+}
+.header h3 {
+  	margin-top: 0;
+  	margin-bottom: 0;
+  	line-height: 40px;
+}
+.marketing {
+  	margin: 40px 0;
+}
+.marketing p + h4 {
+  	margin-top: 18px;
+}
+
