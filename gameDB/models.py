@@ -1,4 +1,8 @@
-from app import db
+from __main__ import app
+#moved this here based on https://stackoverflow.com/questions/34281873/how-do-i-split-flask-models-out-of-app-py-without-passing-db-object-all-over
+from flask.ext.sqlalchemy import SQLAlchemy
+
+db = SQLAlchemy(app)
 
 
 # "Base Game"
