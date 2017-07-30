@@ -1,9 +1,9 @@
-from app import db
+from sharedDB import db
+from flask import current_app as app
 from werkzeug.security import generate_password_hash, check_password_hash
 #moved this here based on https://stackoverflow.com/questions/34281873/how-do-i-split-flask-models-out-of-app-py-without-passing-db-object-all-over
 from flask_sqlalchemy import SQLAlchemy
 
-#db = SQLAlchemy(app)
 
 # Partly based on salt/hash examples from http://flask.pocoo.org/snippets/54/
 class User(db.Model):

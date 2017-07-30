@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, flash, Blueprint
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf.csrf import CsrfProtect
+from sharedDB import db
 from userForm import userForm
 from socket import gethostname
 
@@ -9,9 +10,8 @@ app = Flask(__name__)
 app.secret_key = 'somerandomstring'
 CsrfProtect(app)
 
-#app.config.from_object('config')
-
-db = SQLAlchemy(app)
+app.config.from_object('config')
+#db = SQLAlchemy(app)
 
 ###Creates Local database for testing##################
 #app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/testuser.db'
@@ -45,14 +45,14 @@ db = SQLAlchemy(app)
 #	db.session.commit()
 ###REMOVE THIS PURELY FOR TESTING##################
 
+db.init_app(app)
 
 # Adds the gameDB module
-#from gameDB import gameDB
-#app.register_blueprint(gameDB)
+from gameDB import gameDB
+app.register_blueprint(gameDB)
 
-#from userDB import userDB
-from userDB.models import User
-#app.register_blueprint(userDB)
+from userDB import userDB
+app.register_blueprint(userDB)
 
 @app.route("/")
 def main():
@@ -80,7 +80,7 @@ def newUser():
 					flash('The passwords do not match.')
 					return render_template('newuser.html', form = logInForm)
 				else:
-					addUserToDB(logInForm.username.data, logInForm.password.data)
+					#addUserToDB(logInForm.username.data, logInForm.password.data)
 					return render_template('login.html', form = logInForm)
 	else:
 		return render_template('newuser.html', form = logInForm)
@@ -125,7 +125,7 @@ def logout():
 
 
 if __name__ == "__main__":
-	db.create_all()
+	#db.create_all()
 	if 'liveconsole' not in gethostname():
 		app.run(debug = True)
     #app.run()

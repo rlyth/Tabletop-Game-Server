@@ -1,2 +1,2 @@
-import userDB.models
-from userDB.views import userDB
+from models import User
+from views import userDB
