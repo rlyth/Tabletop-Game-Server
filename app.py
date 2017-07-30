@@ -10,7 +10,7 @@ app = Flask(__name__)
 app.secret_key = 'somerandomstring'
 CsrfProtect(app)
 
-app.config.from_object('config')
+#app.config.from_object('config')
 #db = SQLAlchemy(app)
 
 ###Creates Local database for testing##################
