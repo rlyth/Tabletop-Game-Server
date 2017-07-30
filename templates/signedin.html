@@ -23,9 +23,25 @@
         </div>
  
         <div class="row marketing">
-            <form action="" method="get" id="loginForm">
-                <h2> User Name: <input type="text" name="username"> </h2>
-                <h2> Password: <input type="text" name="password" minLength="5"></h2><br>
+            {% with messages = get_flashed_messages() %}
+              {% if messages %}
+                {% for message in messages %}
+                    <div>{{ message }}</div>
+                {% endfor %}
+              {% endif %}
+            {% endwith %}
+
+            {% for message in form.username.errors %}
+                <div>Username: {{ message }}</div>
+            {% endfor %}
+      
+              {% for message in form.password.errors %}
+                 <div>Password: {{ message }}</div>
+              {% endfor %}
+            <form action="signedin" method="post" id="loginForm">
+                {{ form.csrf_token }}
+                <h2>{{ form.username.label }} {{ form.username }}</h2>
+                <h2>{{ form.password.label }} {{ form.password }}</h2><br>
                 <!-- Check against the exisiting user database -->
                 <input type="submit" value="Submit">  <!-- on successful submit open login.html-->
             </form>

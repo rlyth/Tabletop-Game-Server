@@ -25,10 +25,29 @@
         </div>
  
         <div class="row marketing">
-            <form action="" method="post" id="loginForm">
-                <h2> New User Name: <input type="text" name="username"> </h2>
-                <h2> Create Password: <input type="text" name="password" minLength="5"></h2>
-                <h2> Check Password: <input type="text" name="password" minLength="5"></h2><br>
+            {% with messages = get_flashed_messages() %}
+              {% if messages %}
+                {% for message in messages %}
+                    <div>{{ message }}</div>
+                {% endfor %}
+              {% endif %}
+            {% endwith %}
+
+            {% for message in form.username.errors %}
+                <div>Username: {{ message }}</div>
+            {% endfor %}
+      
+            {% for message in form.password.errors %}
+                 <div>Password: {{ message }}</div>
+            {% endfor %}
+            {% for message in form.password2.errors %}
+                 <div>Password2: {{ message }}</div>
+              {% endfor %}
+            <form action="newuser" method="post" id="loginForm">
+                {{ form.csrf_token }}
+                <h2> New User Name: {{ form.username }} </h2>
+                <h2> Create Password: {{ form.password }}</h2>
+                <h2> Check Password: {{ form.password2 }}</h2><br>
                 <!-- Check against the exisiting user database that user name is unique and password fits requirements -->
                 <input type="submit" value="Submit">  <!-- on successful submit open login.html -->
             </form>
