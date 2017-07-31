@@ -52,8 +52,8 @@ from gameDB import gameDB
 app.register_blueprint(gameDB)
 
 from userDB import User
-from userDB import userDB
-app.register_blueprint(userDB)
+#from userDB import userDB
+#app.register_blueprint(userDB)
 
 @app.route("/")
 def main():
