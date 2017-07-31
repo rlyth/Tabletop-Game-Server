@@ -1,9 +1,6 @@
-import gameDB.models as models
+from app import db
+from .models import Game, GameInstance, Card, CardInstance, PlayersInGame, Pile, CardsInGame
 import random
-
-from sharedDB import db
-#moved this here based on https://stackoverflow.com/questions/34281873/how-do-i-split-flask-models-out-of-app-py-without-passing-db-object-all-over
-from flask_sqlalchemy import SQLAlchemy
 
 from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
 
@@ -17,38 +14,31 @@ from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
 def initGameInstance(baseGameID, playerList):
     # Confirm base game exists
     try:
-        models.Game.query.filter_by(id=baseGameID).one()
+        Game.query.filter_by(id=baseGameID).one()
     except MultipleResultsFound:
             return None
     except NoResultFound:
             return None
 
     # Create new GameInstance for this Game
-    newGame = models.GameInstance(baseGameID, len(playerList))
+    newGame = GameInstance(baseGameID, len(playerList))
     db.session.add(newGame)
     db.session.commit()
 
     # Add all players to PlayersInGame
     for p in playerList:
-        newPlayer = models.PlayersInGame(game_instance=newGame.id)
+        newPlayer = PlayersInGame(game_instance=newGame.id)
         newPlayer.user_id = p
         db.session.add(newPlayer)
         db.session.commit()
 
-    """
-    # Initialize pile(s)
-    tempPile = models.Pile(game_instance=newGame.id, pile_type="Init_Temp_Pile")
-    db.session.add(tempPile)
-    db.session.commit()
-    """
-
     # Retrieve list of cards associated with baseGame
-    gameCards = models.CardsInGame.query.filter_by(game_id=baseGameID).all()
+    gameCards = CardsInGame.query.filter_by(game_id=baseGameID).all()
 
     for card in gameCards:
         # Create (qty) instance(s) of all cards
         for x in range(0, card.quantity):
-            newCard = models.CardInstance(newGame.id, card.card_id)
+            newCard = CardInstance(newGame.id, card.card_id)
 
             db.session.add(newCard)
             db.session.commit()
@@ -60,63 +50,134 @@ def initGameInstance(baseGameID, playerList):
 # Parameters:
 #   instanceID: the ID of the GameInstance to retrieve
 # Returns: a Python object containing information about a GameInstance
+# {
+#   ID: (GameInstance id)
+#   Num Players:
+#   Turns Played:
+#   Turn Order:
+#   Base Game: {
+#       ID: (Game id)
+#       Name:
+#       Description:
+#       Minimum Players:
+#       Maximum Players:
+#   }
+#   Players: [
+#       {
+#           ID: (Player id)
+#           Turn Order:
+#       }
+#       {
+#           ...
+#       }
+#   ]
+#   Piles: [
+#       {
+#           ID: (Pile id)
+#           Type:
+#           Owner:
+#           Status:
+#       }
+#       {
+#           ...
+#       }
+#   ]
+#   Cards: [
+#       {
+#           ID: (CardInstance id)
+#           Base Card ID: (Card id)
+#           Name:
+#           Description:
+#           Type:
+#           Value:
+#           Status:
+#           In Pile:
+#           Pile Order:
+#       }
+#       {
+#           ...
+#       }
+#   ]
+# }
 def fetchGameInstance(instanceID):
     gameInfo = {}
 
     try:
-        gameInstance = models.GameInstance.query.filter_by(id=instanceID).one()
+        gameInstance = GameInstance.query \
+                            .filter_by(id=instanceID) \
+                            .join(Game) \
+                            .one()
     except MultipleResultsFound:
             # id is unique, this shouldnt happen
             return None
     except NoResultFound:
             return None
 
-    # -- consolidate queries using joins
 
+    # Add Game and GameInstance to gameInfo
     gameInfo["ID"] = gameInstance.id
     gameInfo["Num Players"] = gameInstance.num_players
     gameInfo["Turns Played"] = gameInstance.turns_played
     gameInfo["Turn Order"] = gameInstance.current_turn_order
 
-    baseGame = models.Game.query.filter_by(id=gameInstance.base_game).one()
     gameInfo["Base Game"] = {}
-    gameInfo["Base Game"]["ID"] = baseGame.id
-    gameInfo["Base Game"]["Name"] = baseGame.name
-    gameInfo["Base Game"]["Description"] = baseGame.description
-    gameInfo["Base Game"]["Minimum Players"] = baseGame.min_players
-    gameInfo["Base Game"]["Maximum Players"] = baseGame.max_players
+    gameInfo["Base Game"]["ID"] = gameInstance.Game.id
+    gameInfo["Base Game"]["Name"] = gameInstance.Game.name
+    gameInfo["Base Game"]["Description"] = gameInstance.Game.description
+    gameInfo["Base Game"]["Minimum Players"] = gameInstance.Game.min_players
+    gameInfo["Base Game"]["Maximum Players"] = gameInstance.Game.max_players
 
-    players = models.PlayersInGame.query.filter_by(game_instance=instanceID).all()
+    # Add all PlayersInGame to gameInfo
+    players = PlayersInGame.query \
+                    .filter_by(game_instance=instanceID) \
+                    .all()
+
     gameInfo["Players"] = []
     for p in players:
         newPlayer = {}
+
         newPlayer["ID"] = p.user_id
         newPlayer["Turn Order"] = p.turn_order
+
         gameInfo["Players"].append(newPlayer)
 
-    piles = models.Pile.query.filter_by(game_instance=instanceID).all()
+    # Add all Piles to gameInfo
+    piles = Pile.query \
+                .filter_by(game_instance=instanceID) \
+                .all()
+
     gameInfo["Piles"] = []
     for p in piles:
         newPile = {}
+
         newPile["ID"] = p.id
         newPile["Type"] = p.pile_type
         newPile["Owner"] = p.pile_owner
-
-        cards = models.CardInstance.query.filter_by(in_pile=p.id).all()
-        newPile["Cards"] = []
-        # Note: consider refactoring CardInstance to copy over name/desc info
-        #   from Card to reduce extraneous queries
-        for c in cards:
-            newCard = {}
-
-            newCard["ID"] = c.id
-            newCard["Base Card"] = c.base_card
-            newCard["In Pile"] = c.in_pile
-            newCard["Card Value"] = c.card_value
-
-            newPile["Cards"].append(newCard)
+        newPile["Status"] = p.pile_status
 
         gameInfo["Piles"].append(newPile)
+
+    # Add all CardInstances to gameInfo
+    cards = CardInstance.query \
+                .filter_by(game_instance=instanceID) \
+                .join(Card) \
+                .all()
+
+    gameInfo["Cards"] = []
+    for c in cards:
+        newCard = {}
+
+        newCard["ID"] = c.id
+        newCard["Base Card ID"] = c.base_card
+        newCard["Name"] = c.Card.name
+        newCard["Description"] = c.Card.description
+        newCard["Type"] = c.Card.card_type
+        newCard["Value"] = c.card_value
+        newCard["Status"] = c.card_status
+        newCard["In Pile"] = c.in_pile
+        newCard["Pile Order"] = c.pile_order
+
+        gameInfo["Cards"].append(newCard)
 
     return gameInfo
 
@@ -127,19 +188,19 @@ def fetchGameInstance(instanceID):
 #   instanceID: the ID of the GameInstance to delete
 def deleteGameInstance(instanceID):
     # Delete all CardInstances associated with this GameInstance
-    models.CardInstance.query.filter_by(game_instance=instanceID).delete()
+    CardInstance.query.filter_by(game_instance=instanceID).delete()
     db.session.commit()
 
     # Delete Piles
-    models.Pile.query.filter_by(game_instance=instanceID).delete()
+    Pile.query.filter_by(game_instance=instanceID).delete()
     db.session.commit()
 
     # Remove all PlayersInGame
-    models.PlayersInGame.query.filter_by(game_instance=instanceID).delete()
+    PlayersInGame.query.filter_by(game_instance=instanceID).delete()
     db.session.commit()
 
     # Delete Game Instance
-    models.GameInstance.query.filter_by(id=instanceID).delete()
+    GameInstance.query.filter_by(id=instanceID).delete()
     db.session.commit()
 
 
@@ -148,7 +209,9 @@ def deleteGameInstance(instanceID):
 class gamePlay:
     def __init__(self, instanceID):
         try:
-            self.game = models.GameInstance.query.filter_by(id=instanceID).one()
+            self.game = GameInstance.query \
+                            .filter_by(id=instanceID) \
+                            .one()
         except MultipleResultsFound:
                 return None
         except NoResultFound:
@@ -169,7 +232,7 @@ class gamePlay:
 
         random.shuffle(order)
 
-        players = models.PlayersInGame.query \
+        players = PlayersInGame.query \
                     .filter_by(game_instance = self.game.id) \
                     .all()
 
@@ -181,7 +244,7 @@ class gamePlay:
     # Parameters:
     #   pileID: the ID of the pile to shuffle
     def shufflePile(self, pileID):
-        cards = models.CardInstance.query \
+        cards = CardInstance.query \
                     .filter_by(in_pile=pileID) \
                     .all()
 
@@ -237,7 +300,7 @@ class gamePlay:
             return False
 
         # Get the entry for this player in this game instance
-        playerGame = models.PlayersInGame.query.filter_by(
+        playerGame = PlayersInGame.query.filter_by(
             user_id = playerID,
             game_instance = self.game.id).one()
 
@@ -253,13 +316,13 @@ class gamePlay:
     # The card will be placed on the top of its destination pile
     def drawTopCard(self, pileFrom, pileTo):
         # Check that the Pile is not empty
-        if not models.CardInstance.query.filter_by(in_pile=pileFrom).first():
+        if not CardInstance.query.filter_by(in_pile=pileFrom).first():
             return None
 
         # Retrieves card from pile with the highest pile_order
-        card = models.CardInstance.query \
+        card = CardInstance.query \
                 .filter_by(in_pile=pileFrom) \
-                .order_by(models.CardInstance.pile_order.desc()) \
+                .order_by(CardInstance.pile_order.desc()) \
                 .first()
 
         # Card's new order at destination is one higher than current highest
@@ -278,13 +341,15 @@ class gamePlay:
     def moveCard(self, cardID, pileTo):
         # Check that the CardInstance exists
         try:
-            card = models.CardInstance.query.filter_by(id=cardID).one()
+            card = CardInstance.query \
+                        .filter_by(id=cardID) \
+                        .one()
         except NoResultFound:
             return None
 
         # Check that the destination Pile exists
         try:
-            models.Pile.query.filter_by(id=pileTo).one()
+            Pile.query.filter_by(id=pileTo).one()
         except NoResultFound:
             return None
 
@@ -301,12 +366,12 @@ class gamePlay:
     #   from the top of the source pile
     def moveAll(self, pileFrom, pileTo):
         try:
-            models.Pile.query.filter_by(id=pileFrom).one()
-            models.Pile.query.filter_by(id=pileTo).one()
+            Pile.query.filter_by(id=pileFrom).one()
+            Pile.query.filter_by(id=pileTo).one()
         except NoResultFound:
             return None
 
-        cardsFrom = models.CardInstance.query.filter_by(in_pile=pileFrom).all()
+        cardsFrom = CardInstance.query.filter_by(in_pile=pileFrom).all()
         for card in cardsFrom:
             self.moveCard(card.id, pileTo)
 
@@ -319,7 +384,7 @@ class gamePlay:
     #   card_type: (optional) a string
     def updateCardInstance(self, cardID, card_value=None, card_type=None, card_status=None):
         try:
-            card = models.CardInstance.query.filter_by(id = cardID).one()
+            card = CardInstance.query.filter_by(id = cardID).one()
         except NoResultFound:
             return None
 
@@ -338,11 +403,13 @@ class gamePlay:
     #   pile: the ID of the pile to get the maximum pile_order of
     # Returns: the maximum pile_order in the Pile as an integer
     def getMaxOrder(self, pile):
-        if not models.CardInstance.query.filter_by(in_pile=pile).first():
+        if not CardInstance.query \
+                    .filter_by(in_pile=pile) \
+                    .first():
             # Pile is empty
             return 0
         else:
-            return models.CardInstance.query \
-                .filter_by(in_pile=pile) \
-                .order_by(models.CardInstance.pile_order.desc()) \
-                .first().pile_order
+            return CardInstance.query \
+                    .filter_by(in_pile=pile) \
+                    .order_by(CardInstance.pile_order.desc()) \
+                    .first().pile_order

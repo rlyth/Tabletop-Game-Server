@@ -8,6 +8,7 @@
 		<p>{{ dump }}</p>
 
 		<form action="/gameDB/" method="POST">
+		    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
 		    Base Game: <input type="text" name="bg">
 		    <input type="hidden" name="initGI">
             <br><input type="submit" value="initGameInstance()">
@@ -91,27 +92,37 @@
     		    <td>{{ igame.num_players }}</td>
     		    <td>{{ igame.turns_played }}</td>
     		    <td>{{ igame.current_turn_order }}</td>
-    		    <td><form action="/gameDB/" method="POST">
-    		        <input type="hidden" name="fetchGI">
-    		        <input type="hidden" name="gid" value="{{ igame.id }}">
-    		        <input type="submit" value="fetchGameInstance()">
+    		    <td>
+    		        <form action="/gameDB/" method="POST">
+        		        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+        		        <input type="hidden" name="fetchGI">
+        		        <input type="hidden" name="gid" value="{{ igame.id }}">
+        		        <input type="submit" value="fetchGameInstance()">
     		        </form>
 
     		        <form action="/gameDB/" method="POST">
-    		        <input type="hidden" name="deleteGI">
-    		        <input type="hidden" name="gid" value="{{ igame.id }}">
-    		        <input type="submit" value="deleteGameInstance()">
-    		    </form></td>
-    		    <td><form action="/gameDB/" method="POST">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+        		        <input type="hidden" name="deleteGI">
+        		        <input type="hidden" name="gid" value="{{ igame.id }}">
+        		        <input type="submit" value="deleteGameInstance()">
+    		        </form>
+    		    </td>
+    		    <td>
+    		        <form action="/gameDB/" method="POST">
+    		            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
         		        <input type="hidden" name="endTurn">
         		        <input type="hidden" name="gid" value="{{ igame.id }}">
         		        <input type="submit" value="endTurn()">
-        		</form></td>
-    		    <td><form action="/gameDB/" method="POST">
+        		    </form>
+        		</td>
+    		    <td>
+    		        <form action="/gameDB/" method="POST">
+    		            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
         		        <input type="hidden" name="randomizePlayers">
         		        <input type="hidden" name="gid" value="{{ igame.id }}">
         		        <input type="submit" value="randomizePlayers()">
-        		</form></td>
+        		    </form>
+        		</td>
     		</tr>
     		{% endfor %}
 		</table>
@@ -131,12 +142,15 @@
 		            <td>{{ p.user_id }}</td>
 		            <td>{{ p.game_instance }}</td>
 		            <td>{{ p.turn_order }}</td>
-		            <td><form action="/gameDB/" method="POST">
-		                <input type="number" name="turn">
-        		        <input type="hidden" name="setPlayerTurn" value="{{ p.user_id }}">
-        		        <input type="hidden" name="gid" value="{{ p.game_instance }}">
-        		        <br><input type="submit" value="setPlayerTurn()">
-        		    </form></td>
+		            <td>
+		                <form action="/gameDB/" method="POST">
+		                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+    		                <input type="number" name="turn">
+            		        <input type="hidden" name="setPlayerTurn" value="{{ p.user_id }}">
+            		        <input type="hidden" name="gid" value="{{ p.game_instance }}">
+            		        <br><input type="submit" value="setPlayerTurn()">
+        		        </form>
+        		    </td>
 		        </tr>
     		{% endfor %}
     	</table>
@@ -159,16 +173,22 @@
 		            <td>{{ c.pile_type }}</td>
 		            <td>{{ c.pile_owner }}</td>
 		            <td>{{ c.pile_status }}</td>
-		            <td><form action="/gameDB/" method="POST">
-        		        <input type="hidden" name="shufflePile" value="TRUE">
-        		        <input type="hidden" name="pid" value="{{ c.id }}">
-        		        <input type="submit" value="shufflePile()">
-        		    </form></td>
-        		    <td><form action="/gameDB/" method="POST">
-        		        <input type="hidden" name="drawTopCard" value="TRUE">
-        		        <input type="hidden" name="pid" value="{{ c.id }}">
-        		        <input type="submit" value="drawTopCard()">
-        		    </form></td>
+		            <td>
+		                <form action="/gameDB/" method="POST">
+		                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+            		        <input type="hidden" name="shufflePile" value="TRUE">
+            		        <input type="hidden" name="pid" value="{{ c.id }}">
+            		        <input type="submit" value="shufflePile()">
+        		        </form>
+        		    </td>
+        		    <td>
+        		        <form action="/gameDB/" method="POST">
+        		            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+            		        <input type="hidden" name="drawTopCard" value="TRUE">
+            		        <input type="hidden" name="pid" value="{{ c.id }}">
+            		        <input type="submit" value="drawTopCard()">
+        		        </form>
+        		    </td>
 		        </tr>
     		{% endfor %}
     	</table>
@@ -196,18 +216,24 @@
 		            <td>{{ c.pile_order }}</td>
 		            <td>{{ c.card_value }}</td>
 		            <td>{{ c.card_status }}</td>
-		            <td><form action="/gameDB/" method="POST">
-        		        <input type="hidden" name="moveCard">
-        		        <input type="hidden" name="cid" value="{{ c.id }}">
-        		        <input type="submit" value="moveCard()">
-        		    </form></td>
-        		    <td><form action="/gameDB/" method="POST">
-        		        Val: <input type="number" name="value">
-        		        Stat: <input type="text" name="status">
-        		        <input type="hidden" name="updateCard">
-        		        <input type="hidden" name="cid" value="{{ c.id }}">
-        		        <input type="submit" value="updateCard()">
-        		    </form></td>
+		            <td>
+		                <form action="/gameDB/" method="POST">
+		                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+            		        <input type="hidden" name="moveCard">
+            		        <input type="hidden" name="cid" value="{{ c.id }}">
+            		        <input type="submit" value="moveCard()">
+        		        </form>
+        		    </td>
+        		    <td>
+        		        <form action="/gameDB/" method="POST">
+        		            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+            		        Val: <input type="number" name="value">
+            		        Stat: <input type="text" name="status">
+            		        <input type="hidden" name="updateCard">
+            		        <input type="hidden" name="cid" value="{{ c.id }}">
+            		        <input type="submit" value="updateCard()">
+        		        </form>
+        		    </td>
 		        </tr>
     		{% endfor %}
     	</table>

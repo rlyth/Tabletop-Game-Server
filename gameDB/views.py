@@ -30,7 +30,10 @@ def index():
                 game.endTurn()
 
             elif 'deleteGI' in request.form:
-                GF.deleteGameInstance(gid)
+                if gid == '1':
+                    dumps = 'Not deleting that GameInstance. Please try another.'
+                else:
+                    GF.deleteGameInstance(gid)
 
             elif 'setPlayerTurn' in request.form:
                 if request.form['turn'] != '':

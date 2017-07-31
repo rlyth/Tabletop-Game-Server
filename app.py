@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, flash, Blueprint
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf.csrf import CsrfProtect
-from sharedDB import db
+#from sharedDB import db
 from userForm import userForm
 from socket import gethostname
 
@@ -11,8 +11,7 @@ app.config.from_object('config')
 
 CsrfProtect(app)
 
-
-#db = SQLAlchemy(app)
+db = SQLAlchemy(app)
 
 ###Creates Local database for testing##################
 #app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/testuser.db'
@@ -46,15 +45,17 @@ CsrfProtect(app)
 #	db.session.commit()
 ###REMOVE THIS PURELY FOR TESTING##################
 
-db.init_app(app)
+#db.init_app(app)
 
-# Adds the gameDB module
+# Register blueprints
 from gameDB import gameDB
 app.register_blueprint(gameDB)
 
+from userDB import userDB
+app.register_blueprint(userDB)
+
+
 from userDB import User
-#from userDB import userDB
-#app.register_blueprint(userDB)
 
 @app.route("/")
 def main():
