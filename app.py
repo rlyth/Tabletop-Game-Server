@@ -10,7 +10,7 @@ app = Flask(__name__)
 app.secret_key = 'somerandomstring'
 CsrfProtect(app)
 
-#app.config.from_object('config')
+app.config.from_object('config')
 #db = SQLAlchemy(app)
 
 ###Creates Local database for testing##################
@@ -70,7 +70,7 @@ def newUser():
 			return render_template('newuser.html', form = logInForm)
 		else:
 			#will want to replace with calls to user object
-			existingUser = User.query.filter_by(username=logInForm.username.data).first()
+			existingUser = userDB.User.query.filter_by(username=logInForm.username.data).first()
 			if(existingUser):
 				flash('Sorry, username already exists.')
 				return render_template('newuser.html', form = logInForm)
@@ -81,6 +81,9 @@ def newUser():
 					return render_template('newuser.html', form = logInForm)
 				else:
 					#addUserToDB(logInForm.username.data, logInForm.password.data)
+					newUser = userDB.User(logInForm.username.data, logInForm.password.data)
+					db.session.add(newUser)
+					db.session.commit()
 					return render_template('login.html', form = logInForm)
 	else:
 		return render_template('newuser.html', form = logInForm)
@@ -97,7 +100,7 @@ def signIn():
 			return render_template('signedin.html', form = logInForm)
 		else:
 			#will want to replace with calls to user object
-			existingUser = User.query.filter_by(username=logInForm.username.data).first()
+			existingUser = userDB.User.query.filter_by(username=logInForm.username.data).first()
 
 			if(existingUser.password != logInForm.password.data):
 				flash('There was a problem with the password you entered.')
