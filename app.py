@@ -51,6 +51,7 @@ db.init_app(app)
 from gameDB import gameDB
 app.register_blueprint(gameDB)
 
+from userDB import User
 from userDB import userDB
 app.register_blueprint(userDB)
 
@@ -70,18 +71,18 @@ def newUser():
 			return render_template('newuser.html', form = logInForm)
 		else:
 			#will want to replace with calls to user object
-			existingUser = userDB.User.query.filter_by(username=logInForm.username.data).first()
+			existingUser = User.query.filter_by(username=logInForm.username.data).first()
 			if(existingUser):
 				flash('Sorry, username already exists.')
 				return render_template('newuser.html', form = logInForm)
 			else:
-				#add new user to db
+				#check entered passwords and if they match add user to the database
 				if(logInForm.password.data != logInForm.password2.data):
 					flash('The passwords do not match.')
 					return render_template('newuser.html', form = logInForm)
 				else:
 					#addUserToDB(logInForm.username.data, logInForm.password.data)
-					newUser = userDB.User(logInForm.username.data, logInForm.password.data)
+					newUser = User(logInForm.username.data, logInForm.password.data)
 					db.session.add(newUser)
 					db.session.commit()
 					return render_template('login.html', form = logInForm)
@@ -100,7 +101,7 @@ def signIn():
 			return render_template('signedin.html', form = logInForm)
 		else:
 			#will want to replace with calls to user object
-			existingUser = userDB.User.query.filter_by(username=logInForm.username.data).first()
+			existingUser = User.query.filter_by(username=logInForm.username.data).first()
 
 			if(existingUser.password != logInForm.password.data):
 				flash('There was a problem with the password you entered.')
