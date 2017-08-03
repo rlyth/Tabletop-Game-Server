@@ -59,7 +59,6 @@ class Pile(db.Model):
     pile_owner = db.Column(db.Integer)
 
 
-
 # A specific instance of a Card for a currently running GameInstance
 # Stores info on the current card state (location etc)
 class CardInstance(db.Model):
@@ -110,3 +109,20 @@ class PlayersInGame(db.Model):
     player_status = db.Column(db.String(50))
 
     GameInstance = db.relationship('GameInstance', primaryjoin='PlayersInGame.game_instance == GameInstance.id', backref='players_in_games')
+
+
+# Messages associated with a current GameInstance (actions taken, etc)
+class GameLog(db.Model):
+    __tablename__= 'GameLog'
+
+    id = db.Column(db.Integer, primary_key=True)
+    message = db.Column(db.Text, nullable=False)
+    timestamp = db.Column(db.DateTime)
+    game_instance = db.Column(db.ForeignKey('GameInstance.id', ondelete='CASCADE', onupdate='CASCADE'), nullable=False)
+
+    GameInstance = db.relationship('GameInstance', primaryjoin='GameLog.game_instance == GameInstance.id', backref='log_instances')
+
+    def __init__(self, game_instance, message):
+        self.message = message
+        self.game_instance = game_instance
+        self.timestamp = db.func.now()

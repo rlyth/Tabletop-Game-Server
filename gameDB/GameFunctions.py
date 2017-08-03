@@ -1,5 +1,5 @@
 from app import db
-from .models import Game, GameInstance, Card, CardInstance, PlayersInGame, Pile, CardsInGame
+from .models import Game, GameInstance, Card, CardInstance, PlayersInGame, Pile, CardsInGame, GameLog
 import random
 
 from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
@@ -42,6 +42,10 @@ def initGameInstance(baseGameID, playerList):
 
             db.session.add(newCard)
             db.session.commit()
+
+    initMessage = GameLog(newGame.id, "Game created.")
+    db.session.add(initMessage)
+    db.session.commit()
 
     return newGame.id
 
@@ -95,6 +99,15 @@ def initGameInstance(baseGameID, playerList):
 #           Status:
 #           In Pile:
 #           Pile Order:
+#       }
+#       {
+#           ...
+#       }
+#   ]
+#   Log: [
+#       {
+#           Message:
+#           Timestamp:
 #       }
 #       {
 #           ...
@@ -183,6 +196,22 @@ def fetchGameInstance(instanceID):
 
         gameInfo["Cards"].append(newCard)
 
+    # Add all GameLog entries to gameInfo
+    # Newest messages are at the front of the list
+    logs = GameLog.query \
+                .filter_by(game_instance=instanceID) \
+                .order_by(GameLog.timestamp.desc()) \
+                .all()
+
+    gameInfo["Log"] = []
+    for log in logs:
+        newLog = {}
+
+        newLog["Message"] = log.message
+        newLog["Timestamp"] = log.timestamp.strftime('%x %X')
+
+        gameInfo["Log"].append(newLog)
+
     return gameInfo
 
 
@@ -201,6 +230,10 @@ def deleteGameInstance(instanceID):
 
     # Remove all PlayersInGame
     PlayersInGame.query.filter_by(game_instance=instanceID).delete()
+    db.session.commit()
+
+    # Remove all GameLog entries
+    GameLog.query.filter_by(game_instance=instanceID).delete()
     db.session.commit()
 
     # Delete Game Instance
@@ -224,6 +257,8 @@ class gamePlay:
 
     # Calls incrementTurnsPlayed() and getNextTurn()
     def endTurn(self):
+        self.endTurnMsg()
+
         self.incrementTurnsPlayed()
 
         self.getNextTurn()
@@ -243,6 +278,7 @@ class gamePlay:
         for i, player in enumerate(players):
             player.turn_order = order[i]
             db.session.commit()
+
 
     # Randomizes the order of the CardInstances associated with a pile
     # Parameters:
@@ -276,6 +312,16 @@ class gamePlay:
         else:
             self.game.current_turn_order = 1
             db.session.commit()
+
+
+    # Adds a GameLog message indicating the current player's turn has ended
+    def endTurnMsg(self):
+        msg = "Player " + str(self.game.current_turn_order) + " turn ended."
+
+        newLog = GameLog(self.game.id, msg)
+
+        db.session.add(newLog)
+        db.session.commit()
 
 
     # Sets current_turn_order to new value if valid

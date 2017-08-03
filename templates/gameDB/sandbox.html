@@ -238,6 +238,27 @@
     		{% endfor %}
     	</table>
 		{% endif %}
+		
+	
+	{% if log %}
+    <p><b>GameLog</b>
+    <table border=1 cellpadding=5>
+		    <tr>
+		        <td>ID</td>
+		        <td>Game Instance</td>
+		        <td>Message</td>
+		        <td>Timestamp</td>
+		    </tr>
+		    {% for c in log %}
+		        <tr>
+		            <td>{{ c.id }}</td>
+		            <td>{{ c.game_instance }}</td>
+		            <td>{{ c.message }}</td>
+		            <td>{{ c.timestamp }}</td>
+		        </tr>
+    		{% endfor %}
+    	</table>
+		{% endif %}
 
 
 	</body>
