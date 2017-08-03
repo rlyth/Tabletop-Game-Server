@@ -89,6 +89,8 @@ def initGameInstance(baseGameID, playerList):
 #           Name:
 #           Description:
 #           Type:
+#           Front: (path to the card front image)
+#           Back: (path to the card back image)
 #           Value:
 #           Status:
 #           In Pile:
@@ -172,6 +174,8 @@ def fetchGameInstance(instanceID):
         newCard["Name"] = c.Card.name
         newCard["Description"] = c.Card.description
         newCard["Type"] = c.Card.card_type
+        newCard["Front"] = c.Card.img_front
+        newCard["Back"] = c.Card.img_back
         newCard["Value"] = c.card_value
         newCard["Status"] = c.card_status
         newCard["In Pile"] = c.in_pile

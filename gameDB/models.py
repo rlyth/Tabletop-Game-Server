@@ -23,6 +23,8 @@ class Card(db.Model):
     name = db.Column(db.String(50))
     description = db.Column(db.Text)
     card_type = db.Column(db.String(50))
+    img_front = db.Column(db.String(100))
+    img_back = db.Column(db.String(100))
 
 
 # A specific instance of a game in progress

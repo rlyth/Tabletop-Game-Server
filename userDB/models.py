@@ -9,6 +9,7 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(20), nullable=False, unique=True)
     display_name = db.Column(db.String(50))
+    role = db.Column(db.String(50))
     games_played = db.Column(db.Integer)
     wins = db.Column(db.Integer)
     losses = db.Column(db.Integer)
@@ -19,6 +20,9 @@ class User(db.Model):
     def __init__(self, username, password):
         self.username = username
         self.set_password(password)
+
+        # Default role, admin must be applied manually
+        self.role = 'User'
 
         # Initialize player stats
         self.games_played = 0
