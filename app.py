@@ -57,6 +57,8 @@ app.register_blueprint(userDB)
 
 from userDB import User
 
+passedUserName = ''
+
 @app.route("/")
 def main():
     return render_template('index.html')
@@ -87,7 +89,8 @@ def newUser():
 					newUser = User(logInForm.username.data, logInForm.password.data)
 					db.session.add(newUser)
 					db.session.commit()
-					return render_template('login.html', form = logInForm)
+					passedUserName = logInForm.username.data
+					return render_template('login.html', passedUserName, form = logInForm)
 	else:
 		return render_template('newuser.html', form = logInForm)
 
@@ -100,6 +103,7 @@ def signIn():
 	logInForm = userForm()
 	if request.method == 'POST':
 		if logInForm.validate() == False:
+			flash('There was a problem with data that was entered.')
 			return render_template('signedin.html', form = logInForm)
 		else:
 			#will want to replace with calls to user object
@@ -110,10 +114,12 @@ def signIn():
 				return render_template('signedin.html', form = logInForm)
 
 			if(existingUser):
+				passedUserName = logInForm.username.data
 				return render_template('login.html')
 			else:
 				flash('Username does not exist.')
-				return render_template('signedin.html', form = logInForm)
+
+				return render_template('signedin.html', passedUserName, form = logInForm)
 	else:
 		return render_template('signedin.html', form = logInForm)
 
@@ -123,11 +129,15 @@ def statistics():
 
 @app.route("/login",)
 def login():
-    return render_template('login.html')
+	if(passedUserName != ''):
+		return render_template('login.html', passedUserName)
+	else:
+		return render_template('index.html')
 
 @app.route("/logout")
 def logout():
-    return render_template('index.html')
+	passedUserName = ''
+	return render_template('index.html')
 
 
 if __name__ == "__main__":

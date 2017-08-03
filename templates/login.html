@@ -2,7 +2,7 @@
 <html lang="en">
  
 <head>
-    <title>{{ userName }}'s Games</title> 
+    <title>{{ passedUserName }}'s Games</title> 
  
     <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/style.css') }}">
@@ -24,7 +24,7 @@
                     </li>
                 </ul>
             </nav>
-            <h3 class="text-muted">Welcome {{ userName }}</h3>
+            <h3 class="text-muted">Welcome {{ passedUserName }}</h3>
         </div>
  
         <div class="row marketing">
