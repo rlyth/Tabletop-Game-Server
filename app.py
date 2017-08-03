@@ -115,11 +115,11 @@ def signIn():
 
 			if(existingUser):
 				passedUserName = logInForm.username.data
-				return render_template('login.html')
+				return render_template('login.html', passedUserName, form = logInForm)
 			else:
 				flash('Username does not exist.')
 
-				return render_template('signedin.html', passedUserName, form = logInForm)
+				return render_template('signedin.html', form = logInForm)
 	else:
 		return render_template('signedin.html', form = logInForm)
 
@@ -127,10 +127,14 @@ def signIn():
 def statistics():
     return render_template('statistics.html')
 
-@app.route("/login",)
+@app.route("/login", passedUserName)
 def login():
 	if(passedUserName != ''):
-		return render_template('login.html', passedUserName)
+		existingUser = User.query.filter_by(passedUserName=logInForm.username.data).first()
+		if(existingUser.role == Admin):
+			return render_template('adminLogin.html', passedUserName)
+		else:
+			return render_template('login.html', passedUserName)
 	else:
 		return render_template('index.html')
 
