@@ -112,7 +112,7 @@ def signIn():
 			print('existingUser')
 			print(existingUser._password)
 
-			if(not existingUser.check_password_hash(logInForm.password.data)):
+			if(not existingUser.check_password(logInForm.password.data)):
 				print('password match up failure')
 				flash('There was a problem with the password you entered.')
 				return render_template('signedin.html', form = logInForm)
@@ -128,7 +128,7 @@ def signIn():
 				return render_template('signedin.html', form = logInForm)
 			print("Outside of the series of if statements")
 	else:
-		return render_template('signedin.html')
+		return render_template('signedin.html', form = logInForm)
 
 @app.route("/statistics")
 def statistics():
