@@ -90,7 +90,7 @@ def newUser():
 					db.session.add(newUser)
 					db.session.commit()
 					passedUserName = logInForm.username.data
-					return render_template('login.html', passedUserName, form = logInForm)
+					return render_template('login.html', passedUserName)
 	else:
 		return render_template('newuser.html', form = logInForm)
 
@@ -120,7 +120,7 @@ def signIn():
 			if(existingUser):
 				print('good path')
 				passedUserName = logInForm.username.data
-				return render_template('login.html', passedUserName, form = logInForm)
+				return render_template('login.html', passedUserName)
 			else:
 				print('sername does not exist.')
 				flash('Username does not exist.')
