@@ -29,25 +29,23 @@
         </div>
  
         <div class="row marketing">
-            <form action="" method="get" id="loginForm">
+            <form action="" method="get" id="newgameform">
                 <h2> Select Game:</h2> <p><select name="game">  
                 <option value="00">Select</option>
                 <!-- for each kind of game this should be a loop-->                   
                 <option value="uno">Uno</option>                            
                 </select> </p>
-                <h2> Select Number of Users:</h2> <p><select name="numofusers">
-                <!-- for each  game choose the correct possible players -->   
+                <h2> Select Number of Users:</h2> <p><select name="numOfPlayer" onchange="numOfPlayers();" id="qtyDropDown"> 
                 <option value="00">Select</option>
                 <!-- for each  game choose the correct possible players -->   
                 <option value="02">2</option>
                 <option value="03">3</option>
                 <option value="04">4</option>                                                                 
-                </select> </p> 
-                <!-- for each kind of game this should be a loop-->                   
+                </select> </p>
+                <!-- for the number of players select players -->              
                 <h2> Player 2:</h2> <p><select name="player2">
-                <!-- for each  game choose the correct possible players -->   
                 <option value="00">Select</option>
-                <!-- for each  game pick a from a list of players -->                                                                  
+                <!-- pick from the available list -->                                                                  
                 </select> </p>                
                 <input type="submit" value="Submit">  <!-- on successful submit open login.html -->
             </form>
@@ -62,3 +60,26 @@
 </body>
  
 </html>
+
+<script>
+
+    function numOfPlayers(){
+
+        players = document.getElementById("qtyDropDown");        
+
+        if(players.value == "02")           
+
+            //Pull the list of players and put them into the pull down;
+
+        if(players.value == "03")  
+
+            //Pull the list of players for player 2 once chosen, pull a new list for player three
+
+        if(players.value == "04")  
+
+            //Pull the list of players for player 2 once chosen, pull a new list for player 3, and do the same for player 4
+
+
+        }
+
+</script>

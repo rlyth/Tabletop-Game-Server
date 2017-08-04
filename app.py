@@ -109,7 +109,7 @@ def signIn():
 			#will want to replace with calls to user object
 			existingUser = User.query.filter_by(username=logInForm.username.data).first()
 
-			if(existingUser.password != logInForm.password.data):
+			if(existingUser._password != logInForm.password.data):
 				flash('There was a problem with the password you entered.')
 				return render_template('signedin.html', form = logInForm)
 
