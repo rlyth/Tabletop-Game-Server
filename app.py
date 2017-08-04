@@ -140,7 +140,7 @@ def login():
 		if(existingUser.role == 'Admin'):
 			return render_template('adminLogin.html')
 		else:
-			return render_template('login.html', passedUserName)
+			return render_template('login.html', passedUserName=passedUserName)
 	else:
 		return render_template('index.html')
 
