@@ -90,7 +90,7 @@ def newUser():
 					db.session.add(newUser)
 					db.session.commit()
 					passedUserName = logInForm.username.data
-					return render_template('login.html', passedUserName)
+					return render_template('login.html')
 	else:
 		return render_template('newuser.html', form = logInForm)
 
@@ -120,7 +120,7 @@ def signIn():
 			if(existingUser):
 				print('good path')
 				passedUserName = logInForm.username.data
-				return render_template('login.html', passedUserName)
+				return render_template('login.html')
 			else:
 				print('sername does not exist.')
 				flash('Username does not exist.')
@@ -134,14 +134,14 @@ def signIn():
 def statistics():
     return render_template('statistics.html')
 
-@app.route("/login", passedUserName)
+@app.route("/login")
 def login():
 	if(passedUserName != ''):
 		existingUser = User.query.filter_by(passedUserName=logInForm.username.data).first()
-		if(existingUser.role == Admin):
-			return render_template('adminLogin.html', passedUserName)
+		if(existingUser.role == 'Admin'):
+			return render_template('adminLogin.html')
 		else:
-			return render_template('login.html', passedUserName)
+			return render_template('login.html')
 	else:
 		return render_template('index.html')
 
