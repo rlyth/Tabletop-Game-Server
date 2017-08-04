@@ -43,8 +43,9 @@ class GameInstance(db.Model):
     def __init__(self, base_game, num_players):
         self.base_game = base_game
         self.num_players = num_players
-        self.turns_played = 0
         self.current_turn_order = 1
+        # A -1 in turns_played indicates that game-specific setup has not been done
+        self.turns_played = -1
 
 
 # Might be separated out into Pile/PileInstance -- tbd
@@ -54,9 +55,18 @@ class Pile(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     game_instance = db.Column(db.Integer, nullable=False)
-    pile_type = db.Column(db.String(50))
+    pile_type = db.Column(db.String(50), nullable=False)
     pile_status = db.Column(db.String(50))
     pile_owner = db.Column(db.Integer)
+
+    def __init__(self, game_instance, pile_type, pile_owner=None, pile_status=None):
+        self.game_instance = game_instance
+        self.pile_type = pile_type
+
+        if pile_status:
+            self.pile_status = pile_status
+        if pile_owner:
+            self.pile_owner = pile_owner
 
 
 # A specific instance of a Card for a currently running GameInstance

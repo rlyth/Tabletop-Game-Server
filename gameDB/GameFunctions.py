@@ -254,6 +254,15 @@ class gamePlay:
         except NoResultFound:
                 return None
 
+        # Game has not yet been setup
+        if self.game.turns_played == -1:
+            self.initialSetup()
+            self.incrementTurnsPlayed()
+
+
+    def initialSetup(self):
+        # Each game should implement this based on the game's rules
+        return
 
     # Calls incrementTurnsPlayed() and getNextTurn()
     def endTurn(self):
@@ -295,6 +304,24 @@ class gamePlay:
         for i, card in enumerate(cards):
             card.pile_order = order[i]
             db.session.commit()
+
+
+    # Deals (qty) cards to every pile in pilesTo, one at a time, in order
+    # Parameters:
+    #   pileFrom: the ID of the pile to deal from
+    #   pilesTo: a list of pile IDs to deal cards to
+    #   qty: the number of cards to be dealt to each pile
+    # If the number of cards dealt exceeds the number of cards in pileFrom,
+    #   the function will deal as many cards as exist in the pile then return
+    #   None
+    def dealCards(self, pileFrom, pilesTo, qty):
+        for i in range(0, qty):
+            for p in range(0, len(pilesTo)):
+                drawn = self.drawTopCard(pileFrom, pilesTo[p])
+
+                # pileFrom is empty
+                if not drawn:
+                    return None
 
 
     # Increases turns_played by 1
@@ -356,6 +383,20 @@ class gamePlay:
 
         playerGame.turn_order = newOrder
         db.session.commit()
+
+
+    # Creates a new Pile associated with this GameInstance
+    # Parameters:
+    #   pile_type: the label for the pile
+    #   pile_owner: (optional) the id of the pile_owner
+    #   pile_status: (optional) the pile_status value
+    # Returns: the ID of the newly created pile
+    def addPile(self, pile_type, pile_owner=None, pile_status=None):
+        newPile = Pile(self.game.id, pile_type, pile_owner, pile_status)
+        db.session.add(newPile)
+        db.session.commit()
+
+        return newPile.id
 
 
     # Draws the top (highest pile_order) card from the specified pile and moves it
@@ -463,3 +504,44 @@ class gamePlay:
                     .filter_by(in_pile=pile) \
                     .order_by(CardInstance.pile_order.desc()) \
                     .first().pile_order
+
+
+    # Returns: The user_id of the Player whose turn order matches the current turn order
+    def getCurrentPlayerID(self):
+        player = PlayersInGame.query \
+                    .filter_by(
+                        game_instance = self.game.id,
+                        turn_order = self.game.current_turn_order
+                    ) \
+                    .first()
+
+        if player:
+            return player.user_id
+
+        # Will return None, unlikely to occur
+        return None
+
+
+    # Returns: a PlayersInGame object with all players in this GameInstance
+    def getPlayers(self):
+        return PlayersInGame.query \
+                    .filter_by(game_instance = self.game.id) \
+                    .order_by(PlayersInGame.turn_order) \
+                    .all()
+
+
+    # Returns: a CardInstance object with all cards in this GameInstance OR Pile
+    #   Parameters:
+    #       pile: (optional) the ID of the pile to get the cards from
+    def getCards(self, pile=None):
+        # probably add a safeguard to make sure Pile belongs to this GameInstance
+        if pile:
+            return CardInstance.query \
+                        .filter_by(id = pile) \
+                        .order_by(CardInstance.pile_order.desc()) \
+                        .all()
+
+        return CardInstance.query \
+                        .filter_by(game_instance = self.game.id) \
+                        .order_by(CardInstance.pile_order.desc()) \
+                        .all()

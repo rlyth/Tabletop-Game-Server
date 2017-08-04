@@ -1,4 +1,4 @@
-from flask import Blueprint, request, render_template, url_for, redirect
+from flask import Blueprint, request, render_template
 
 import gameDB.models as models
 import json
@@ -41,6 +41,9 @@ def index():
 
             elif 'fetchGI' in request.form:
                 dumps = json.dumps(GF.fetchGameInstance(gid))
+
+            elif 'currentPlayerID' in request.form:
+                dumps = game.getCurrentPlayerID()
 
         if 'pid' in request.form:
             pid = request.form['pid']
@@ -92,30 +95,30 @@ def index():
                 game.updateCardInstance(cid, card_value=val, card_status=stat)
 
     return render_template("gameDB/sandbox.html",
-    games=models.Game.query.all(),
+                                    games=models.Game.query.all(),
 
-    ginstance=models.GameInstance.query.all(),
+                                    ginstance=models.GameInstance.query.all(),
 
-    pgame=models.PlayersInGame.query.order_by(
-        models.PlayersInGame.game_instance,
-        models.PlayersInGame.turn_order
-        ).all(),
+                                    pgame=models.PlayersInGame.query.order_by(
+                                        models.PlayersInGame.game_instance,
+                                        models.PlayersInGame.turn_order
+                                        ).all(),
 
-    cards=models.Card.query.all(),
+                                    cards=models.Card.query.all(),
 
-    icard=models.CardInstance.query.order_by(
-            models.CardInstance.in_pile,
-            models.CardInstance.pile_order
-        ).all(),
+                                    icard=models.CardInstance.query.order_by(
+                                            models.CardInstance.in_pile,
+                                            models.CardInstance.pile_order
+                                        ).all(),
 
-    gcard=models.CardsInGame.query.all(),
+                                    gcard=models.CardsInGame.query.all(),
 
-    piles=models.Pile.query.all(),
+                                    piles=models.Pile.query.all(),
 
-    log=models.GameLog.query \
-                .order_by(
-                    models.GameLog.game_instance,
-                    models.GameLog.timestamp.desc()
-                    ) \
-                .all(),
-    dump=dumps)
+                                    log=models.GameLog.query \
+                                                .order_by(
+                                                    models.GameLog.game_instance,
+                                                    models.GameLog.timestamp.desc()
+                                                    ) \
+                                                .all(),
+                                    dump=dumps)

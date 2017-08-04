@@ -123,6 +123,14 @@
         		        <input type="submit" value="randomizePlayers()">
         		    </form>
         		</td>
+        		<td>
+    		        <form action="/gameDB/" method="POST">
+    		            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+        		        <input type="hidden" name="currentPlayerID">
+        		        <input type="hidden" name="gid" value="{{ igame.id }}">
+        		        <input type="submit" value="getCurrentPlayerID()">
+        		    </form>
+        		</td>
     		</tr>
     		{% endfor %}
 		</table>
@@ -238,9 +246,9 @@
     		{% endfor %}
     	</table>
 		{% endif %}
-		
-	
-	{% if log %}
+
+
+    {% if log %}
     <p><b>GameLog</b>
     <table border=1 cellpadding=5>
 		    <tr>
@@ -259,7 +267,6 @@
     		{% endfor %}
     	</table>
 		{% endif %}
-
 
 	</body>
 </html>

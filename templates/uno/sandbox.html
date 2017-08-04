@@ -1,0 +1,18 @@
+<html>
+	<head>
+		<title>temporary UNO testing page</title>
+	</head>
+	<body>
+		<h1>Testing UNO etc</h1>
+
+        {% if logs %}
+        {% for log in logs %}
+            {{ log.Timestamp }} | {{ log.Message }}<br>
+        {% endfor %}
+        {% endif %}
+
+
+        <p>{{ dump }}</p>
+
+	</body>
+</html>
