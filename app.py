@@ -89,8 +89,9 @@ def newUser():
 					newUser = User(logInForm.username.data, logInForm.password.data)
 					db.session.add(newUser)
 					db.session.commit()
-					passedUserName = logInForm.username.data
-					return render_template('login.html')
+
+					session['username'] = logInForm.username.data
+					return redirect(url_for('login'))
 	else:
 		return render_template('newuser.html', form = logInForm)
 
@@ -116,7 +117,7 @@ def signIn():
 
 			if(existingUser):
 				session['username'] = existingUser.username
-				return render_template('login.html')
+				return redirect(url_for('login'))
 			else:
 				flash('Username does not exist.')
 
