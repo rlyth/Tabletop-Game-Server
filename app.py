@@ -112,7 +112,7 @@ def signIn():
 			print('existingUser')
 			print(existingUser._password)
 
-			if(!existingUser.check_password_hash(logInForm.password.data)):
+			if(not existingUser.check_password_hash(logInForm.password.data)):
 				print('password match up failure')
 				flash('There was a problem with the password you entered.')
 				return render_template('signedin.html', form = logInForm)
