@@ -128,7 +128,7 @@ def signIn():
 				return render_template('signedin.html', form = logInForm)
 			print("Outside of the series of if statements")
 	else:
-		return render_template('signedin.html', form = logInForm)
+		return render_template('signedin.html')
 
 @app.route("/statistics")
 def statistics():
