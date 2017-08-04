@@ -109,17 +109,25 @@ def signIn():
 			#will want to replace with calls to user object
 			existingUser = User.query.filter_by(username=logInForm.username.data).first()
 
+			print('existingUser')
+			print(existingUser._password)
+
 			if(existingUser._password != logInForm.password.data):
+				print('password match up failure')
 				flash('There was a problem with the password you entered.')
 				return render_template('signedin.html', form = logInForm)
 
 			if(existingUser):
+				print('good path')
 				passedUserName = logInForm.username.data
 				return render_template('login.html', passedUserName, form = logInForm)
 			else:
+				print('sername does not exist.')
 				flash('Username does not exist.')
 
 				return render_template('signedin.html', form = logInForm)
+
+			print("Outside of the series of if statements")
 	else:
 		return render_template('signedin.html', form = logInForm)
 
