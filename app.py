@@ -126,7 +126,6 @@ def signIn():
 				flash('Username does not exist.')
 
 				return render_template('signedin.html', form = logInForm)
-
 			print("Outside of the series of if statements")
 	else:
 		return render_template('signedin.html', form = logInForm)
