@@ -1,7 +1,6 @@
-from flask import Flask, render_template, session, request, flash, Blueprint, redirect, url_for
+from flask import Flask, render_template, session, request, flash, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
-from flask_wtf.csrf import CsrfProtect
-#from sharedDB import db
+from flask_wtf.csrf import CSRFProtect
 from userForm import userForm
 from socket import gethostname
 
@@ -9,7 +8,7 @@ app = Flask(__name__)
 
 app.config.from_object('config')
 
-CsrfProtect(app)
+CSRFProtect(app)
 
 db = SQLAlchemy(app)
 
@@ -53,6 +52,9 @@ app.register_blueprint(gameDB)
 
 from userDB import userDB
 app.register_blueprint(userDB)
+
+from uno import uno
+app.register_blueprint(uno)
 
 
 from userDB import User

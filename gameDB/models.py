@@ -86,12 +86,15 @@ class CardInstance(db.Model):
     Pile = db.relationship('Pile', primaryjoin='CardInstance.in_pile == Pile.id', backref='card_instances')
     GameInstance = db.relationship('GameInstance', primaryjoin='CardInstance.game_instance == GameInstance.id', backref='card_instances')
 
-    def __init__(self, game_instance, base_card, in_pile=None):
+    def __init__(self, game_instance, base_card, in_pile=None, card_value=None):
         self.game_instance = game_instance
         self.base_card = base_card
 
         if in_pile:
             self.in_pile = in_pile
+
+        if card_value:
+            self.card_value = card_value
 
 
 # A list of all the Cards needed to play a Game
@@ -103,6 +106,8 @@ class CardsInGame(db.Model):
     card_id = db.Column(db.ForeignKey('Card.id', ondelete='CASCADE', onupdate='CASCADE'), primary_key=True, nullable=False)
     game_id = db.Column(db.ForeignKey('Game.id', ondelete='CASCADE', onupdate='CASCADE'), primary_key=True, nullable=False, index=True)
     quantity = db.Column(db.Integer, nullable=False, default=0)
+    # The initial card_value CardInstance starts with
+    card_value = db.Column(db.Integer)
 
     card = db.relationship('Card', primaryjoin='CardsInGame.card_id == Card.id', backref='cards_in_games')
     game = db.relationship('Game', primaryjoin='CardsInGame.game_id == Game.id', backref='cards_in_games')

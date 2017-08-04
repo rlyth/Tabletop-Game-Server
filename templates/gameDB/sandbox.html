@@ -64,12 +64,14 @@
 		        <td>Card ID</td>
 		        <td>Game ID</td>
 		        <td>Quantity</td>
+		        <td>Card Value</td>
 		    </tr>
 		    {% for c in gcard %}
 		        <tr>
 		            <td>{{ c.card_id }}</td>
 		            <td>{{ c.game_id }}</td>
 		            <td>{{ c.quantity }}</td>
+		            <td>{{ c.card_value }}</td>
 		        </tr>
     		{% endfor %}
     	</table>

@@ -38,7 +38,7 @@ def initGameInstance(baseGameID, playerList):
     for card in gameCards:
         # Create (qty) instance(s) of all cards
         for x in range(0, card.quantity):
-            newCard = CardInstance(newGame.id, card.card_id)
+            newCard = CardInstance(newGame.id, card.card_id, card_value=card.card_value)
 
             db.session.add(newCard)
             db.session.commit()
