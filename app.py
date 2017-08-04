@@ -57,7 +57,7 @@ app.register_blueprint(userDB)
 
 from userDB import User
 
-passedUserName = ''
+passedUserName = None
 
 @app.route("/")
 def main():
@@ -109,20 +109,15 @@ def signIn():
 			#will want to replace with calls to user object
 			existingUser = User.query.filter_by(username=logInForm.username.data).first()
 
-			print('existingUser')
-			print(existingUser._password)
-
 			if(not existingUser.check_password(logInForm.password.data)):
-				print('password match up failure')
+
 				flash('There was a problem with the password you entered.')
 				return render_template('signedin.html', form = logInForm)
 
 			if(existingUser):
-				print('good path')
-				passedUserName = logInForm.username.data
+				session['username'] = existingUser.username
 				return render_template('login.html')
 			else:
-				print('Username does not exist.')
 				flash('Username does not exist.')
 
 				return render_template('signedin.html', form = logInForm)
@@ -136,18 +131,19 @@ def statistics():
 
 @app.route("/login")
 def login():
-	if(passedUserName != ''):
+	passedUserName = session['username']
+	if(passedUserName not None):
 		existingUser = User.query.filter_by(passedUserName=logInForm.username.data).first()
 		if(existingUser.role == 'Admin'):
 			return render_template('adminLogin.html')
 		else:
-			return render_template('login.html')
+			return render_template('login.html', passedUserName)
 	else:
 		return render_template('index.html')
 
 @app.route("/logout")
 def logout():
-	passedUserName = ''
+	session['username'] = None
 	return render_template('index.html')
 
 
