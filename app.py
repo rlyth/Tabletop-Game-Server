@@ -132,7 +132,7 @@ def statistics():
 @app.route("/login")
 def login():
 	passedUserName = session['username']
-	if(passedUserName not None):
+	if(passedUserName != None):
 		existingUser = User.query.filter_by(passedUserName=logInForm.username.data).first()
 		if(existingUser.role == 'Admin'):
 			return render_template('adminLogin.html')
