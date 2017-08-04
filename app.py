@@ -67,7 +67,10 @@ def main():
 
 @app.route("/newgame")
 def newGame():
-    return render_template('newgame.html')
+	passedUserName = session['username']
+	existingUser = User.query.filter_by(username=passedUserName).first()
+	users = User.query.all()
+	return render_template('newgame.html', passedUserName=passedUserName, users=users)
 
 @app.route("/newuser", methods = ['GET', 'POST'])
 def newUser():
@@ -99,7 +102,9 @@ def newUser():
 
 @app.route("/profile")
 def profile():
-    return render_template('profile.html')
+	passedUserName = session['username']
+	existingUser = User.query.filter_by(username=passedUserName).first()
+	return render_template('profile.html', passedUserName=passedUserName)
 
 @app.route("/signedin", methods = ['GET', 'POST'])
 def signIn():
@@ -124,13 +129,21 @@ def signIn():
 				flash('Username does not exist.')
 
 				return render_template('signedin.html', form = logInForm)
-			print("Outside of the series of if statements")
 	else:
 		return render_template('signedin.html', form = logInForm)
 
 @app.route("/statistics")
 def statistics():
-    return render_template('statistics.html')
+	passedUserName = session['username']
+	existingUser = User.query.filter_by(username=passedUserName).first()
+	userGames = existingUser.games_played
+	userWins = existingUser.wins
+	if (userGames > 0):
+		userRecord = userWins/userGames
+	else:
+		userRecord = 0
+		
+	return render_template('statistics.html', existingUser=existingUser, userRecord=userRecord)
 
 @app.route("/login")
 def login():
@@ -140,11 +153,17 @@ def login():
 		existingUser = User.query.filter_by(username=passedUserName).first()
 
 		if(existingUser.role == 'Admin'):
-			return render_template('adminLogin.html')
+			return render_template('adminLogin.html', passedUserName=passedUserName)
 		else:
 			return render_template('login.html', passedUserName=passedUserName)
 	else:
 		return render_template('index.html')
+
+@app.route("/delete")
+def adminDelete():
+	passedUserName = session['username']
+	existingUser = User.query.filter_by(username=passedUserName).first()	
+	return render_template('delete.html', passedUserName=passedUserName)
 
 @app.route("/logout")
 def logout():

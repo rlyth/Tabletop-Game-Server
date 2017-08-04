@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+ 
+<head>
+    <title>Admin {{ passedUserName }}'s Delete</title> 
+ 
+    <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/style.css') }}">
+ 
+ 
+</head>
+ 
+<body>
+ 
+    <div class="container">
+        <div class="header">
+            <nav>
+                <ul class="nav nav-pills pull-right">
+                    <li role="button" class="active"><a href="/">Home</a>
+                    </li>
+                    <li role="button"><a href="profile">Profile</a>
+                    </li>
+                    <li role="button"><a href="logout">Log Out</a>
+                    </li>
+                </ul>
+            </nav>
+            <h3 class="text-muted">Welcome Admin {{ passedUserName }}</h3>
+        </div>
+ 
+        <div class="row marketing">
+            <h4 > Delete User:</h4>  
+            <!-- show the list of non admin users -->
+        </div>
+ 
+        <footer class="footer">
+            <p>Assignment for CS467 by Leanne Vermillion and Rebecca Thompson.</p>
+        </footer>
+ 
+    </div>
+</body>
+ 
+</html>
