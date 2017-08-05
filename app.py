@@ -137,7 +137,7 @@ def statistics():
 		userGames = existingUser.games_played
 		userWins = existingUser.wins
 		if (userGames > 0):
-			userRecord = 10 * (userWins/userGames)
+			userRecord = 100 * (userWins/userGames)
 		else:
 			userRecord = 0		
 	return render_template('statistics.html', existingUser=existingUser, userRecord=userRecord)
