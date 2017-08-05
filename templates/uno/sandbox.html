@@ -75,7 +75,7 @@
         {% for c in hand %}
                 <td>
                     {{ c.Card.name }}
-                    <br><img src="{{ url_for('static', filename=c.Card.img_back) }}">
+                    <br><img src="{{ url_for('static', filename=c.Card.img_front) }}">
                     <form action="/uno/{{ gid }}/sandbox/" method="POST">
                         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                         <input type="hidden" name="cid" value="{{ c.id }}">
