@@ -68,7 +68,6 @@ def main():
 @app.route("/newgame")
 def newGame():
 	passedUserName = session['username']
-	existingUser = User.query.filter_by(username=passedUserName).first()
 	users = User.query.all()
 	return render_template('newgame.html', passedUserName=passedUserName, users=users)
 
@@ -103,7 +102,6 @@ def newUser():
 @app.route("/profile")
 def profile():
 	passedUserName = session['username']
-	existingUser = User.query.filter_by(username=passedUserName).first()
 	return render_template('profile.html', passedUserName=passedUserName)
 
 @app.route("/signedin", methods = ['GET', 'POST'])
@@ -114,7 +112,6 @@ def signIn():
 			flash('There was a problem with data that was entered.')
 			return render_template('signedin.html', form = logInForm)
 		else:
-			#will want to replace with calls to user object
 			existingUser = User.query.filter_by(username=logInForm.username.data).first()
 
 			if(not existingUser.check_password(logInForm.password.data)):
@@ -134,20 +131,19 @@ def signIn():
 
 @app.route("/statistics")
 def statistics():
-	passedUserName = session['username']
-	existingUser = User.query.filter_by(username=passedUserName).first()
-	userGames = existingUser.games_played
-	userWins = existingUser.wins
-	if (userGames > 0):
-		userRecord = userWins/userGames
-	else:
-		userRecord = 0
-		
+	if('username' in session):
+		passedUserName = session['username']
+		existingUser = User.query.filter_by(username=passedUserName).first()
+		userGames = existingUser.games_played
+		userWins = existingUser.wins
+		if (userGames > 0):
+			userRecord = userWins/userGames
+		else:
+			userRecord = 0		
 	return render_template('statistics.html', existingUser=existingUser, userRecord=userRecord)
 
 @app.route("/login")
 def login():
-
 	if('username' in session):
 		passedUserName = session['username']
 		existingUser = User.query.filter_by(username=passedUserName).first()
@@ -159,11 +155,11 @@ def login():
 	else:
 		return render_template('index.html')
 
-@app.route("/delete")
+@app.route("/delete", methods = ['DELETE'])
 def adminDelete():
 	passedUserName = session['username']
-	existingUser = User.query.filter_by(username=passedUserName).first()	
-	return render_template('delete.html', passedUserName=passedUserName)
+	users = User.query.all()
+	return render_template('delete.html', passedUserName=passedUserName, users=users)
 
 @app.route("/logout")
 def logout():
