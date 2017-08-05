@@ -41,12 +41,13 @@
 		    <tr>
 		        <td>
 		            <b>Deck</b>
+					<br>Count: {{ deck_count }}
 		            <br><img src="{{ url_for('static', filename='UnoCardImages/CardBack.gif') }}">
-		            <br>Count: {{ deck_count }}
 		        </td>
 		        <td>
 		            <b>Discard</b>
-		            <br>Count: {{ discard_count }}
+					<br>Count: {{ discard_count }}
+					<img src="{{ url_for('static', filename=discard.Card.img_front) }}">
                 </td>
 		    </tr>
 		    <tr>
