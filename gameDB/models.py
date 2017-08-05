@@ -37,6 +37,7 @@ class GameInstance(db.Model):
     num_players = db.Column(db.Integer)
     turns_played = db.Column(db.Integer, default=0)
     current_turn_order = db.Column(db.Integer, default=1)
+    status = db.Column(db.String(50))
 
     Game = db.relationship('Game', primaryjoin='GameInstance.base_game == Game.id', backref='game_instances')
 
@@ -44,8 +45,8 @@ class GameInstance(db.Model):
         self.base_game = base_game
         self.num_players = num_players
         self.current_turn_order = 1
-        # A -1 in turns_played indicates that game-specific setup has not been done
-        self.turns_played = -1
+        self.turns_played = 0
+        self.status = 'Created'
 
 
 # Might be separated out into Pile/PileInstance -- tbd

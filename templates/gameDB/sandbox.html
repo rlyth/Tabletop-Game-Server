@@ -45,6 +45,8 @@
 		        <td>Name</td>
 		        <td>Description</td>
 		        <td>Card Type</td>
+		        <td>Card Front</td>
+		        <td>Card Back</td>
 		    </tr>
 		    {% for c in cards %}
 		        <tr>
@@ -52,6 +54,8 @@
 		            <td>{{ c.name }}</td>
 		            <td>{{ c.description }}</td>
 		            <td>{{ c.card_type }}</td>
+		            <td>{{ c.img_front }}</td>
+		            <td>{{ c.img_back }}</td>
 		        </tr>
     		{% endfor %}
     	</table>
@@ -86,6 +90,7 @@
 		        <td>Num Players</td>
 		        <td>Turns Played</td>
 		        <td>Current Turn Order</td>
+		        <td>Status</td>
 		    </tr>
     		{% for igame in ginstance %}
     		<tr>
@@ -94,6 +99,7 @@
     		    <td>{{ igame.num_players }}</td>
     		    <td>{{ igame.turns_played }}</td>
     		    <td>{{ igame.current_turn_order }}</td>
+    		    <td>{{ igame.status }}</td>
     		    <td>
     		        <form action="/gameDB/" method="POST">
         		        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>

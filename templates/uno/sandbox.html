@@ -5,14 +5,134 @@
 	<body>
 		<h1>Testing UNO etc</h1>
 
-        {% if logs %}
-        {% for log in logs %}
-            {{ log.Timestamp }} | {{ log.Message }}<br>
+		{% with messages = get_flashed_messages() %}
+          {% if messages %}
+            <p>
+            {% for message in messages %}
+              {{ message }}<br>
+            {% endfor %}
+            </p>
+          {% endif %}
+        {% endwith %}
+
+        {% if players %}
+        <table border=1 cellpadding=5>
+		    <tr>
+		        <td><b>Players</b></td>
+		    </tr>
+		    <tr>
+		        {% for p in players %}
+		        <td>
+		            ID: {{ p[0].user_id }}
+		            <br>Turn: {{ p[0].turn_order }}
+		            <br>Hand: {{ p[1] }} cards
+		        </td>
+		        {% endfor %}
+		    </tr>
+		</table>
+		{% endif %}
+
+		{% if active %}
+		<p><b>Active Player: {{ active }}</b></p>
+		{% endif %}
+
+        {% if deck %}
+		<p><table border=1 cellpadding=5>
+		    <tr>
+		        <td>
+		            <b>Deck</b>
+		            <br><img src="{{ url_for('static', filename='UnoCardImages/CardBack.gif') }}">
+		            <br>Count: {{ deck_count }}
+		        </td>
+		        <td>
+		            <b>Discard</b>
+		            <br>Count: {{ discard_count }}
+                </td>
+		    </tr>
+		    <tr>
+		        <td>
+		            <form action="/uno/{{ gid }}/sandbox/" method="POST">
+		                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+		                <input type="hidden" name="drawCard">
+		                <input type="submit" value="Draw Card">
+		            </form>
+		        </td>
+		        <td>
+		            {% if discard %}
+		            {{ discard.Card.name }}
+		            {% if discard.Card.card_type == 'Wild' %}
+		            <br>Color: {{ discard.card_status }}
+		            {% endif %}
+                    {% endif %}
+		        </td>
+		    </tr>
+		</table></p>
+		{% endif %}
+
+        {% if hand %}
+        <p><table border=1 cellpadding=5>
+            <tr>
+        {% for c in hand %}
+                <td>
+                    {{ c.Card.name }}
+                    <br><img src="{{ url_for('static', filename=c.Card.img_back) }}">
+                    <form action="/uno/{{ gid }}/sandbox/" method="POST">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                        <input type="hidden" name="cid" value="{{ c.id }}">
+                        <input type="hidden" name="playCard">
+                        {% if c.Card.card_type == 'Wild' %}
+                        <select name="wildColor">
+                            <option value="Red">Red</option>
+                            <option value"Blue">Blue</option>
+                            <option value="Green">Green</option>
+                            <option value"Yellow">Yellow</option>
+                        </select>
+                        {% endif %}
+                        <input type="submit" value="Play Card">
+                    </form>
+                </td>
         {% endfor %}
+            </tr>
+        </table></p>
         {% endif %}
 
+        {% if endturn %}
+        <p>
+            <form action="/uno/{{ gid }}/sandbox/" method="POST">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                <input type="hidden" name="endTurn">
+                <input type="submit" value="End Turn">
+		    </form>
+        </p>
+        {% endif %}
+
+        {% if endgame %}
+        <p>
+            <form action="/uno/{{ gid }}/sandbox/" method="POST">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                <input type="hidden" name="endGame">
+                <input type="submit" value="End Game">
+		    </form>
+		    <form action="/uno/{{ gid }}/sandbox/" method="POST">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                <input type="hidden" name="resetGame">
+                <input type="submit" value="Reset Game">
+		    </form>
+        </p>
+
+
+
+        {% endif %}
 
         <p>{{ dump }}</p>
+
+        <p>
+        {% if logs %}
+        {% for log in logs %}
+            {{ log.timestamp }} | {{ log.message }}<br>
+        {% endfor %}
+        {% endif %}
+        </p>
 
 	</body>
 </html>
