@@ -16,7 +16,8 @@ def index():
                 gid = request.form["bg"]
             else:
                 gid = 1
-            GF.initGameInstance(gid, [1, 2, 3, 4])
+            GF.initGameInstance(gid, 1, [2, 3, 4])
+            # auto-accept all invites for testing purposes
 
         if 'gid' in request.form:
             gid = request.form['gid']
@@ -37,7 +38,19 @@ def index():
 
             elif 'setPlayerTurn' in request.form:
                 if request.form['turn'] != '':
-                    game.setPlayerTurn(request.form["setPlayerTurn"], request.form["turn"])
+                    game.setPlayerTurn(request.form["uid"], request.form["turn"])
+
+            elif 'acceptInvite' in request.form:
+                game.acceptInvite(request.form["uid"])
+
+            elif 'declineInvite' in request.form:
+                game.declineInvite(request.form["uid"])
+
+            elif 'acceptAll' in request.form:
+                players = game.getPlayers()
+
+                for p in players:
+                    game.acceptInvite(p.user_id)
 
             elif 'fetchGI' in request.form:
                 dumps = json.dumps(GF.fetchGameInstance(gid))

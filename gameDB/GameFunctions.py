@@ -7,12 +7,13 @@ from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
 
 
 # Creates a GameInstance based on a Game, and creates any CardInstance and Pile
-#   required to play. Adds all players to PlayersInGame.
+#   required to play. Adds all players to PlayersInGame and sets invites.
 # Parameters:
 #   baseGameID: ID of game to spawn an instance of
-#   playerList: list of ID for players joining game
+#   creatorID: the User id of the player who initiated the game
+#   inviteList: list of User ids for the players invited to the game
 # Returns: The ID of the newly created GameInstance
-def initGameInstance(baseGameID, playerList):
+def initGameInstance(baseGameID, creatorID, inviteList):
     # Confirm base game exists
     try:
         Game.query.filter_by(id=baseGameID).one()
@@ -20,16 +21,23 @@ def initGameInstance(baseGameID, playerList):
             return None
 
     # Create new GameInstance for this Game
-    newGame = GameInstance(baseGameID, len(playerList))
+    # num_players is set to 1, and increments as players accept invites
+    newGame = GameInstance(baseGameID, 1)
     db.session.add(newGame)
     db.session.commit()
 
-    # Add all players to PlayersInGame
-    for p in playerList:
-        newPlayer = PlayersInGame(game_instance=newGame.id)
-        newPlayer.user_id = p
-        db.session.add(newPlayer)
-        db.session.commit()
+    creator = PlayersInGame(newGame.id, creatorID, invite_status='Creator')
+    db.session.add(creator)
+    db.session.commit()
+
+    # Add all players to PlayersInGame with invite status
+    players = []
+    for p in inviteList:
+        newPlayer = PlayersInGame(newGame.id, p, invite_status='Invited')
+        players.append(newPlayer)
+
+    db.session.bulk_save_objects(players)
+    db.session.commit()
 
     # Retrieve list of cards associated with baseGame
     gameCards = CardsInGame.query.filter_by(game_id=baseGameID).all()
@@ -103,13 +111,16 @@ class gamePlay:
                 return None
 
         # Game has not yet been setup
-        if self.game.status == 'Created':
+        # Will only run once all the invites have been accepted or declined
+        if (not self.isPendingInvites()) and self.game.status == 'Created':
             self.initialSetup()
             self.setStatus('Active')
 
         self.setVariables()
 
 
+    ## NB: in the future, it might make sense to not run this automatically,
+    ##      and instead make the players start the game via a function call
     def initialSetup(self):
         # Each game should implement this based on the game's rules
         return
@@ -317,6 +328,74 @@ class gamePlay:
             self.moveCard(card.id, pileTo)
 
 
+
+    ########################################
+    ########################################
+    # Invites/Joining/Leaving game
+    ########################################
+    ########################################
+
+    def acceptInvite(self, userID):
+        player = PlayersInGame.query \
+                        .filter_by(
+                            game_instance=self.game.id,
+                            user_id=userID
+                        ) \
+                        .join(User) \
+                        .first()
+
+        # Player is game creator or already accepted
+        if player.invite_status != 'Invited':
+            return False
+
+        player.invite_status = 'Accepted'
+        self.game.num_players += 1
+        db.session.commit()
+
+        self.addLog(player.User.username + " has joined the game.")
+
+        return True
+
+
+    def declineInvite(self, userID):
+        player = PlayersInGame.query \
+                        .filter_by(
+                            game_instance=self.game.id,
+                            user_id=userID
+                        ) \
+                        .first()
+
+        if player.invite_status != 'Invited':
+            return False
+
+        db.session.delete(player)
+        db.session.commit()
+
+        return True
+
+
+    def invitePlayer(self, userID):
+        newPlayer = PlayersInGame(self.game.id, userID, invite_status="Invited")
+
+        db.session.add(newPlayer)
+        db.session.commit()
+
+
+    # Returns: True if not all players have accepted the game invite, False otherwise
+    def isPendingInvites(self):
+        pending = PlayersInGame.query \
+                        .filter_by(
+                            game_instance=self.game.id,
+                            invite_status='Invited'
+                        ) \
+                        .all()
+
+        if pending:
+            return True
+
+        return False
+
+
     ########################################
     ########################################
     # Adders
@@ -361,6 +440,19 @@ class gamePlay:
     #   end is reached)
     def setNextTurn(self):
         self.game.current_turn_order = self.getNextTurn()
+        db.session.commit()
+
+
+    # Sets the player's player_status to the specified value
+    def setPlayerStatus(self, playerID, newStatus):
+        player = PlayersInGame.query \
+                        .filter_by(
+                            game_instance=self.game.id,
+                            user_id=playerID
+                        ) \
+                        .first()
+
+        player.player_status = newStatus
         db.session.commit()
 
 

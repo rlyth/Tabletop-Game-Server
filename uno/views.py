@@ -19,7 +19,7 @@ def instance(instanceID):
 def sandbox(instanceID):
     dump = ''
 
-    # I'll write a query that only retrieves the GameInstance/Game soon
+    # GameInstance/Game object
     gameInfo = getGameInstance(instanceID)
 
     # Invalid instanceID
@@ -33,6 +33,11 @@ def sandbox(instanceID):
         return render_template("uno/sandbox.html", dump=dump)
 
     game = Uno(instanceID)
+
+    # Not all invites have been accepted
+    if game.game.status == 'Created':
+        dump = "Waiting on players."
+        return render_template("uno/sandbox.html", dump=dump)
 
     # temporary hack, replace with current logged in user id
     active_player = game.getCurrentPlayerID()

@@ -122,10 +122,20 @@ class PlayersInGame(db.Model):
     user_id = db.Column(db.ForeignKey('User.id', ondelete='CASCADE', onupdate='CASCADE'), primary_key=True, nullable=False, index=True)
     game_instance = db.Column(db.ForeignKey('GameInstance.id', ondelete='CASCADE', onupdate='CASCADE'), primary_key=True, nullable=False, index=True, server_default=db.FetchedValue())
     turn_order = db.Column(db.Integer)
+    # Can be used by games to track status effects
     player_status = db.Column(db.String(50))
+    # Used by the server to track invites
+    invite_status = db.Column(db.String(50))
 
     GameInstance = db.relationship('GameInstance', primaryjoin='PlayersInGame.game_instance == GameInstance.id', backref='players_in_games')
     User = db.relationship('User', primaryjoin='PlayersInGame.user_id == User.id', backref='players_in_games')
+
+    def __init__(self, game_instance, user_id, invite_status=None):
+        self.game_instance = game_instance
+        self.user_id = user_id
+
+        if invite_status:
+            self.invite_status = invite_status
 
 
 # Messages associated with a current GameInstance (actions taken, etc)

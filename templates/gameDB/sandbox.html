@@ -126,6 +126,12 @@
     		    <td>
     		        <form action="/gameDB/" method="POST">
     		            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+        		        <input type="hidden" name="acceptAll">
+        		        <input type="hidden" name="gid" value="{{ igame.id }}">
+        		        <input type="submit" value="accept all invites">
+        		    </form>
+    		        <form action="/gameDB/" method="POST">
+    		            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
         		        <input type="hidden" name="randomizePlayers">
         		        <input type="hidden" name="gid" value="{{ igame.id }}">
         		        <input type="submit" value="randomizePlayers()">
@@ -152,19 +158,42 @@
 		        <td>Player ID</td>
 		        <td>Game ID</td>
 		        <td>Turn Order</td>
+		        <td>Player Status</td>
+		        <td>Invite Status</td>
 		    </tr>
 		    {% for p in pgame %}
 		        <tr>
 		            <td>{{ p.user_id }}</td>
 		            <td>{{ p.game_instance }}</td>
 		            <td>{{ p.turn_order }}</td>
-		            <td>
+		            <td>{{ p.player_status }}</td>
+		            <td>{{ p.invite_status }}</td>
+        		    <td>
 		                <form action="/gameDB/" method="POST">
 		                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
     		                <input type="number" name="turn">
-            		        <input type="hidden" name="setPlayerTurn" value="{{ p.user_id }}">
+            		        <input type="hidden" name="setPlayerTurn">
+            		        <input type="hidden" name="uid" value="{{ p.user_id }}">
             		        <input type="hidden" name="gid" value="{{ p.game_instance }}">
             		        <br><input type="submit" value="setPlayerTurn()">
+        		        </form>
+        		    </td>
+        		    <td>
+		                <form action="/gameDB/" method="POST">
+		                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+            		        <input type="hidden" name="acceptInvite">
+            		        <input type="hidden" name="uid" value="{{ p.user_id }}">
+            		        <input type="hidden" name="gid" value="{{ p.game_instance }}">
+            		        <br><input type="submit" value="acceptInvite()">
+        		        </form>
+        		    </td>
+        		    <td>
+		                <form action="/gameDB/" method="POST">
+		                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+            		        <input type="hidden" name="declineInvite">
+            		        <input type="hidden" name="uid" value="{{ p.user_id }}">
+            		        <input type="hidden" name="gid" value="{{ p.game_instance }}">
+            		        <br><input type="submit" value="declineInvite()">
         		        </form>
         		    </td>
 		        </tr>
