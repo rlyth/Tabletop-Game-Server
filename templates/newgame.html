@@ -49,11 +49,13 @@
                 {% for user in users %}
                     <option value=" {{ user.id }} "> {{ user.username }} </option>
                 {% endfor %}
+                </select> 
                 <h2> Player 3:</h2> <p><select name="player3" id="P3"/>
                 <option value="00">Select</option>
                 {% for user in users %}
                     <option value=" {{ user.id }} "> {{ user.username }} </option>
-                {% endfor %} 
+                {% endfor %}
+                </select>  
                 <h2> Player 4:</h2> <p><select name="player4" id="P4"/>
                 <option value="00">Select</option>
                 {% for user in users %}
