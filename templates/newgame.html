@@ -29,13 +29,14 @@
         </div>
  
         <div class="row marketing">
-            <form action="" method="get" id="newgameform">
+            <form action="initNewGame" method="get" id="newgameform">
+                {{ form.csrf_token }}
                 <h2> Select Game:</h2> <p><select name="game">  
                 <option value="00">Select</option>
                 <!-- for each kind of game this should be a loop-->                   
                 <option value="uno">Uno</option>                            
                 </select> </p>
-                <h2> Select Number of Players:</h2> <p><select name="numOfPlayer" onchange="numOfPlayers();" id="qtyDropDown"> 
+                <h2> Select Number of Players:</h2> <p><select name="numOfPlayer" onchange="numOfPlayers()" id="qtyDropDown"> 
                 <option value="00">Select</option>
                 <!-- for each  game choose the correct possible players -->   
                 <option value="02">2</option>
@@ -45,6 +46,9 @@
                 <!-- for the number of players select players -->              
                 <h2> Player 2:</h2> <p><select name="player2">
                 <option value="00">Select</option>
+                {% for user in users %}
+                    <option value=" {{ user.id }} "> {{ user.username }} </option>
+                {% endfor %}
                 <!-- pick from the available list -->                                                                  
                 </select> </p>                
                 <input type="submit" value="Submit">  <!-- on successful submit open login.html -->
@@ -68,14 +72,15 @@
         players = document.getElementById("qtyDropDown");        
 
         if(players.value == "02")           
-
+            //return 2;
             //Pull the list of players and put them into the pull down;
 
         if(players.value == "03")  
-
+            //return 3;
             //Pull the list of players for player 2 once chosen, pull a new list for player three
 
-        if(players.value == "04")  
+        if(players.value == "04")
+            //return 4;
 
             //Pull the list of players for player 2 once chosen, pull a new list for player 3, and do the same for player 4
 
