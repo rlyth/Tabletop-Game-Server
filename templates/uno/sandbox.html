@@ -23,7 +23,8 @@
 		    <tr>
 		        {% for p in players %}
 		        <td>
-		            ID: {{ p[0].user_id }}
+		            {{ p[0].User.username }}
+		            <br>ID: {{ p[0].user_id }}
 		            <br>Turn: {{ p[0].turn_order }}
 		            <br>Hand: {{ p[1] }} cards
 		        </td>

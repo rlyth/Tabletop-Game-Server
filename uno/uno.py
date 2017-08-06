@@ -1,5 +1,5 @@
 from gameDB.GameFunctions import gamePlay
-from random import shuffle
+import random
 
 # Uno extends gamePlay
 class Uno(gamePlay):
@@ -40,7 +40,7 @@ class Uno(gamePlay):
         if top.Card.card_type == 'Wild':
             colors = ['Red', 'Green', 'Blue', 'Yellow']
 
-            shuffle(colors)
+            random.shuffle(colors)
 
             self.updateCardInstance(top.id, card_status=colors[0])
 
@@ -95,7 +95,7 @@ class Uno(gamePlay):
     # Attempts to draw from the deck, if the deck is empty, shuffles discard
     #   into deck and attempts to draw again
     # Parameters:
-    #   hand: the Pile of the player hand the card should be drawn to
+    #   playerID: the id of the player whose hand the card should be drawn to
     def drawFromDeck(self, playerID):
         hand = self.getPile(pile_type="Hand", pile_owner=playerID)
 
@@ -173,10 +173,10 @@ class Uno(gamePlay):
                 losers = []
 
                 for player in self.getPlayers():
-                    if player.id == playerID:
-                        winners.append(player.id)
+                    if player.user_id == playerID:
+                        winners.append(player.user_id)
                     else:
-                        losers.append(player.id)
+                        losers.append(player.user_id)
 
                 self.gameOver(win=winners, loss=losers)
 
@@ -259,7 +259,18 @@ class Uno(gamePlay):
     #   the output will be suitable for a spectator (no hands shown)
     # Parameters:
     #   forPlayer: (optional)
-    # Returns:
+    # Returns: the following object
+    """
+        {
+            Deck ID: (int)
+            Deck Count: (int)
+            Discard ID: (int)
+            Discard Count: (int)
+            Discard Top: (CardInstance/Card object)
+            Players: ([0]: Player (PlayersInGame/User object), [1]: Player Hand Count (int))
+            Player Hand: [if forPlayer provided] (CardInstance/Card object)
+        }
+    """
     def getThisGame(self, forPlayer=None):
         game = {}
 

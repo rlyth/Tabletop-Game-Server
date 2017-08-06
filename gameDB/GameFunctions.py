@@ -75,7 +75,11 @@ def deleteGameInstance(instanceID):
     db.session.commit()
 
 
-def instanceInfo(instanceID):
+# Retrieve a GameInstance and its base Game
+# Parameters:
+#   instanceID: the ID of the GameInstance to retrieve
+# Returns: a GameInstance/Game object for the provided instanceID OR None
+def getGameInstance(instanceID):
     try:
         return GameInstance.query \
                     .filter_by(id=instanceID) \
@@ -123,27 +127,43 @@ class gamePlay:
     #   draw: (optional) a list containing the user ids of any player who drew
     def gameOver(self, win=None, loss=None, draw=None):
         self.setStatus('Ended')
+        self.addLog("The game has ended.")
 
         if win:
+            winMsg = "Win: "
             for winner in win:
                 w = User.query.filter_by(id=winner).first()
                 w.wins += 1
                 w.games_played += 1
                 db.session.commit()
 
+                winMsg += w.username + " "
+
+            self.addLog(winMsg)
+
         if loss:
+            loseMsg = "Lose: "
             for loser in loss:
                 l = User.query.filter_by(id=loser).first()
                 l.losses += 1
                 l.games_played += 1
                 db.session.commit()
 
+                loseMsg += l.username + " "
+
+            self.addLog(loseMsg)
+
         if draw:
+            drawMsg = "Draw: "
             for drawer in draw:
                 d = User.query.filter_by(id=drawer).first()
                 d.draws += 1
                 d.games_played += 1
                 db.session.commit()
+
+                drawMsg += d.username + " "
+
+            self.addLog(drawMsg)
 
 
     # Calls incrementTurnsPlayed() and getNextTurn()
@@ -587,10 +607,11 @@ class gamePlay:
                     .count()
 
 
-    # Returns: a PlayersInGame object with all players in this GameInstance
+    # Returns: a list of PlayersInGame/User objects with all players in this GameInstance
     def getPlayers(self):
         return PlayersInGame.query \
                     .filter_by(game_instance = self.game.id) \
+                    .join(User) \
                     .order_by(PlayersInGame.turn_order) \
                     .all()
 
@@ -614,6 +635,7 @@ class gamePlay:
                 .first()
 
 
+# NB: if this never gets json-ified, it might be easier to just pass database objects instead
 # Retrieves information about a GameInstance and outputs it as a Python object
 # Parameters:
 #   instanceID: the ID of the GameInstance to retrieve
@@ -623,6 +645,7 @@ class gamePlay:
 #   Num Players:
 #   Turns Played:
 #   Turn Order:
+#   Status:
 #   Base Game: {
 #       ID: (Game id)
 #       Name:
@@ -698,6 +721,7 @@ def fetchGameInstance(instanceID):
     gameInfo["Num Players"] = gameInstance.num_players
     gameInfo["Turns Played"] = gameInstance.turns_played
     gameInfo["Turn Order"] = gameInstance.current_turn_order
+    gameInfo["Status"] = gameInstance.status
 
     gameInfo["Base Game"] = {}
     gameInfo["Base Game"]["ID"] = gameInstance.Game.id

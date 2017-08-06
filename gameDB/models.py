@@ -119,12 +119,13 @@ class CardsInGame(db.Model):
 class PlayersInGame(db.Model):
     __tablename__ = 'PlayersInGame'
 
-    user_id = db.Column(db.Integer, primary_key=True, nullable=False, server_default=db.FetchedValue())
+    user_id = db.Column(db.ForeignKey('User.id', ondelete='CASCADE', onupdate='CASCADE'), primary_key=True, nullable=False, index=True)
     game_instance = db.Column(db.ForeignKey('GameInstance.id', ondelete='CASCADE', onupdate='CASCADE'), primary_key=True, nullable=False, index=True, server_default=db.FetchedValue())
     turn_order = db.Column(db.Integer)
     player_status = db.Column(db.String(50))
 
     GameInstance = db.relationship('GameInstance', primaryjoin='PlayersInGame.game_instance == GameInstance.id', backref='players_in_games')
+    User = db.relationship('User', primaryjoin='PlayersInGame.user_id == User.id', backref='players_in_games')
 
 
 # Messages associated with a current GameInstance (actions taken, etc)

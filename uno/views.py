@@ -2,7 +2,7 @@ from flask import Blueprint, request, render_template, flash
 
 uno = Blueprint('uno', __name__, url_prefix='/uno')
 
-from gameDB.GameFunctions import instanceInfo
+from gameDB.GameFunctions import getGameInstance
 from .uno import Uno
 
 @uno.route("/", methods=['GET', 'POST'])
@@ -12,7 +12,6 @@ def index():
 
 @uno.route("/<int:instanceID>/", methods=['GET', 'POST'])
 def instance(instanceID):
-    # the actual user-facing page should go here
     return
 
 # for testing only
@@ -21,7 +20,7 @@ def sandbox(instanceID):
     dump = ''
 
     # I'll write a query that only retrieves the GameInstance/Game soon
-    gameInfo = instanceInfo(instanceID)
+    gameInfo = getGameInstance(instanceID)
 
     # Invalid instanceID
     if not gameInfo:
