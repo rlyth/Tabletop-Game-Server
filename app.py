@@ -68,7 +68,7 @@ def main():
 @app.route("/newgame")
 def newGame():
 	passedUserName = session['username']
-	users = User.query.filter_by(User.username != passedUserName).all()
+	users = User.query.filter(User.username != passedUserName).all()
 	return render_template('newgame.html', passedUserName=passedUserName, users=users)
 
 @app.route("/newuser", methods = ['GET', 'POST'])
