@@ -6,7 +6,7 @@ from userDB.models import User
 from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
 
 
-# Creates a GameInstance based on a Game, and creates any CardInstance and Pile
+# Creates a GameInstance based on a Game, and creates any CardInstances
 #   required to play. Adds all players to PlayersInGame and sets invites.
 # Parameters:
 #   baseGameID: ID of game to spawn an instance of
@@ -95,6 +95,27 @@ def getGameInstance(instanceID):
                     .one()
     except (MultipleResultsFound,NoResultFound):
         return None
+
+
+# Retrieve all GameInstances associated with a specified user ID
+# Parameters:
+#   playerID: the ID of the player to retrieve games for
+#   invite_status: (optional) retrieves only GameInstances matching the
+#       provided invite_status (Invited, Accepted, Creator, etc)
+# Returns: A PlayersInGame/GameInstance/Game object with all the GameInstances
+#   a player is in
+def getPlayerGames(playerID, invite_status=None):
+    filters = {}
+    filters["user_id"] = playerID
+
+    if invite_status:
+        filters["invite_status"] = invite_status
+
+    return PlayersInGame.query \
+                .filter_by(**filters) \
+                .join(GameInstance) \
+                .join(Game) \
+                .all()
 
 
 # Once instantiated with a valid instanceID, various functions can be called on
@@ -238,34 +259,6 @@ class gamePlay:
                     return None
 
 
-    # Draws the top (highest pile_order) card from the specified pile and moves it
-    #   to another pile
-    # Parameters:
-    #   pileFrom: the pile to take the top card from
-    #   pileTo: the pile to move the top card to
-    # The card will be placed on the top of its destination pile
-    def drawTopCard(self, pileFrom, pileTo, discard=None):
-        # Check that the Pile is not empty
-        if not CardInstance.query.filter_by(in_pile=pileFrom).first():
-            return None
-
-        # Retrieves card from pile with the highest pile_order
-        card = CardInstance.query \
-                .filter_by(in_pile=pileFrom) \
-                .order_by(CardInstance.pile_order.desc()) \
-                .first()
-
-        # Card's new order at destination is one higher than current highest
-        # NB: replace this with moveCard call
-        newOrder = self.getMaxOrder(pileTo) + 1
-
-        card.pile_order = newOrder
-        card.in_pile = pileTo
-        db.session.commit()
-
-        return True
-
-
     # Increases turns_played by 1
     def incrementTurnsPlayed(self):
         self.game.turns_played = self.game.turns_played + 1
@@ -274,14 +267,9 @@ class gamePlay:
 
     # Adds a GameLog message indicating the current player's turn has ended
     def endTurnMsg(self):
-        currentPlayer = PlayersInGame.query \
-                            .filter_by(
-                                game_instance=self.game.id,
-                                turn_order=self.game.current_turn_order
-                                ) \
-                            .first().user_id
+        currentPlayer = self.getPlayer(turn_order=self.game.current_turn_order)
 
-        self.addLog("Player " + str(currentPlayer) + " ended their turn.")
+        self.addLog(currentPlayer.User.username + " ended their turn.")
 
 
     # Moves the specified CardInstance to a different Pile
@@ -394,6 +382,41 @@ class gamePlay:
             return True
 
         return False
+
+
+    ########################################
+    ########################################
+    # Piles and Cards
+    ########################################
+    ########################################
+
+
+    # Draws the top (highest pile_order) card from the specified pile and moves it
+    #   to another pile
+    # Parameters:
+    #   pileFrom: the pile to take the top card from
+    #   pileTo: the pile to move the top card to
+    # The card will be placed on the top of its destination pile
+    def drawTopCard(self, pileFrom, pileTo, discard=None):
+        # Check that the Pile is not empty
+        if not CardInstance.query.filter_by(in_pile=pileFrom).first():
+            return None
+
+        # Retrieves card from pile with the highest pile_order
+        card = CardInstance.query \
+                .filter_by(in_pile=pileFrom) \
+                .order_by(CardInstance.pile_order.desc()) \
+                .first()
+
+        # Card's new order at destination is one higher than current highest
+        # NB: replace this with moveCard call
+        newOrder = self.getMaxOrder(pileTo) + 1
+
+        card.pile_order = newOrder
+        card.in_pile = pileTo
+        db.session.commit()
+
+        return True
 
 
     ########################################
@@ -626,7 +649,7 @@ class gamePlay:
                     .first().pile_order
 
 
-    # Returns: a Player object for the player whose turn is next
+    # Returns: a PlayersInGame/User object for the player whose turn is next
     def getNextPlayer(self):
         nextTurn = self.getNextTurn()
 
@@ -635,6 +658,7 @@ class gamePlay:
                         game_instance=self.game.id,
                         turn_order=nextTurn
                         ) \
+                    .join(User) \
                     .first()
 
 
@@ -653,14 +677,7 @@ class gamePlay:
     # Returns: a Pile object with every pile in this GameInstance or the Pile that
     #   matches the specifications
     def getPiles(self, pile_type=None, pile_owner = None):
-        filters = {}
-        filters["game_instance"] = self.game.id
-
-        # Optional filters
-        if pile_type:
-            filters["pile_type"] = pile_type
-        if pile_owner:
-            filters["pile_owner"] = pile_owner
+        filters = self.pileFilters(pile_type=pile_type, pile_owner=pile_owner)
 
         try:
             return Pile.query \
@@ -669,13 +686,17 @@ class gamePlay:
         except NoResultFound:
             return None
 
-
     # The same as above, except a single result is returned
-    # Parameters:
-    #   pile_type: (optional) a string with the desired pile_type
-    #   pile_owner: (optional) the user ID of the desired pile_owner
     # Returns: a Pile matching the input or None
     def getPile(self, pile_type=None, pile_owner = None):
+        filters = self.pileFilters(pile_type=pile_type, pile_owner=pile_owner)
+
+        return Pile.query \
+                    .filter_by(**filters) \
+                    .first()
+
+    # Pile helper function
+    def pileFilters(self, pile_type=None, pile_owner=None):
         filters = {}
         filters["game_instance"] = self.game.id
 
@@ -685,9 +706,7 @@ class gamePlay:
         if pile_owner:
             filters["pile_owner"] = pile_owner
 
-        return Pile.query \
-                    .filter_by(**filters) \
-                    .first()
+        return filters
 
 
     # Parameters:
@@ -699,13 +718,44 @@ class gamePlay:
                     .count()
 
 
-    # Returns: a list of PlayersInGame/User objects with all players in this GameInstance
-    def getPlayers(self):
+    # Get PlayersInGame/User objects from this GameInstance with optional filters
+    # Parameters:
+    #   turn_order: (optional) an int with the desired turn_order
+    #   player_status: (optional) a string with the desired player_status
+    #   invite_status: (optional) a string with the desired player_status
+    # Returns: a list of PlayersInGame/User objects from this GameInstance
+    def getPlayers(self, turn_order=None, player_status=None, invite_status=None):
+        filters = self.playerFilters(turn_order=turn_order, player_status=player_status, invite_status=invite_status)
+
         return PlayersInGame.query \
-                    .filter_by(game_instance = self.game.id) \
+                    .filter_by(**filters) \
                     .join(User) \
                     .order_by(PlayersInGame.turn_order) \
                     .all()
+
+    # The same as above, but returns a single PlayersInGame/User object
+    def getPlayer(self, turn_order=None, player_status=None, invite_status=None):
+        filters = self.playerFilters(turn_order=turn_order, player_status=player_status, invite_status=invite_status)
+
+        return PlayersInGame.query \
+                    .filter_by(**filters) \
+                    .join(User) \
+                    .first()
+
+    # PlayersInGame helper function
+    def playerFilters(self, turn_order=None, player_status=None, invite_status=None):
+        filters = {}
+        filters["game_instance"] = self.game.id
+
+        #Optional filters
+        if turn_order:
+            filters["turn_order"] = turn_order
+        if player_status:
+            filters["player_status"] = player_status
+        if invite_status:
+            filters["invite_status"] = invite_status
+
+        return filters
 
 
     # Returns: a CardInstance/Card object with the card in the Pile with the

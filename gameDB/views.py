@@ -107,6 +107,12 @@ def index():
 
                 game.updateCardInstance(cid, card_value=val, card_status=stat)
 
+        if 'uid' in request.form:
+            uid = request.form['uid']
+
+            if 'getPlayerGames' in request.form:
+                dumps = GF.getPlayerGames(uid)
+
     return render_template("gameDB/sandbox.html",
                                     games=models.Game.query.all(),
 

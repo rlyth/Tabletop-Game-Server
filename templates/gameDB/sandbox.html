@@ -196,6 +196,14 @@
             		        <br><input type="submit" value="declineInvite()">
         		        </form>
         		    </td>
+        		    <td>
+        		        <form action="/gameDB/" method="POST">
+        		            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+            		        <input type="hidden" name="getPlayerGames">
+            		        <input type="hidden" name="uid" value="{{ p.user_id }}">
+            		        <br><input type="submit" value="getPlayerGames()">
+        		        </form>
+        		    </td>
 		        </tr>
     		{% endfor %}
     	</table>

@@ -76,6 +76,8 @@ class Uno(gamePlay):
 
         self.setStatus('Active')
 
+        self.addLog('Game reset.')
+
 
     # This draws a card and (for now) ends the player's turn
     #   Should only be used by the current player, not when another player
@@ -139,7 +141,9 @@ class Uno(gamePlay):
                 or top_type == played.Card.card_type \
                 or top.card_value == played.card_value:
 
-            self.addLog("Player " + str(playerID) + " played " \
+            player = self.getPlayer(playerID)
+
+            self.addLog(player.User.username + " played " \
                     + played.Card.name + ".")
 
             # Move the card to the discard
@@ -188,7 +192,8 @@ class Uno(gamePlay):
 
     # Skip card effect
     def skip(self):
-        self.addLog("Player " + str(self.getNextPlayer().user_id) + \
+        nextPlayer = self.getNextPlayer()
+        self.addLog("Player " + nextPlayer.User.username + \
                 " turn was skipped.")
 
         self.endTurnMsg()
@@ -205,7 +210,7 @@ class Uno(gamePlay):
         for i in range(0, 2):
             self.drawFromDeck(nextPlayer.user_id)
 
-        self.addLog("Player " + str(nextPlayer.user_id) + \
+        self.addLog("Player " + nextPlayer.User.username + \
                         " drew two cards.")
 
         self.endTurn()
@@ -248,7 +253,7 @@ class Uno(gamePlay):
             for i in range(0, 4):
                 self.drawFromDeck(nextPlayer.user_id)
 
-            self.addLog("Player " + str(nextPlayer.user_id) + \
+            self.addLog("Player " + nextPlayer.User.username + \
                 " drew four cards.")
 
         self.endTurn()
