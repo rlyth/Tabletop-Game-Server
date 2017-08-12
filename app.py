@@ -56,8 +56,9 @@ app.register_blueprint(userDB)
 from uno import uno
 app.register_blueprint(uno)
 
-
 from userDB import User
+
+from gameDB import PlayersInGame
 
 passedUserName = None
 
