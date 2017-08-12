@@ -50,15 +50,17 @@ db = SQLAlchemy(app)
 from gameDB import gameDB
 app.register_blueprint(gameDB)
 
+
+from gameDB import GameFunctions
+from gameDB import PlayersInGame
+
 from userDB import userDB
 app.register_blueprint(userDB)
 
-from uno import uno
-app.register_blueprint(uno)
-
 from userDB import User
 
-from gameDB import PlayersInGame
+from uno import uno
+app.register_blueprint(uno)
 
 passedUserName = None
 
@@ -171,7 +173,7 @@ def login():
 	if('username' in session):
 		passedUserName = session['username']
 		existingUser = User.query.filter_by(username=passedUserName).first()
-		#all_games = getPlayerGames(existingUser.username, invite_status='Accepted' or 'Created')
+		all_games = GameFunctions.getPlayerGames(existingUser.username)
 		#invited_games = getPlayerGames(existingUser.username, invite_status='Invited')
 		gameids = PlayersInGame.query.filter(PlayersInGame.user_id == existingUser.id).all()
 		if(existingUser.role == 'Admin'):
