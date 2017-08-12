@@ -170,13 +170,13 @@ def login():
 	if('username' in session):
 		passedUserName = session['username']
 		existingUser = User.query.filter_by(username=passedUserName).first()
-		all_games = getPlayerGames(existingUser.username, invite_status='Accepted' or 'Created')
-		invited_games = getPlayerGames(existingUser.username, invite_status='Invited')
+		#all_games = getPlayerGames(existingUser.username, invite_status='Accepted' or 'Created')
+		#invited_games = getPlayerGames(existingUser.username, invite_status='Invited')
 		gameids = PlayersInGame.query.filter(PlayersInGame.user_id == existingUser.id).all()
 		if(existingUser.role == 'Admin'):
-			return render_template('adminLogin.html', passedUserName=passedUserName, all_games=all_games, invited_games=invited_games)
+			return render_template('adminLogin.html', passedUserName=passedUserName, gameids=gameids)
 		else:
-			return render_template('login.html', passedUserName=passedUserName, all_games=all_games, invited_games=invited_games)
+			return render_template('login.html', passedUserName=passedUserName, gameids=gameids)
 	else:
 		return render_template('index.html')
 
@@ -195,6 +195,11 @@ def logout():
 def acceptgame():
 	passedUserName = session['username']
 	return render_template('acceptgame.html', passedUserName=passedUserName)
+
+@app.route("/playturn", methods = ['GET', 'POST'])
+def playturn():
+	passedUserName = session['username']
+	return render_template('playturn.html', passedUserName=passedUserName)
 
 if __name__ == "__main__":
 	#db.create_all()

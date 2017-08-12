@@ -30,13 +30,17 @@
         <div class="row marketing">
             <div class="col-sm-6 col-md-6 col-lg-6">
                 <h4>Continue Game</h4>
-                {% for games in all_games %}
-                <a href ="newgame"> {{ game.instanceID }} </a>
+                {% for games in gameids %}
+                    {% if games.invite_status != 'Invited' %}
+                        <a href ="playturn"> {{ games.game_instance }} </a>
+                    {% endif %}
                 {% endfor %}
  
                 <h4>Invitations To Games</h4>
                 {% for invites in invited_games %}
-                <a href ="acceptgame"> {{ game.instanceID }} </a>
+                    {% if invites.invite_status == 'Invited' %}
+                        <a href ="acceptgame"> {{ invites.game_instance }} </a>
+                    {% endif %}
                 {% endfor %}
  
             </div>
