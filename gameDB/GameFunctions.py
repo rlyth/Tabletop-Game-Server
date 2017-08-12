@@ -102,8 +102,8 @@ def getGameInstance(instanceID):
 #   playerID: the ID of the player to retrieve games for
 #   invite_status: (optional) retrieves only GameInstances matching the
 #       provided invite_status (Invited, Accepted, Creator, etc)
-# Returns: A PlayersInGame/GameInstance/Game object with all the GameInstances
-#   a player is in
+# Returns: A list of PlayersInGame/GameInstance/Game objects with all the
+#   GameInstances a player is in
 def getPlayerGames(playerID, invite_status=None):
     filters = {}
     filters["user_id"] = playerID
