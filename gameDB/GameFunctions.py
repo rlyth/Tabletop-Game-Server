@@ -223,42 +223,6 @@ class gamePlay:
             db.session.commit()
 
 
-    # NB: this could also become a bulk update
-    # Randomizes the order of the CardInstances associated with a pile
-    # Parameters:
-    #   pileID: the ID of the pile to shuffle
-    def shufflePile(self, pileID):
-        cards = CardInstance.query \
-                    .filter_by(in_pile=pileID) \
-                    .all()
-
-        order = list(range(1, len(cards) + 1))
-
-        random.shuffle(order)
-
-        for i, card in enumerate(cards):
-            card.pile_order = order[i]
-            db.session.commit()
-
-
-    # Deals (qty) cards to every pile in pilesTo, one at a time, in order
-    # Parameters:
-    #   pileFrom: the ID of the pile to deal from
-    #   pilesTo: a list of pile IDs to deal cards to
-    #   qty: the number of cards to be dealt to each pile
-    # If the number of cards dealt exceeds the number of cards in pileFrom,
-    #   the function will deal as many cards as exist in the pile then return
-    #   None
-    def dealCards(self, pileFrom, pilesTo, qty):
-        for i in range(0, qty):
-            for p in range(0, len(pilesTo)):
-                drawn = self.drawTopCard(pileFrom, pilesTo[p])
-
-                # pileFrom is empty
-                if not drawn:
-                    return None
-
-
     # Increases turns_played by 1
     def incrementTurnsPlayed(self):
         self.game.turns_played = self.game.turns_played + 1
@@ -391,6 +355,24 @@ class gamePlay:
     ########################################
 
 
+    # Deals (qty) cards to every pile in pilesTo, one at a time, in order
+    # Parameters:
+    #   pileFrom: the ID of the pile to deal from
+    #   pilesTo: a list of pile IDs to deal cards to
+    #   qty: the number of cards to be dealt to each pile
+    # If the number of cards dealt exceeds the number of cards in pileFrom,
+    #   the function will deal as many cards as exist in the pile then return
+    #   None
+    def dealCards(self, pileFrom, pilesTo, qty):
+        for i in range(0, qty):
+            for p in range(0, len(pilesTo)):
+                drawn = self.drawTopCard(pileFrom, pilesTo[p])
+
+                # pileFrom is empty
+                if not drawn:
+                    return None
+
+
     # Draws the top (highest pile_order) card from the specified pile and moves it
     #   to another pile
     # Parameters:
@@ -417,6 +399,24 @@ class gamePlay:
         db.session.commit()
 
         return True
+
+
+    # NB: this could also become a bulk update
+    # Randomizes the order of the CardInstances associated with a pile
+    # Parameters:
+    #   pileID: the ID of the pile to shuffle
+    def shufflePile(self, pileID):
+        cards = CardInstance.query \
+                    .filter_by(in_pile=pileID) \
+                    .all()
+
+        order = list(range(1, len(cards) + 1))
+
+        random.shuffle(order)
+
+        for i, card in enumerate(cards):
+            card.pile_order = order[i]
+            db.session.commit()
 
 
     ########################################
@@ -734,8 +734,9 @@ class gamePlay:
                     .all()
 
     # The same as above, but returns a single PlayersInGame/User object
-    def getPlayer(self, turn_order=None, player_status=None, invite_status=None):
-        filters = self.playerFilters(turn_order=turn_order, player_status=player_status, invite_status=invite_status)
+    def getPlayer(self, turn_order=None, player_status=None, invite_status=None, user_id=None):
+        filters = self.playerFilters(turn_order=turn_order, player_status=player_status, \
+                    invite_status=invite_status, user_id=user_id)
 
         return PlayersInGame.query \
                     .filter_by(**filters) \
@@ -743,7 +744,7 @@ class gamePlay:
                     .first()
 
     # PlayersInGame helper function
-    def playerFilters(self, turn_order=None, player_status=None, invite_status=None):
+    def playerFilters(self, turn_order=None, player_status=None, invite_status=None, user_id=None):
         filters = {}
         filters["game_instance"] = self.game.id
 
@@ -754,6 +755,8 @@ class gamePlay:
             filters["player_status"] = player_status
         if invite_status:
             filters["invite_status"] = invite_status
+        if user_id:
+            filters["user_id"] = user_id
 
         return filters
 

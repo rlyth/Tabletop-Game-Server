@@ -1,5 +1,4 @@
 from gameDB.GameFunctions import gamePlay
-import random
 
 # Uno extends gamePlay
 class Uno(gamePlay):
@@ -34,15 +33,10 @@ class Uno(gamePlay):
         # Draw first card and place on discard
         self.drawTopCard(deck, discard)
 
-        # Randomly select color if Wild is initial card drawn
-        # NB: haven't tested this yet
+        # Check if top card is Wild
         top = self.getTopCard(discard)
         if top.Card.card_type == 'Wild':
-            colors = ['Red', 'Green', 'Blue', 'Yellow']
-
-            random.shuffle(colors)
-
-            self.updateCardInstance(top.id, card_status=colors[0])
+            self.updateCardInstance(top.id, card_status='Any')
 
 
     # This is called any time a new Uno object is created
@@ -74,6 +68,13 @@ class Uno(gamePlay):
         # Draw first card and place on discard
         self.drawTopCard(self.deck.id, self.discard.id)
 
+
+        # Check if top card is Wild
+        top = self.getTopCard(self.discard.id)
+        if top.Card.card_type == 'Wild':
+            self.updateCardInstance(top.id, card_status='Any')
+
+
         self.setStatus('Active')
 
         self.addLog('Game reset.')
@@ -87,7 +88,9 @@ class Uno(gamePlay):
     def draw(self, playerID):
         self.drawFromDeck(playerID)
 
-        self.addLog("Player " + str(playerID) + " drew from the deck.")
+
+        player = self.getPlayer(user_id=playerID)
+        self.addLog(player.User.username + " drew from the deck.")
 
         # The turn ends after the player draws a card
         # this might not exactly match Uno rules, but it'll do for now
@@ -139,9 +142,10 @@ class Uno(gamePlay):
         # Moves are valid if they match value, type, or are wild
         if played.Card.card_type == 'Wild' \
                 or top_type == played.Card.card_type \
-                or top.card_value == played.card_value:
+                or top.card_value == played.card_value \
+                or top_type == 'Any':
 
-            player = self.getPlayer(playerID)
+            player = self.getPlayer(user_id=playerID)
 
             self.addLog(player.User.username + " played " \
                     + played.Card.name + ".")
@@ -193,8 +197,7 @@ class Uno(gamePlay):
     # Skip card effect
     def skip(self):
         nextPlayer = self.getNextPlayer()
-        self.addLog("Player " + nextPlayer.User.username + \
-                " turn was skipped.")
+        self.addLog(nextPlayer.User.username + " turn was skipped.")
 
         self.endTurnMsg()
         self.incrementTurnsPlayed()
@@ -210,8 +213,7 @@ class Uno(gamePlay):
         for i in range(0, 2):
             self.drawFromDeck(nextPlayer.user_id)
 
-        self.addLog("Player " + nextPlayer.User.username + \
-                        " drew two cards.")
+        self.addLog(nextPlayer.User.username + " drew two cards.")
 
         self.endTurn()
 
@@ -253,8 +255,7 @@ class Uno(gamePlay):
             for i in range(0, 4):
                 self.drawFromDeck(nextPlayer.user_id)
 
-            self.addLog("Player " + nextPlayer.User.username + \
-                " drew four cards.")
+            self.addLog(nextPlayer.User.username + " drew four cards.")
 
         self.endTurn()
 
