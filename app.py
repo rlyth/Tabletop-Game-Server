@@ -65,10 +65,33 @@ passedUserName = None
 def main():
     return render_template('index.html')
 
-@app.route("/newgame")
+@app.route("/newgame", methods = ['GET', 'POST'])
 def newGame():
 	passedUserName = session['username']
 	users = User.query.filter(User.username != passedUserName).all()
+	existingUser = User.query.filter_by(username=passedUserName).first()
+	newGameForm = gameForm()
+	if request.method == 'POST':
+		gameName = newGameForm.game.data
+		#THIS IS WHERE WE KEEP TRACK OF WHICH GAME IS STARTING MODIFY FOR FUTURE GAMES
+		if gameName == 'Uno':
+			baseGameID = 2
+		gamePlayers = newGameForm.players.data
+		playerNum2 = newGameForm.player2.data
+		if gamePlayers == '03':
+			playerNum3 = newGameForm.player3.data
+			initGameInstance(baseGameID, existingUser.id, inviteList(playerNum2, playerNum3))
+			return redirect(url_for('login'))
+
+		if gamePlayers == '04':
+			playerNum3 = newGameForm.player3.data
+			playerNum4 = newGameForm.player4.data
+			initGameInstance(baseGameID, existingUser.id, inviteList(playerNum2, playerNum3, playerNum4))
+			return redirect(url_for('login'))
+		else:
+			initGameInstance(baseGameID, existingUser.id, inviteList(playerNum2))
+			return redirect(url_for('login'))
+
 	return render_template('newgame.html', passedUserName=passedUserName, users=users)
 
 @app.route("/newuser", methods = ['GET', 'POST'])
@@ -147,11 +170,13 @@ def login():
 	if('username' in session):
 		passedUserName = session['username']
 		existingUser = User.query.filter_by(username=passedUserName).first()
-
+		all_games = getPlayerGames(existingUser.username, invite_status='Accepted' or 'Created')
+		invited_games = getPlayerGames(existingUser.username, invite_status='Invited')
+		gameids = PlayersInGame.query.filter(PlayersInGame.user_id == existingUser.id).all()
 		if(existingUser.role == 'Admin'):
-			return render_template('adminLogin.html', passedUserName=passedUserName)
+			return render_template('adminLogin.html', passedUserName=passedUserName, all_games=all_games, invited_games=invited_games)
 		else:
-			return render_template('login.html', passedUserName=passedUserName)
+			return render_template('login.html', passedUserName=passedUserName, all_games=all_games, invited_games=invited_games)
 	else:
 		return render_template('index.html')
 
@@ -166,6 +191,10 @@ def logout():
 	session['username'] = None
 	return render_template('index.html')
 
+@app.route("/acceptgame", methods = ['GET', 'POST'])
+def acceptgame():
+	passedUserName = session['username']
+	return render_template('acceptgame.html', passedUserName=passedUserName)
 
 if __name__ == "__main__":
 	#db.create_all()

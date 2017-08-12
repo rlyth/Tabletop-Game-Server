@@ -19,8 +19,6 @@
                     </li>
                     <li role="button"><a href="profile">Profile</a>
                     </li>                   
-                    <li role="button"><a href="login">My Page</a>
-                    </li>
                     <li role="button"><a href="logout">Log Out</a>
                     </li>
                 </ul>
@@ -29,15 +27,93 @@
         </div>
  
         <div class="row marketing">
-            <!-- Show the current state of the game number of other players and the cards they have in hand-->
-            <!-- Show the current card on top of the draw deck and a picture of the draw pile -->
-            <form action="" method="get" id="playcardform">
-                <h2> Select Card:</h2> <p><select name="card" id="playcard">  
-                <!-- for each card in hand display the image -->
-                </select> </p>                
-                <input type="submit" value="Submit">  <!-- on successful submit show current state of game -->
-                <!-- wait to see if other person is playing? Update on changes made to game state-->
-            </form>
+            {% if players %}
+            <table border=1 cellpadding=5>
+                <tr>
+                    <td><b>Players</b></td>
+                </tr>
+                <tr>
+                    {% for p in players %}
+                    <td>
+                        {{ p[0].User.username }}
+                        <br>ID: {{ p[0].user_id }}
+                        <br>Turn: {{ p[0].turn_order }}
+                        <br>Hand: {{ p[1] }} cards
+                        {% if p[1] == 0 %}
+                            <!-- Display winner and end game -->
+                        {% endfor %}
+                    </td>
+                    {% endfor %}
+                </tr>
+            </table>
+            {% endif %}
+
+        {% if active %}
+        <p><b>Active Player: {{ active }}</b></p>
+        {% endif %}
+
+        {% if deck %}
+        <p><table border=1 cellpadding=5>
+            <tr>
+                <td>
+                    <b>Deck</b>
+                    <br>Count: {{ deck_count }}
+                    <br><img src="{{ url_for('static', filename='UnoCardImages/CardBack.gif') }}">
+                </td>
+                <td>
+                    <b>Discard</b>
+                    <br>Count: {{ discard_count }}
+                    <br><img src="{{ url_for('static', filename=discard.Card.img_front) }}">
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <form action="/uno/{{ gid }}/sandbox/" method="POST">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                        <input type="hidden" name="drawCard">
+                        <input type="submit" value="Draw Card">
+                    </form>
+                </td>
+                <td>
+                    {% if discard %}
+                    {{ discard.Card.name }}
+                    {% if discard.Card.card_type == 'Wild' %}
+                    <br>Color: {{ discard.card_status }}
+                    {% endif %}
+                    {% endif %}
+                </td>
+            </tr>
+        </table></p>     
+        {% endif %}
+                <h2> Select Card:</h2> <p><select name="card" id="playcard">
+                    {% if hand %}
+                    <p><table border=1 cellpadding=5>
+                        <tr>
+                    {% for c in hand %}
+                            <td>
+                                {{ c.Card.name }}
+                                <br><img src="{{ url_for('static', filename=c.Card.img_front) }}">
+                                <form action="/uno/{{ gid }}/sandbox/" method="POST">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                                    <input type="hidden" name="cid" value="{{ c.id }}">
+                                    <input type="hidden" name="playCard">
+                                    {% if c.Card.card_type == 'Wild' %}
+                                    <select name="wildColor">
+                                        <option value="Red">Red</option>
+                                        <option value"Blue">Blue</option>
+                                        <option value="Green">Green</option>
+                                        <option value"Yellow">Yellow</option>
+                                    </select>
+                                    {% endif %}
+                                    {% if active == passedUserName %}
+                                        <input type="submit" value="Play Card">
+                                    {% endif %}
+                                </form>
+                            </td>
+                    {% endfor %}
+                        </tr>
+                    </table></p>
+                    {% endif %}  
             <h2 role="button"><a href="login">Back To Login Page </a></h2>
         </div>
  
