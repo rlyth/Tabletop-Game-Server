@@ -2,7 +2,7 @@
 <html lang="en">
  
 <head>
-    <title>{{ passedUserName }}'s Game</title> 
+    <title>{{ existingUser.username }}'s Game</title> 
  
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/style.css') }}">
@@ -23,7 +23,7 @@
                     </li>
                 </ul>
             </nav>
-            <h3 class="text-muted">{{ passedUserName }}'s Current Game</h3>
+            <h3 class="text-muted">{{ existingUser.username }}'s Current Game</h3>
         </div>
  
         <div class="row marketing">
