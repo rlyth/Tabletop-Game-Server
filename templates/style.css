@@ -51,10 +51,10 @@ p {
 .marketing p + h2 {
   	margin-top: 18px;
 }
-.nav-link:active {
+#Nav li:active{
   background-color: DarkSlateGray;
   color: Gainsboro;
 }
-.nav-link {
+#Nav li {
   color: DarkSlateGray;
 }
