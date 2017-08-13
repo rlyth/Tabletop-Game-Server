@@ -36,11 +36,8 @@
                 <!-- THIS SHOULD BE A FOR LOOP IF WE ADD MORE GAMES -->                   
                 <option value="uno">Uno</option>                            
                 </select> </p>
-                <h2> Select Number of Players:</h2> 
-                <p><option value="00">Select</option>
-                    {{ newGameForm.numberOfPlayers }}
-                </p>
-                <!-- for the number of players select players -->              
+                <h2> Select Number of Players:</h2> {{ newGameForm.numberOfPlayers }}
+           
                 <h2> Player 2:</h2> <p>{{ newGameForm.player2 }}</p>
                 <h2> Player 3:</h2> <p>{{ newGameForm.player3 }}</p>
                 <h2> Player 4:</h2> <p>{{ newGameForm.player4 }}</p>                
