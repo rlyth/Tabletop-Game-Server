@@ -97,20 +97,20 @@ def newGame():
 				return render_template('newgame.html')
 			else:
 				inviteList = [playerNum2.id, playerNum3.id]
-				initGameInstance(baseGameID, existingUser.id, inviteList)
+				GameFunctions.initGameInstance(baseGameID, existingUser.id, inviteList)
 				return redirect(url_for('login'))
 
 		if gamePlayers == '04':
 			if playerNum2.username == 'Select' or playerNum3.username == 'Select' or playerNum4.username == 'Select':				
 				return render_template('newgame.html')
 			else:
-				initGameInstance(baseGameID, existingUser.id, inviteList(playerNum2.id, playerNum3.id, playerNum4.id))
+				GameFunctions.initGameInstance(baseGameID, existingUser.id, inviteList(playerNum2.id, playerNum3.id, playerNum4.id))
 				return redirect(url_for('login'))
 		else:
 			if playerNum2.username == 'Select':				
 				return render_template('newgame.html')
 			else:
-				initGameInstance(baseGameID, existingUser.id, inviteList(playerNum2.id))
+				GameFunctions.initGameInstance(baseGameID, existingUser.id, inviteList(playerNum2.id))
 				return redirect(url_for('login'))
 
 	return render_template('newgame.html', passedUserName=passedUserName, users=users, newGameForm=newGameForm)
