@@ -29,7 +29,7 @@
         </div>
  
         <div class="row marketing">
-            <form action="acceptgame" method="post" id="acceptgame">
+            <form action="acceptgame/{{ game_id }}" method="post" id="acceptgame">
                 <!-- Show players that are invited/started game-->
                 {{ acceptGameForm.csrf_token }}  
                 <h2> Joining the Game?</h2>{{ acceptGameForm.status }}                                                  
