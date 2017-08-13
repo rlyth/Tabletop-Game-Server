@@ -194,8 +194,8 @@ def login():
 		passedUserName = session['username']
 		existingUser = User.query.filter_by(username=passedUserName).first()
 		all_games = PlayersInGame.query.all()
-		acceptedGames = getPlayerGames(existingUser.username, invite_status='Creator')
-		acceptedGames += getPlayerGames(existingUser.username, invite_status='Accepted')
+		acceptedGames = GameFunctions.getPlayerGames(existingUser.username, invite_status='Creator')
+		acceptedGames += GameFunctions.getPlayerGames(existingUser.username, invite_status='Accepted')
 		playableGame = None
 		for games in  acceptedGames:
 			for allGames in all_games:
