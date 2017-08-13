@@ -51,7 +51,7 @@ from gameDB import gameDB
 app.register_blueprint(gameDB)
 
 from gameDB import GameFunctions
-from gameDB import PlayersInGame
+from gameDB import PlayersInGame, Game, GameInstance, Card, CardInstance, CardsInGame, Pile, GameLog
 
 from userDB import userDB
 app.register_blueprint(userDB)
