@@ -196,7 +196,7 @@ def login():
 		gameids = PlayersInGame.query.filter(PlayersInGame.user_id == existingUser.id).all()
 		playableGame = None
 		for game in gameids:
-			thisGame = GameFunctions.gamePlay(game)
+			thisGame = GameFunctions.gamePlay(game.game_instance)
 			if (thisGame.isPendingInvites() == False):
 				playableGame += game
 		if(existingUser.role == 'Admin'):
