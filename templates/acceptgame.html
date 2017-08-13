@@ -31,8 +31,8 @@
         <div class="row marketing">
             <form action="acceptgame" method="get" id="acceptgame">
                 <!-- Show players that are invited/started game-->
-                {{ acceptGame.csrf_token }}  
-                <h2> Joining the Game?</h2>{{ acceptGame.accept }}                                                  
+                {{ acceptGameForm.csrf_token }}  
+                <h2> Joining the Game?</h2>{{ acceptGameForm.status }}                                                  
                 <input type="submit" value="Submit">  <!-- Update Game state and send back to login page -->
             </form>
             <h2 role="button"><a href="login">Back </a></h2>
