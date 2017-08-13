@@ -256,8 +256,7 @@ def playturn(game_id):
 			GameLog.timestamp.desc()
 		) \
 		.all()
-	dump=dumps
-	return render_template('playturn.html', passedUserName=passedUserName, games=games, ginstance=ginstance, pgame=pgame, cards=cards, icard=icard, gcard=gcard, piles=piles, log=log, dumps=dumps)
+	return render_template('playturn.html', passedUserName=passedUserName, games=games, ginstance=ginstance, pgame=pgame, cards=cards, icard=icard, gcard=gcard, piles=piles, log=log)
 
 if __name__ == "__main__":
 	#db.create_all()
