@@ -224,11 +224,11 @@ def acceptgame():
 	if request.method == 'POST':
 		inviteStatus = acceptGame.accept.data
 		if inviteStatus == 'Accept':
-			thisGame = PlayersInGame.query.filter(id).first()
+			thisGame = PlayersInGame.query.filter("<string:id>").first()
 			thisGame.GameFunctions.acceptInvite(existingUser.id)
 			return redirect(url_for('login'))
 		else:
-			thisGame = PlayersInGame.query.filter(id).first()
+			thisGame = PlayersInGame.query.filter("<string:id>").first()
 			thisGame.GameFunctions.declineInvite(existingUser.id)
 			return redirect(url_for('login'))
 
