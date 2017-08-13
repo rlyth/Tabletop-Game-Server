@@ -95,7 +95,7 @@ def newGame():
 			initGameInstance(baseGameID, existingUser.id, inviteList(playerNum2))
 			return redirect(url_for('login'))
 
-	return render_template('newgame.html', passedUserName=passedUserName, users=users)
+	return render_template('newgame.html', passedUserName=passedUserName, users=users, newGameForm=newGameForm)
 
 @app.route("/newuser", methods = ['GET', 'POST'])
 def newUser():
