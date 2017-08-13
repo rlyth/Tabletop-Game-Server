@@ -74,6 +74,10 @@ def newGame():
 	users = User.query.filter(User.username != passedUserName).all()
 	existingUser = User.query.filter_by(username=passedUserName).first()
 	newGameForm = gameForm()
+	newGameForm.player2.choices = [(u.id, u.username) for u in User.query.filter(User.username != passedUserName)]
+	newGameForm.player3.choices = [(u.id, u.username) for u in User.query.filter(User.username != passedUserName)]
+	newGameForm.player4.choices = [(u.id, u.username) for u in User.query.filter(User.username != passedUserName)]
+
 	if request.method == 'POST':
 		gameName = newGameForm.game.data
 		#THIS IS WHERE WE KEEP TRACK OF WHICH GAME IS STARTING MODIFY FOR FUTURE GAMES
