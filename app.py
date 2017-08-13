@@ -242,13 +242,15 @@ def acceptgame(game_id):
 @app.route("/playturn/<game_id>", methods = ['GET', 'POST'])
 def playturn(game_id):
 	passedUserName = session['username']
+	existingUser = User.query.filter_by(username=passedUserName).first()
 	thisGame = GameFunctions.gamePlay(game_id)
-	games = Game.query.all()
-	ginstance = GameInstance.query.all()
-	pgame = PlayersInGame.query.order_by(PlayersInGame.game_instance, PlayersInGame.turn_order).all()
-	cards = Card.query.all(),
+	players = PlayersInGame.query.filter(game_id == PlayersInGame.game_instance).order_by(PlayersInGame.turn_order).all()
+	ginstance = GameInstance.query.filter_by(game_id == GameInstance.id).first()
+	game = thisGame.fetchGameInstance()
+	#pgame = PlayersInGame.query.order_by(PlayersInGame.game_instance, PlayersInGame.turn_order).all()
+	cards = Card.query.all()
 	icard = CardInstance.query.order_by(CardInstance.in_pile, CardInstance.pile_order).all()
-	gcard = CardsInGame.query.all()
+	gcard = CardsInGame.query.filter(game_id == CardsInGame.game_id).all()
 	piles = Pile.query.all()
 	log = GameLog.query \
 		.order_by(
@@ -256,7 +258,7 @@ def playturn(game_id):
 			GameLog.timestamp.desc()
 		) \
 		.all()
-	return render_template('playturn.html', passedUserName=passedUserName, games=games, ginstance=ginstance, pgame=pgame, cards=cards, icard=icard, gcard=gcard, piles=piles, log=log)
+	return render_template('playturn.html', existingUser=existingUser, players=players, game=game, ginstance=ginstance, cards=cards, icard=icard, gcard=gcard, piles=piles, log=log)
 
 if __name__ == "__main__":
 	#db.create_all()
