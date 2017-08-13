@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_wtf.csrf import CSRFProtect
 from userForm import userForm, gameForm, acceptForm
 from socket import gethostname
+import sys
 
 app = Flask(__name__)
 
@@ -224,14 +225,17 @@ def acceptgame(game_id):
 		inviteStatus = acceptGameForm.status.data
 
 		if inviteStatus == 'Accept':
+			print('Accept', file=sys.stderr)
 			thisGame = PlayersInGame.query.filter(game_id).first()
 			thisGame.GameFunctions.acceptInvite(existingUser.id)
 			return redirect(url_for('login'))
 		if inviteStatus == 'Decline':
+			print('Decline', file=sys.stderr)
 			thisGame = PlayersInGame.query.filter(game_id).first()
 			thisGame.GameFunctions.declineInvite(existingUser.id)
 			return redirect(url_for('login'))
 		else:
+			print('None Chosen', file=sys.stderr)
 			return redirect(url_for('login'))
 
 	return render_template('acceptgame.html', passedUserName=passedUserName, acceptGameForm=acceptGameForm, game_id=game_id)
