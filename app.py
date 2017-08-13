@@ -224,8 +224,8 @@ def acceptgame(game_id):
 		inviteStatus = acceptGameForm.status.data
 
 		if inviteStatus == 'Accept':
-			#thisGame = PlayersInGame.query.filter(game_id).first()
-			#thisGame.GameFunctions.acceptInvite(existingUser.id)
+			thisGame = PlayersInGame.query.filter(game_id).first()
+			thisGame.GameFunctions.acceptInvite(existingUser.id)
 			return redirect(url_for('login'))
 		if inviteStatus == 'Decline':
 			thisGame = PlayersInGame.query.filter(game_id).first()
@@ -233,8 +233,8 @@ def acceptgame(game_id):
 			return redirect(url_for('login'))
 		else:
 			return redirect(url_for('login'))
-
-	return render_template('acceptgame.html', passedUserName=passedUserName, acceptGameForm=acceptGameForm, game_id=game_id)
+	else:
+		return render_template('acceptgame.html', passedUserName=passedUserName, acceptGameForm=acceptGameForm, game_id=game_id)
 
 @app.route("/playturn", methods = ['GET', 'POST'])
 def playturn():
