@@ -31,7 +31,7 @@
             <div class="col-sm-6 col-md-6 col-lg-6">
                 <h4>Continue Game</h4>
                 {% for games in gameids %}
-                    {% if games.invite_status == 'Accepted' %}
+                    {% if all_games.invite_status == 'Accepted' %}
                         <a href ="playturn"> {{ games.game_instance }} </a>
                     {% endif %}
                 {% endfor %}

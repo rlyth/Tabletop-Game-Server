@@ -197,9 +197,9 @@ def login():
 		#invited_games = getPlayerGames(existingUser.username, invite_status='Invited')
 		gameids = PlayersInGame.query.filter(PlayersInGame.user_id == existingUser.id).all()
 		if(existingUser.role == 'Admin'):
-			return render_template('adminLogin.html', passedUserName=passedUserName, gameids=gameids)
+			return render_template('adminLogin.html', passedUserName=passedUserName, gameids=gameids, all_games=all_games)
 		else:
-			return render_template('login.html', passedUserName=passedUserName, gameids=gameids)
+			return render_template('login.html', passedUserName=passedUserName, gameids=gameids, all_games=all_games)
 	else:
 		return render_template('index.html')
 
