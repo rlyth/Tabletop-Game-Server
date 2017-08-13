@@ -197,7 +197,7 @@ def login():
 		playableGame = []
 		for game in gameids:
 			thisGame = GameFunctions.gamePlay(game.game_instance)
-			if (thisGame.isPendingInvites() == False):
+			if (not thisGame.isPendingInvites()):
 				playableGame.append(game)
 		if(existingUser.role == 'Admin'):
 			return render_template('adminLogin.html', passedUserName=passedUserName, gameids=gameids, playableGame=playableGame)
