@@ -50,7 +50,6 @@ db = SQLAlchemy(app)
 from gameDB import gameDB
 app.register_blueprint(gameDB)
 
-
 from gameDB import GameFunctions
 from gameDB import PlayersInGame
 
@@ -215,14 +214,15 @@ def logout():
 	session['username'] = None
 	return render_template('index.html')
 
-@app.route("/acceptgame", methods = ['GET', 'POST'])
-@app.route("/acceptgame/<string:id>", methods = ['GET', 'POST'])
+@app.route("/acceptgame/<id>", methods = ['GET', 'POST'])
 def acceptgame(id):
 	acceptGameForm = acceptForm()
 	passedUserName = session['username']
 	existingUser = User.query.filter_by(username=passedUserName).first()
+
 	if request.method == 'POST':
 		inviteStatus = acceptGameForm.status.data
+
 		if inviteStatus == 'Accept':
 			thisGame = PlayersInGame.query.filter(id).first()
 			thisGame.GameFunctions.acceptInvite(existingUser.id)
@@ -239,7 +239,21 @@ def acceptgame(id):
 @app.route("/playturn", methods = ['GET', 'POST'])
 def playturn():
 	passedUserName = session['username']
-	return render_template('playturn.html', passedUserName=passedUserName)
+	games=models.Game.query.all()
+	ginstance=models.GameInstance.query.all()
+	pgame=models.PlayersInGame.query.order_by(models.PlayersInGame.game_instance, models.PlayersInGame.turn_order).all()
+	cards=models.Card.query.all(),
+	icard=models.CardInstance.query.order_by(models.CardInstance.in_pile, models.CardInstance.pile_order).all()
+	gcard=models.CardsInGame.query.all()
+	piles=models.Pile.query.all()
+	log=models.GameLog.query \
+		.order_by(
+			models.GameLog.game_instance,
+			models.GameLog.timestamp.desc()
+		) \
+		.all()
+	dump=dumps
+	return render_template('playturn.html', passedUserName=passedUserName, games=games, ginstance=ginstance, pgame=pgame, cards=cards, icard=icard, gcard=gcard, piles=piles, log=log, dumps=dumps)
 
 if __name__ == "__main__":
 	#db.create_all()
