@@ -189,7 +189,8 @@ def statistics():
 @app.route("/login", methods = ['GET', 'POST'])
 def login():
 	if request.method == 'POST':
-		
+		users = User.query.all()
+
 	else:
 		if('username' in session):
 			passedUserName = session['username']
