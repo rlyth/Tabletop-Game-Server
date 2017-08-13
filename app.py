@@ -186,20 +186,23 @@ def statistics():
 			userRecord = 0		
 	return render_template('statistics.html', existingUser=existingUser, userRecord=userRecord)
 
-@app.route("/login")
+@app.route("/login", methods = ['GET', 'POST'])
 def login():
-	if('username' in session):
-		passedUserName = session['username']
-		existingUser = User.query.filter_by(username=passedUserName).first()
-		all_games = GameFunctions.getPlayerGames(existingUser.username)
-		#invited_games = getPlayerGames(existingUser.username, invite_status='Invited')
-		gameids = PlayersInGame.query.filter(PlayersInGame.user_id == existingUser.id).all()
-		if(existingUser.role == 'Admin'):
-			return render_template('adminLogin.html', passedUserName=passedUserName, gameids=gameids)
-		else:
-			return render_template('login.html', passedUserName=passedUserName, gameids=gameids)
+	if request.method == 'POST':
+		#something here
 	else:
-		return render_template('index.html')
+		if('username' in session):
+			passedUserName = session['username']
+			existingUser = User.query.filter_by(username=passedUserName).first()
+			all_games = GameFunctions.getPlayerGames(existingUser.username)
+			#invited_games = getPlayerGames(existingUser.username, invite_status='Invited')
+			gameids = PlayersInGame.query.filter(PlayersInGame.user_id == existingUser.id).all()
+			if(existingUser.role == 'Admin'):
+				return render_template('adminLogin.html', passedUserName=passedUserName, gameids=gameids)
+			else:
+				return render_template('login.html', passedUserName=passedUserName, gameids=gameids)
+		else:
+			return render_template('index.html')
 
 @app.route("/delete", methods = ['DELETE'])
 def adminDelete():
