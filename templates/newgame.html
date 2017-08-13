@@ -36,13 +36,10 @@
                 <!-- THIS SHOULD BE A FOR LOOP IF WE ADD MORE GAMES -->                   
                 <option value="uno">Uno</option>                            
                 </select> </p>
-                <h2> Select Number of Players:</h2> <p><select name="numOfPlayer" id="players"> 
-                <option value="00">Select</option>
-                <!-- for each  game choose the correct possible players -->   
-                <option value="02">2</option>
-                <option value="03">3</option>
-                <option value="04">4</option>                                                                 
-                </select> </p>
+                <h2> Select Number of Players:</h2> 
+                <p>
+                    {{ form.numberOfPlayers }}
+                </p>
                 <!-- for the number of players select players -->              
                 <h2> Player 2:</h2> <p><select name="player2" id="P2">
                 <option value="00">Select</option>

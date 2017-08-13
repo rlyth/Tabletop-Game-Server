@@ -10,6 +10,7 @@ class userForm(Form):
 class gameForm(Form):
 	game = StringField('Game')
 	players = StringField('Players')
+	numberOfPlayers = SelectField(choices = [('00', 'Select'), ('02', '2'), ('03', '3'), ('04', '4')])
 	player2 = IntegerField('P2')
 	player3 = IntegerField('P3')
 	player4 = IntegerField('P4')
