@@ -102,16 +102,18 @@ def newGame():
 				return redirect(url_for('login'))
 
 		if gamePlayers == '04':
-			if playerNum2 == '0' or playerNum3 == '0' or playerNum4 == '0':				
+			if playerNum2 == 0 or playerNum3 == 0 or playerNum4 == 0:				
 				return render_template('newgame.html')
 			else:
-				GameFunctions.initGameInstance(baseGameID, existingUser.id, inviteList(playerNum2, playerNum3, playerNum4))
+				inviteList = [playerNum2, playerNum3, playerNum4]
+				GameFunctions.initGameInstance(baseGameID, existingUser.id, inviteList)
 				return redirect(url_for('login'))
 		else:
-			if playerNum2 == '0':				
+			if playerNum2 == 0:				
 				return render_template('newgame.html')
 			else:
-				GameFunctions.initGameInstance(baseGameID, existingUser.id, inviteList(playerNum2))
+				inviteList = [playerNum2]
+				GameFunctions.initGameInstance(baseGameID, existingUser.id, inviteList)
 				return redirect(url_for('login'))
 
 	return render_template('newgame.html', passedUserName=passedUserName, users=users, newGameForm=newGameForm)
