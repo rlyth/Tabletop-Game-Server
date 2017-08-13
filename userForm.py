@@ -13,3 +13,6 @@ class gameForm(Form):
 	player2 = SelectField(coerce=int)
 	player3 = SelectField(coerce=int)
 	player4 = SelectField(coerce=int)
+
+class acceptForm(Form):
+	accept = SelectField(choices = [('00', 'Select'), ('Accept', 'Accept'), ('Decline', 'Decline')])

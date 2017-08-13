@@ -191,22 +191,18 @@ def statistics():
 
 @app.route("/login", methods = ['GET', 'POST'])
 def login():
-	if request.method == 'POST':
-		users = User.query.all()
-
-	else:
-		if('username' in session):
-			passedUserName = session['username']
-			existingUser = User.query.filter_by(username=passedUserName).first()
-			all_games = GameFunctions.getPlayerGames(existingUser.username)
-			#invited_games = getPlayerGames(existingUser.username, invite_status='Invited')
-			gameids = PlayersInGame.query.filter(PlayersInGame.user_id == existingUser.id).all()
-			if(existingUser.role == 'Admin'):
-				return render_template('adminLogin.html', passedUserName=passedUserName, gameids=gameids)
-			else:
-				return render_template('login.html', passedUserName=passedUserName, gameids=gameids)
+	if('username' in session):
+		passedUserName = session['username']
+		existingUser = User.query.filter_by(username=passedUserName).first()
+		all_games = GameFunctions.getPlayerGames(existingUser.username)
+		#invited_games = getPlayerGames(existingUser.username, invite_status='Invited')
+		gameids = PlayersInGame.query.filter(PlayersInGame.user_id == existingUser.id).all()
+		if(existingUser.role == 'Admin'):
+			return render_template('adminLogin.html', passedUserName=passedUserName, gameids=gameids)
 		else:
-			return render_template('index.html')
+			return render_template('login.html', passedUserName=passedUserName, gameids=gameids)
+	else:
+		return render_template('index.html')
 
 @app.route("/delete", methods = ['DELETE'])
 def adminDelete():
@@ -219,9 +215,23 @@ def logout():
 	session['username'] = None
 	return render_template('index.html')
 
-@app.route("/acceptgame", methods = ['GET', 'POST'])
+#@app.route("/acceptgame", methods = ['GET', 'POST'])
+@app.route("/acceptgame/<id>", methods = ['GET', 'POST'])
 def acceptgame():
 	passedUserName = session['username']
+	existingUser = User.query.filter_by(username=passedUserName).first()
+	acceptGame = acceptForm()
+	if request.method == 'POST':
+		inviteStatus = acceptGame.accept.data
+		if inviteStatus == 'Accept':
+			thisGame = PlayersInGame.query.filter(id).first()
+			thisGame.GameFunctions.acceptInvite(existingUser.id)
+			return redirect(url_for('login'))
+		else:
+			thisGame = PlayersInGame.query.filter(id).first()
+			thisGame.GameFunctions.declineInvite(existingUser.id)
+			return redirect(url_for('login'))
+
 	return render_template('acceptgame.html', passedUserName=passedUserName)
 
 @app.route("/playturn", methods = ['GET', 'POST'])
