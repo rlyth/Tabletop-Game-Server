@@ -93,23 +93,24 @@ def newGame():
 		playerNum3 = newGameForm.player3.data
 		playerNum4 = newGameForm.player4.data
 		if gamePlayers == '03':
-			if playerNum2 == 'Select' or playerNum3 == 'Select':
+			if playerNum2.username == 'Select' or playerNum3.username == 'Select':
 				return render_template('newgame.html')
 			else:
-				initGameInstance(baseGameID, existingUser.id, inviteList(playerNum2, playerNum3))
+				inviteList = [playerNum2.id, playerNum3.id]
+				initGameInstance(baseGameID, existingUser.id, inviteList)
 				return redirect(url_for('login'))
 
 		if gamePlayers == '04':
-			if playerNum2 == 'Select' or playerNum3 == 'Select' or playerNum4 == 'Select':				
+			if playerNum2.username == 'Select' or playerNum3.username == 'Select' or playerNum4.username == 'Select':				
 				return render_template('newgame.html')
 			else:
-				initGameInstance(baseGameID, existingUser.id, inviteList(playerNum2, playerNum3, playerNum4))
+				initGameInstance(baseGameID, existingUser.id, inviteList(playerNum2.id, playerNum3.id, playerNum4.id))
 				return redirect(url_for('login'))
 		else:
-			if playerNum2 == 'Select':				
+			if playerNum2.username == 'Select':				
 				return render_template('newgame.html')
 			else:
-				initGameInstance(baseGameID, existingUser.id, inviteList(playerNum2))
+				initGameInstance(baseGameID, existingUser.id, inviteList(playerNum2.id))
 				return redirect(url_for('login'))
 
 	return render_template('newgame.html', passedUserName=passedUserName, users=users, newGameForm=newGameForm)
