@@ -193,7 +193,7 @@ def login():
 	if('username' in session):
 		passedUserName = session['username']
 		existingUser = User.query.filter_by(username=passedUserName).first()
-		all_games = GameFunctions.getPlayerGames(existingUser.username)
+		all_games = PlayersInGame.query.all()
 		#invited_games = getPlayerGames(existingUser.username, invite_status='Invited')
 		gameids = PlayersInGame.query.filter(PlayersInGame.user_id == existingUser.id).all()
 		if(existingUser.role == 'Admin'):
