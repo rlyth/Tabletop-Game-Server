@@ -197,7 +197,7 @@ def login():
 		playableGame = []
 		for game in gameids:
 			thisGame = GameFunctions.gamePlay(game.game_instance)
-			if (thisGame.isPendingInvites()):
+			if(thisGame.isPendingInvites() == False):
 				playableGame.append(game)
 		if(existingUser.role == 'Admin'):
 			return render_template('adminLogin.html', passedUserName=passedUserName, gameids=gameids, playableGame=playableGame)
@@ -239,17 +239,18 @@ def acceptgame(game_id):
 	else:
 		return render_template('acceptgame.html', passedUserName=passedUserName, acceptGameForm=acceptGameForm, game_id=game_id)
 
-@app.route("/playturn", methods = ['GET', 'POST'])
-def playturn():
+@app.route("/playturn/<game_id>", methods = ['GET', 'POST'])
+def playturn(game_id):
 	passedUserName = session['username']
-	games=models.Game.query.all()
-	ginstance=models.GameInstance.query.all()
-	pgame=models.PlayersInGame.query.order_by(models.PlayersInGame.game_instance, models.PlayersInGame.turn_order).all()
-	cards=models.Card.query.all(),
-	icard=models.CardInstance.query.order_by(models.CardInstance.in_pile, models.CardInstance.pile_order).all()
-	gcard=models.CardsInGame.query.all()
-	piles=models.Pile.query.all()
-	log=models.GameLog.query \
+	thisGame = GameFunctions.gamePlay(game_id)
+	games = models.Game.query.all()
+	ginstance = models.GameInstance.query.all()
+	pgame = models.PlayersInGame.query.order_by(models.PlayersInGame.game_instance, models.PlayersInGame.turn_order).all()
+	cards = models.Card.query.all(),
+	icard = models.CardInstance.query.order_by(models.CardInstance.in_pile, models.CardInstance.pile_order).all()
+	gcard = models.CardsInGame.query.all()
+	piles = models.Pile.query.all()
+	log = models.GameLog.query \
 		.order_by(
 			models.GameLog.game_instance,
 			models.GameLog.timestamp.desc()
