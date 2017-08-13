@@ -201,9 +201,10 @@ def login():
 			for allGames in all_games:
 				if games.game_instance == allGames.game_instance:
 					if allGames.invite_status == 'Invited':
-						for playable in playableGame:
-							if playableGame == games.game_instance:
-								playableGame -= games.game_instance
+						if playable != None:
+							for playable in playableGame:
+								if playableGame == games.game_instance:
+									playableGame -= games.game_instance
 					else:
 						playableGame += games.game_instance
 
