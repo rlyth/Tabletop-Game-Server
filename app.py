@@ -83,7 +83,7 @@ def newGame():
 		#THIS IS WHERE WE KEEP TRACK OF WHICH GAME IS STARTING MODIFY FOR FUTURE GAMES
 		if gameName == 'Uno':
 			baseGameID = 2
-		gamePlayers = newGameForm.players.data
+		gamePlayers = newGameForm.numberOfPlayers.data
 		playerNum2 = newGameForm.player2.data
 		if gamePlayers == '03':
 			playerNum3 = newGameForm.player3.data
