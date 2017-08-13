@@ -216,7 +216,7 @@ def logout():
 	return render_template('index.html')
 
 @app.route("/acceptgame", methods = ['GET', 'POST'])
-@app.route("/<string:id>", methods = ['GET', 'POST'])
+@app.route("/acceptgame/<string:id>", methods = ['GET', 'POST'])
 def acceptgame(id):
 	acceptGameForm = acceptForm()
 	passedUserName = session['username']
