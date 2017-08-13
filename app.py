@@ -1,7 +1,7 @@
 from flask import Flask, render_template, session, request, flash, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf.csrf import CSRFProtect
-from userForm import userForm
+from userForm import userForm, gameForm
 from socket import gethostname
 
 app = Flask(__name__)
