@@ -218,9 +218,9 @@ def logout():
 @app.route("/acceptgame", methods = ['GET', 'POST'])
 @app.route("/acceptgame/<string:id>", methods = ['GET', 'POST'])
 def acceptgame(id):
+	acceptGameForm = acceptForm()
 	passedUserName = session['username']
 	existingUser = User.query.filter_by(username=passedUserName).first()
-	acceptGameForm = acceptForm()
 	if request.method == 'POST':
 		inviteStatus = acceptGameForm.status.data
 		if inviteStatus == 'Accept':
