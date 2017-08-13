@@ -79,9 +79,9 @@ def newGame():
 	newGameForm.player3.choices = [(u.id, u.username) for u in User.query.filter(User.username != passedUserName)]
 	newGameForm.player4.choices = [(u.id, u.username) for u in User.query.filter(User.username != passedUserName)]
 
-	newGameForm.player2.choices.insert(0, ('', ''))
-	newGameForm.player3.choices.insert(0, ('', ''))
-	newGameForm.player4.choices.insert(0, ('', ''))
+	newGameForm.player2.choices.insert(0, ('0', 'Select'))
+	newGameForm.player3.choices.insert(0, ('0', 'Select'))
+	newGameForm.player4.choices.insert(0, ('0', 'Select'))
 
 	if request.method == 'POST':
 		gameName = newGameForm.game.data
