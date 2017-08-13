@@ -30,7 +30,7 @@
  
         <div class="row marketing">
             <form action="initNewGame" method="post" id="newgameform">
-                {{ form.csrf_token }}             
+                {{ newGameForm.csrf_token }}             
                 <h2> Select Game:</h2> <p><select name="game">  
                 <option value="00">Select</option>
                 <!-- THIS SHOULD BE A FOR LOOP IF WE ADD MORE GAMES -->                   
