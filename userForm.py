@@ -15,4 +15,4 @@ class gameForm(Form):
 	player4 = SelectField(coerce=int)
 
 class acceptForm(Form):
-	accept = SelectField(choices = [('00', 'Select'), ('Accept', 'Accept'), ('Decline', 'Decline')])
+	status = SelectField(choices = [('00', 'Select'), ('Accept', 'Accept'), ('Decline', 'Decline')])
