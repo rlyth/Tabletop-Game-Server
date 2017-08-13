@@ -93,7 +93,7 @@ def newGame():
 		playerNum3 = newGameForm.player3.data
 		playerNum4 = newGameForm.player4.data
 		if gamePlayers == '03':
-			if playerNum2 == '0' or playerNum3 == '0':
+			if playerNum2 == 0 or playerNum3 == 0:
 				return render_template('newgame.html')
 			else:
 				inviteList = [playerNum2, playerNum3]
