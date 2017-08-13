@@ -232,7 +232,7 @@ def acceptgame(id):
 			thisGame.GameFunctions.declineInvite(existingUser.id)
 			return redirect(url_for('login'))
 
-	return render_template('acceptgame.html', passedUserName=passedUserName, form = acceptGameForm)
+	return render_template('acceptgame.html', passedUserName=passedUserName, acceptGameForm=acceptGameForm)
 
 @app.route("/playturn", methods = ['GET', 'POST'])
 def playturn():
