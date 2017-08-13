@@ -189,7 +189,7 @@ def statistics():
 			userRecord = 0		
 	return render_template('statistics.html', existingUser=existingUser, userRecord=userRecord)
 
-@app.route("/login", methods = ['GET', 'POST'])
+@app.route("/login")
 def login():
 	if('username' in session):
 		passedUserName = session['username']
@@ -231,8 +231,6 @@ def acceptgame(id):
 			thisGame = PlayersInGame.query.filter(id).first()
 			thisGame.GameFunctions.declineInvite(existingUser.id)
 			return redirect(url_for('login'))
-	else:
-		return redirect(url_for('login'))
 
 	return render_template('acceptgame.html', passedUserName=passedUserName)
 
