@@ -214,8 +214,8 @@ def logout():
 	session['username'] = None
 	return render_template('index.html')
 
-@app.route("/acceptgame/<id>", methods = ['GET', 'POST'])
-def acceptgame(id):
+@app.route("/acceptgame/<game_id>", methods = ['GET', 'POST'])
+def acceptgame(game_id):
 	acceptGameForm = acceptForm()
 	passedUserName = session['username']
 	existingUser = User.query.filter_by(username=passedUserName).first()
@@ -224,11 +224,11 @@ def acceptgame(id):
 		inviteStatus = acceptGameForm.status.data
 
 		if inviteStatus == 'Accept':
-			thisGame = PlayersInGame.query.filter(id).first()
+			thisGame = PlayersInGame.query.filter(game_id).first()
 			thisGame.GameFunctions.acceptInvite(existingUser.id)
 			return redirect(url_for('login'))
 		if inviteStatus == 'Decline':
-			thisGame = PlayersInGame.query.filter(id).first()
+			thisGame = PlayersInGame.query.filter(game_id).first()
 			thisGame.GameFunctions.declineInvite(existingUser.id)
 			return redirect(url_for('login'))
 		else:
