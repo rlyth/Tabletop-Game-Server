@@ -227,7 +227,7 @@ def acceptgame(game_id):
 			thisGame = PlayersInGame.query.filter(game_id).first()
 			thisGame.GameFunctions.acceptInvite(existingUser.id)
 			return redirect(url_for('login'))
-		if inviteStatus == 'Decline':
+		elif inviteStatus == 'Decline':
 			thisGame = PlayersInGame.query.filter(game_id).first()
 			thisGame.GameFunctions.declineInvite(existingUser.id)
 			return redirect(url_for('login'))
