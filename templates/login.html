@@ -39,7 +39,7 @@
                 <h4>Invitations To Games</h4>
                 {% for invites in gameids %}
                     {% if invites.invite_status == 'Invited' %}
-                        <a href ="acceptgame"> {{ invites.game_instance }} </a>
+                        <a href ="acceptgame/{{ invites.game_instance }}"> {{ invites.game_instance }} </a>
                     {% endif %}
                 {% endfor %}
  

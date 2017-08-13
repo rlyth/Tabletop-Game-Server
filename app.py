@@ -215,8 +215,8 @@ def logout():
 	session['username'] = None
 	return render_template('index.html')
 
-#@app.route("/acceptgame", methods = ['GET', 'POST'])
-@app.route("/acceptgame/<id>", methods = ['GET', 'POST'])
+@app.route("/acceptgame", methods = ['GET', 'POST'])
+@app.route("/acceptgame/<string:id>", methods = ['GET', 'POST'])
 def acceptgame():
 	passedUserName = session['username']
 	existingUser = User.query.filter_by(username=passedUserName).first()
