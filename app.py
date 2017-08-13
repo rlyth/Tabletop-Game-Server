@@ -86,7 +86,8 @@ def newGame():
 	if request.method == 'POST':
 		gameName = newGameForm.game.data
 		#THIS IS WHERE WE KEEP TRACK OF WHICH GAME IS STARTING MODIFY FOR FUTURE GAMES
-		if gameName == 'Uno':
+		baseGameID = 2
+		if gameName == 'uno':
 			baseGameID = 2
 		gamePlayers = newGameForm.numberOfPlayers.data
 		playerNum2 = newGameForm.player2.data
