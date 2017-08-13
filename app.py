@@ -243,14 +243,14 @@ def acceptgame(game_id):
 def playturn(game_id):
 	passedUserName = session['username']
 	thisGame = GameFunctions.gamePlay(game_id)
-	games = models.Game.query.all()
-	ginstance = models.GameInstance.query.all()
-	pgame = models.PlayersInGame.query.order_by(models.PlayersInGame.game_instance, models.PlayersInGame.turn_order).all()
-	cards = models.Card.query.all(),
-	icard = models.CardInstance.query.order_by(models.CardInstance.in_pile, models.CardInstance.pile_order).all()
-	gcard = models.CardsInGame.query.all()
-	piles = models.Pile.query.all()
-	log = models.GameLog.query \
+	games = Game.query.all()
+	ginstance = GameInstance.query.all()
+	pgame = PlayersInGame.query.order_by(models.PlayersInGame.game_instance, models.PlayersInGame.turn_order).all()
+	cards = Card.query.all(),
+	icard = CardInstance.query.order_by(models.CardInstance.in_pile, models.CardInstance.pile_order).all()
+	gcard = CardsInGame.query.all()
+	piles = Pile.query.all()
+	log = GameLog.query \
 		.order_by(
 			models.GameLog.game_instance,
 			models.GameLog.timestamp.desc()
