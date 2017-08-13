@@ -48,13 +48,13 @@ p {
 .marketing {
   	margin: 40px 0;
 }
-.marketing p + h4 {
+.marketing p + h2 {
   	margin-top: 18px;
 }
-nav-link:active {
+.nav-link:active {
   background-color: DarkSlateGray;
   color: Gainsboro;
 }
-nav-link {
+.nav-link {
   color: DarkSlateGray;
 }
