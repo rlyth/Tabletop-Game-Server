@@ -234,7 +234,7 @@ def acceptgame(game_id):
 		else:
 			return redirect(url_for('login'))
 
-	return render_template('acceptgame.html', passedUserName=passedUserName, acceptGameForm=acceptGameForm)
+	return render_template('acceptgame.html', passedUserName=passedUserName, acceptGameForm=acceptGameForm, game_id=game_id)
 
 @app.route("/playturn", methods = ['GET', 'POST'])
 def playturn():
