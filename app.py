@@ -85,18 +85,17 @@ def newGame():
 			baseGameID = 2
 		gamePlayers = newGameForm.numberOfPlayers.data
 		playerNum2 = newGameForm.player2.data
+		playerNum3 = newGameForm.player3.data
+		playerNum4 = newGameForm.player4.data
 		if gamePlayers == '03':
-			playerNum3 = newGameForm.player3.data
-			if playerNum2 == 'Select' || playerNum3 == 'Select':
+			if playerNum2 == 'Select' or playerNum3 == 'Select':
 				return render_template('newgame.html')
 			else:
 				initGameInstance(baseGameID, existingUser.id, inviteList(playerNum2, playerNum3))
 				return redirect(url_for('login'))
 
 		if gamePlayers == '04':
-			playerNum3 = newGameForm.player3.data
-			playerNum4 = newGameForm.player4.data
-			if playerNum2 == 'Select' || playerNum3 == 'Select' || playerNum4 == 'Select':				
+			if playerNum2 == 'Select' or playerNum3 == 'Select' or playerNum4 == 'Select':				
 				return render_template('newgame.html')
 			else:
 				initGameInstance(baseGameID, existingUser.id, inviteList(playerNum2, playerNum3, playerNum4))
