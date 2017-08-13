@@ -74,7 +74,7 @@ def newGame():
 	users = User.query.filter(User.username != passedUserName).all()
 	existingUser = User.query.filter_by(username=passedUserName).first()
 	newGameForm = gameForm()
-	playerNumberStart = ('00', 'Select')
+	playerNumberStart = [('00', 'Select')]
 	newGameForm.player2.choices = playerNumberStart
 	newGameForm.player3.choices = playerNumberStart
 	newGameForm.player4.choices = playerNumberStart
