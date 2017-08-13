@@ -193,15 +193,12 @@ def login():
 	if('username' in session):
 		passedUserName = session['username']
 		existingUser = User.query.filter_by(username=passedUserName).first()
-		all_games = PlayersInGame.query.all()
-		acceptedGames = GameFunctions.getPlayerGames(existingUser.username, invite_status='Creator')
-		acceptedGames += GameFunctions.getPlayerGames(existingUser.username, invite_status='Accepted')
-		playableGame = None
-		for games in acceptedGames:
-			thisGame = GameFunctions.gamePlay(games.game_id)
-			if (GameFunctions.isPendingInvites() == False):
-				playableGame += games.game_instance
 		gameids = PlayersInGame.query.filter(PlayersInGame.user_id == existingUser.id).all()
+		playableGame = None
+		for game in gameids:
+			thisGame = GameFunctions.gamePlay(game)
+			if (thisGame.isPendingInvites() == False):
+				playableGame += game
 		if(existingUser.role == 'Admin'):
 			return render_template('adminLogin.html', passedUserName=passedUserName, gameids=gameids, playableGame=playableGame)
 		else:
