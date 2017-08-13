@@ -245,7 +245,7 @@ def playturn(game_id):
 	existingUser = User.query.filter_by(username=passedUserName).first()
 	thisGame = GameFunctions.gamePlay(game_id)
 	players = PlayersInGame.query.filter(game_id == PlayersInGame.game_instance).order_by(PlayersInGame.turn_order).all()
-	ginstance = GameInstance.query.filter_by(game_id == GameInstance.id).first()
+	ginstance = GameInstance.query.filter_by(id=game_id).first()
 	game = thisGame.fetchGameInstance()
 	#pgame = PlayersInGame.query.order_by(PlayersInGame.game_instance, PlayersInGame.turn_order).all()
 	cards = Card.query.all()
