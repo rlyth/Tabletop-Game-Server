@@ -194,12 +194,24 @@ def login():
 		passedUserName = session['username']
 		existingUser = User.query.filter_by(username=passedUserName).first()
 		all_games = PlayersInGame.query.all()
-		#invited_games = getPlayerGames(existingUser.username, invite_status='Invited')
+		acceptedGames = getPlayerGames(existingUser.username, invite_status='Creator')
+		acceptedGames += getPlayerGames(existingUser.username, invite_status='Accepted')
+		playableGame = None
+		for games in  acceptedGames:
+			for allGames in all_games:
+				if games.game_instance == allGames.game_instance:
+					if allGames.invite_status == 'Invited':
+						for playable in playableGame:
+							if playableGame == games.game_instance:
+								playableGame -= games.game_instance
+					else:
+						playableGame += games.game_instance
+
 		gameids = PlayersInGame.query.filter(PlayersInGame.user_id == existingUser.id).all()
 		if(existingUser.role == 'Admin'):
-			return render_template('adminLogin.html', passedUserName=passedUserName, gameids=gameids, all_games=all_games)
+			return render_template('adminLogin.html', passedUserName=passedUserName, gameids=gameids, playableGame=playableGame)
 		else:
-			return render_template('login.html', passedUserName=passedUserName, gameids=gameids, all_games=all_games)
+			return render_template('login.html', passedUserName=passedUserName, gameids=gameids, playableGame=playableGame)
 	else:
 		return render_template('index.html')
 
