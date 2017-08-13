@@ -32,7 +32,7 @@
                 <h4>Continue Game</h4>
                 {% for games in gameids %}
                     {% for all_games in games %}
-                        {% if  all_games.invite_status == 'Accepted' || all_games.invite_status == 'Creator' %}
+                        {% if  all_games.invite_status == 'Accepted' or all_games.invite_status == 'Creator' %}
                             <a href ="playturn/{{ games.game_instance }}"> {{ games.game_instance }} </a>
                         {% endif %}
                     {% endfor %}
