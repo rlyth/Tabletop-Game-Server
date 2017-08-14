@@ -61,7 +61,7 @@ from userDB import User
 from uno import uno
 app.register_blueprint(uno)
 
-from uno.uno import Uno
+from uno.uno import uno
 
 passedUserName = None
 
