@@ -272,7 +272,7 @@ def playturn(game_id):
 		game = Uno(game_id)
 		active_player = game.getCurrentPlayerID()
 		if request.method == 'POST':
-			if turnForm.draw.data:
+			if 'drawCard' in request.form:
 				game.draw(active_player)
 				active_player = game.getCurrentPlayerID()
 			elif 'playCard' in request.form:

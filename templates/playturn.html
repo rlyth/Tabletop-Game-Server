@@ -79,9 +79,9 @@
                 <tr>
                     <td>
                         <form action="{{ game_id }}" onlcick="reloadPage()" method="POST">
-
-                            {{ turnForm.csrf_token }}   
-                            {{ turnForm.drawCard }}
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                        <input type="hidden" name="drawCard">
+                        <input type="submit" value="Draw Card">
 
                         </form>
                     </td>
