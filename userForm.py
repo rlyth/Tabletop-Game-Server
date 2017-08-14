@@ -1,5 +1,5 @@
 from flask_wtf import Form
-from wtforms import StringField, IntegerField, SelectField
+from wtforms import StringField, IntegerField, SelectField, SubmitField
 from wtforms.validators import DataRequired
 
 class userForm(Form):
@@ -16,3 +16,7 @@ class gameForm(Form):
 
 class acceptForm(Form):
 	status = SelectField(choices = [('00', 'Select'), ('Accept', 'Accept'), ('Decline', 'Decline')])
+
+class playTurnForm(Form):
+	draw = SubmitField(label='Draw Card')
+	play = SelectField(coerce=int)

@@ -261,6 +261,7 @@ def playturn(game_id):
     # GameInstance/Game object
 	gameInfo = GameFunctions.getGameInstance(game_id)
 	thisGame = GameFunctions.gamePlay(game_id)
+	turnForm = playTurnForm()
     # Invalid Game ID
 	if not gameInfo:
 		dump = "Game Instance not found."
@@ -271,19 +272,22 @@ def playturn(game_id):
 		game = Uno(game_id)
 		active_player = game.getCurrentPlayerID()
 		if request.method == 'POST':
-			if 'drawCard' in request.form:
+			if turnForm.draw.data:
 				game.draw(active_player)
 				active_player = game.getCurrentPlayerID()
 			elif 'playCard' in request.form:
 				wc = None
 				active_player = game.getCurrentPlayerID()
-			# Wild card was played, get color
-			if 'wildColor' in request.form:
-				wc = request.form["wildColor"]
-				active_player = game.getCurrentPlayerID()
-			# playCard returned false; move is illegal
-			if not game.playCard(active_player, request.form["cid"], wildColor=wc):
-				flash('Can\'t play that card')
+				# Wild card was played, get color
+				if 'wildColor' in request.form:
+					if 'wildColor' == 'Select':
+						flash('You must choose a color to play a wild card.')
+					else:
+						wc = request.form["wildColor"]
+						active_player = game.getCurrentPlayerID()
+				# playCard returned false; move is illegal
+				if not game.playCard(active_player, request.form["cid"], wildColor=wc):
+					flash('Can\'t play that card')
 
 		g = game.getThisGame(active_player)
 
@@ -292,6 +296,7 @@ def playturn(game_id):
 		players = g["Players"]
 
 		hand = g["Player Hand"]
+		turnForm.play.choices = [(c.id, c.Card.name, c.Card.img_front) for c in hand]
 
 		deck_count = g["Deck Count"]
 		discard_count = g["Discard Count"]

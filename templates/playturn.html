@@ -78,10 +78,11 @@
                 </tr>
                 <tr>
                     <td>
-                        <form action="{{ game_id }}" method="POST">
-                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-                            <input type="hidden" name="drawCard">
-                            <input type="submit" value="Draw Card">
+                        <form action="{{ game_id }}" onlcick="reloadPage()" method="POST">
+
+                            {{ playTurnForm.csrf_token }}   
+                            {{ playTurnForm.drawCard }}
+
                         </form>
                     </td>
                     <td>
@@ -103,12 +104,13 @@
                         <td>
                         {{ c.Card.name }}
                         <br><img src="{{ url_for('static', filename=c.Card.img_front) }}">
-                        <form action="{{ game_id }}" method="POST">
+                        <form action="{{ game_id }}" onlcick="reloadPage()" method="POST">
                             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                             <input type="hidden" name="cid" value="{{ c.id }}">
                             <input type="hidden" name="playCard">
                             {% if c.Card.card_type == 'Wild' %}
                             <select name="wildColor">
+                                <option value="Select">Select</option>                              
                                 <option value="Red">Red</option>
                                 <option value"Blue">Blue</option>
                                 <option value="Green">Green</option>
@@ -134,5 +136,9 @@
  
     </div>
 </body>
- 
+    <script>
+    function reloadPage() {
+        location.reload();
+    }
+</script>
 </html>
