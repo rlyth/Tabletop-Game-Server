@@ -284,7 +284,6 @@ def playturn(game_id):
 						flash('You must choose a color to play a wild card.')
 					else:
 						wc = request.form["wildColor"]
-						active_player = game.getCurrentPlayerID()
 				# playCard returned false; move is illegal
 				if not game.playCard(active_player, request.form["cid"], wildColor=wc):
 					flash('Can\'t play that card')

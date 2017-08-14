@@ -28,12 +28,12 @@ body {
 }
 
 p {
-	font-size: 12px;
+    font-size: 12px;
 }
 .footer {
-	padding-top: 19px;
+    padding-top: 19px;
  	color: #777;
-  border-top: 1px solid DarkSlateGray;
+    border-top: 1px solid DarkSlateGray;
 }
 .header {
   	padding-top: 19px;
@@ -51,10 +51,9 @@ p {
 .marketing p + h2 {
   	margin-top: 18px;
 }
-#Nav a:active {
-  background-color: DarkSlateGray;
-  color: Gainsboro;
-}
-#Nav a {
-  color: DarkSlateGray;
+table, th, td {
+    border: 1px solid black;
+    padding: 15px;
+    color: PeachPuff;
+    background-color: RebeccaPurple;
 }

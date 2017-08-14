@@ -15,9 +15,9 @@
         <div class="header">
             <nav>
                 <ul class="nav nav-pills pull-right">
-                    <li role="button"><a href="profile">Profile</a>
+                    <li role="button"><a href="../profile">Profile</a>
                     </li>                   
-                    <li role="button"><a href="logout">Log Out</a>
+                    <li role="button"><a href="../logout">Log Out</a>
                     </li>
                     <li role="button" class="active"><a href="/">Home</a>
                     </li>
@@ -36,7 +36,7 @@
         {% endwith %}
         <div class="row marketing">
             {% if players %}
-            <table border=1 cellpadding=5>
+            <table>
                 <tr>
                     <td><b>Players</b></td>
                 </tr>
@@ -63,7 +63,7 @@
 
         {% if active == existingUser.id %}
             {% if deck %}
-            <p><table border=1 cellpadding=5>
+            <p><table>
                 <tr>
                     <td>
                         <b>Deck</b>
@@ -98,7 +98,7 @@
             {% endif %}
                 <h2> Select Card:</h2> <p><select name="card" id="playcard">
                     {% if hand %}
-                    <p><table border=1 cellpadding=5>
+                    <p><table>
                     <tr>
                     {% for c in hand %}
                         <td>
@@ -125,7 +125,55 @@
                     </table></p>
                     {% endif %}
         {% else %}
-            <h2> Waiting on other players...</h2> 
+            <h2> Waiting on other players...</h2>
+            {% if deck %}
+            <p><table>
+                <tr>
+                    <td>
+                        <b>Deck</b>
+                        <br>Count: {{ deck_count }}
+                        <br><img src="{{ url_for('static', filename='UnoCardImages/CardBack.gif') }}">
+                    </td>
+                    <td>
+                        <b>Discard</b>
+                        <br>Count: {{ discard_count }}
+                        <br><img src="{{ url_for('static', filename=discard.Card.img_front) }}">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        {% if discard %}
+                        {{ discard.Card.name }}
+                        {% if discard.Card.card_type == 'Wild' %}
+                        <br>Color: {{ discard.card_status }}
+                        {% endif %}
+                        {% endif %}
+                    </td>
+                </tr>
+            </table></p>     
+            {% endif %}
+                <h2> Select Card:</h2> <p><select name="card" id="playcard">
+                    {% if hand %}
+                    <p><table>
+                    <tr>
+                    {% for c in hand %}
+                        <td>
+                        {{ c.Card.name }}
+                        <br><img src="{{ url_for('static', filename=c.Card.img_front) }}">
+                            {% if c.Card.card_type == 'Wild' %}
+                            <select name="wildColor">
+                                <option value="Select">Select</option>                              
+                                <option value="Red">Red</option>
+                                <option value"Blue">Blue</option>
+                                <option value="Green">Green</option>
+                                <option value"Yellow">Yellow</option>
+                            </select>
+                            {% endif %}
+                        </td>
+                        {% endfor %}
+                    </tr>
+                    </table></p>
+                    {% endif %}
         {% endif %}  
             <h2 role="button"><a href="login">Back To Login Page </a></h2>
         </div>
