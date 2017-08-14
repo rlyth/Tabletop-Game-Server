@@ -241,7 +241,7 @@ def acceptgame(game_id):
 
 @app.route("/playturn/<game_id>", methods = ['GET', 'POST'])
 def playturn(game_id):
-	myObject = Uno(game_id)
+	myObject = uno.Uno(game_id)
 	passedUserName = session['username']
 	existingUser = User.query.filter_by(username=passedUserName).first()
 	thisGame = GameFunctions.gamePlay(game_id)
