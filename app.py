@@ -61,6 +61,8 @@ from userDB import User
 from uno import uno
 app.register_blueprint(uno)
 
+from uno import uno
+
 passedUserName = None
 
 @app.route("/")
