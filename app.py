@@ -241,6 +241,11 @@ def acceptgame(game_id):
 	else:
 		return render_template('acceptgame.html', passedUserName=passedUserName, acceptGameForm=acceptGameForm, game_id=game_id)
 
+@app.route("/winner", methods = ['GET', 'POST'])
+def winner():
+	passedUserName = session['username']
+	return render_template('winner.html', passedUserName=passedUserName)
+
 @app.route("/playturn/<game_id>", methods = ['GET', 'POST'])
 def playturn(game_id):
 	dump = ''
@@ -268,16 +273,13 @@ def playturn(game_id):
 		if request.method == 'POST':
 			if 'drawCard' in request.form:
 				game.draw(active_player)
-				thisGame.endTurn()
 				active_player = game.getCurrentPlayerID()
 			elif 'playCard' in request.form:
 				wc = None
-				thisGame.endTurn()
 				active_player = game.getCurrentPlayerID()
 			# Wild card was played, get color
 			if 'wildColor' in request.form:
 				wc = request.form["wildColor"]
-				thisGame.endTurn()
 				active_player = game.getCurrentPlayerID()
 			# playCard returned false; move is illegal
 			if not game.playCard(active_player, request.form["cid"], wildColor=wc):

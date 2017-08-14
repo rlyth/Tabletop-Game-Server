@@ -25,7 +25,15 @@
             </nav>
             <h3 class="text-muted">{{ existingUser.username }}'s Current Game</h3>
         </div>
- 
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            <p>
+            {% for message in messages %}
+              {{ message }}<br>
+            {% endfor %}
+            </p>
+          {% endif %}
+        {% endwith %}
         <div class="row marketing">
             {% if players %}
             <table border=1 cellpadding=5>
