@@ -95,7 +95,7 @@
                         <td>
                         {{ c.Card.name }}
                         <br><img src="{{ url_for('static', filename=c.Card.img_front) }}">
-                        <form action="/uno/{{ gid }}/sandbox/" method="POST">
+                        <form action="{{ game_id }}" method="POST">
                             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                             <input type="hidden" name="cid" value="{{ c.id }}">
                             <input type="hidden" name="playCard">
