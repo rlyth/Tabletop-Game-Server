@@ -241,10 +241,11 @@ def acceptgame(game_id):
 
 @app.route("/playturn/<game_id>", methods = ['GET', 'POST'])
 def playturn(game_id):
+	myObject = Uno(game_id)
 	passedUserName = session['username']
 	existingUser = User.query.filter_by(username=passedUserName).first()
 	thisGame = GameFunctions.gamePlay(game_id)
-	players = PlayersInGame.query.filter(game_id == PlayersInGame.game_instance).order_by(PlayersInGame.turn_order).all()
+	players = PlayersInGame.query.filter_by(game_instance=game_id).order_by(PlayersInGame.turn_order).all()
 	ginstance = GameInstance.query.filter_by(id=game_id).first()
 	game = GameFunctions.fetchGameInstance(game_id)
 	#pgame = PlayersInGame.query.order_by(PlayersInGame.game_instance, PlayersInGame.turn_order).all()
