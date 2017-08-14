@@ -131,11 +131,15 @@ class gamePlay:
         except NoResultFound:
                 return None
 
-        # Game has not yet been setup
+        # Checks whether game is ready to begin
+        if self.game.status == 'Created' and not self.isPendingInvites():
+            self.setStatus('Waiting on Setup')
+
         # Will only run once all the invites have been accepted or declined
-        if (not self.isPendingInvites()) and self.game.status == 'Created':
-            self.initialSetup()
-            self.setStatus('Active')
+        if self.game.status == 'Waiting on Setup':
+            # Returns False if not run on a game-specific object
+            if self.initialSetup():
+                self.setStatus('Active')
 
         self.setVariables()
 
@@ -144,10 +148,10 @@ class gamePlay:
     ##      and instead make the players start the game via a function call
     def initialSetup(self):
         # Each game should implement this based on the game's rules
-        return
+        return False
 
     def setVariables(self):
-        # Each game should implement this to store game-relevant variables
+        # Each game can implement this to store game-relevant variables
         return
 
 

@@ -38,6 +38,8 @@ class Uno(gamePlay):
         if top.Card.card_type == 'Wild':
             self.updateCardInstance(top.id, card_status='Any')
 
+        return True
+
 
     # This is called any time a new Uno object is created
     def setVariables(self):
