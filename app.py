@@ -289,7 +289,7 @@ def playturn(game_id):
 				if not game.playCard(active_player, request.form["cid"], wildColor=wc):
 					flash('Can\'t play that card')
 
-		g = game.getThisGame(active_player)
+		g = game.getThisGame(existingUser.id)
 
 		discard = g["Discard Top"]
 
