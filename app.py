@@ -254,7 +254,7 @@ def playturn(game_id):
 			if p.user_id == u.id:
 				usersPlaying.append(u)
     # GameInstance/Game object
-	gameInfo = getGameInstance(game_id)
+	gameInfo = GameFunctions.getGameInstance(game_id)
 
     # Invalid instanceID
 	if not gameInfo:
