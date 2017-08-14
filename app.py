@@ -199,7 +199,8 @@ def login():
 		playableGame = []
 		for game in gameids:
 			thisGame = GameFunctions.gamePlay(game.game_instance)
-			if(thisGame.isPendingInvites() == False):
+			gameInfo = GameFunctions.getGameInstance(game.game_instance)
+			if(thisGame.isPendingInvites() == False and gameInfo.status != 'Ended'):
 				playableGame.append(game)
 		if(existingUser.role == 'Admin'):
 			return render_template('adminLogin.html', passedUserName=passedUserName, gameids=gameids, playableGame=playableGame)
@@ -301,6 +302,9 @@ def playturn(game_id):
 		discard_count = g["Discard Count"]
 
 		logs = game.getLogs()
+
+		if gameInfo.status == 'Ended':
+			return redirect(url_for('statistics'))
 
 	else:
 		dump = "That is not a game we have right now."
