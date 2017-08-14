@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+ 
+<head>
+    <title>Admin {{ passedUserName }}'s Finished Game</title> 
+ 
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/style.css') }}">
+ 
+ 
+</head>
+ 
+<body>
+ 
+    <div class="container">
+        <div class="header">
+            <nav>
+                <ul class="nav nav-pills pull-right">
+                    <li role="button"><a href="profile">Profile</a>
+                    </li>
+                    <li role="button"><a href="logout">Log Out</a>
+                    </li>
+                    <li role="button" class="active"><a href="/">Home</a>
+                    </li>
+                </ul>
+            </nav>
+            <h3 class="text-muted">{{ passedUserName }} Game Results</h3>
+        </div>
+ 
+        <div class="row marketing">
+            <h4 > Winner!!!:</h4>  
+            <h4 > Not so much of a winner, but still pretty awesome!:</h4> 
+            <h2 role="button"><a href="login">Back To Login Page </a></h2>
+        </div>
+ 
+        <footer class="footer">
+            <p>Assignment for CS467 by Leanne Vermillion and Rebecca Thompson.</p>
+        </footer>
+ 
+    </div>
+</body>
+ 
+</html>

@@ -270,18 +270,15 @@ def playturn(game_id):
 				game.draw(active_player)
 				thisGame.endTurn()
 				active_player = game.getCurrentPlayerID()
-				return redirect(url_for('playturn/<game_id>'))
 			elif 'playCard' in request.form:
 				wc = None
 				thisGame.endTurn()
 				active_player = game.getCurrentPlayerID()
-				return redirect(url_for('playturn/<game_id>'))
 			# Wild card was played, get color
 			if 'wildColor' in request.form:
 				wc = request.form["wildColor"]
 				thisGame.endTurn()
 				active_player = game.getCurrentPlayerID()
-				return redirect(url_for('playturn/<game_id>'))
 			# playCard returned false; move is illegal
 			if not game.playCard(active_player, request.form["cid"], wildColor=wc):
 				flash('Can\'t play that card')
