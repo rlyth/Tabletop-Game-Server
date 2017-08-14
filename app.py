@@ -243,26 +243,60 @@ def acceptgame(game_id):
 
 @app.route("/playturn/<game_id>", methods = ['GET', 'POST'])
 def playturn(game_id):
-	if request.method == 'GET':
-		myObject = Uno(game_id)
+	dump = ''
 	passedUserName = session['username']
 	existingUser = User.query.filter_by(username=passedUserName).first()
-	thisGame = GameFunctions.gamePlay(game_id)
-	players = PlayersInGame.query.filter_by(game_instance=game_id).order_by(PlayersInGame.turn_order).all()
-	ginstance = GameInstance.query.filter_by(id=game_id).first()
-	game = GameFunctions.fetchGameInstance(game_id)
-	#pgame = PlayersInGame.query.order_by(PlayersInGame.game_instance, PlayersInGame.turn_order).all()
-	cards = Card.query.all()
-	icard = CardInstance.query.order_by(CardInstance.in_pile, CardInstance.pile_order).all()
-	gcard = CardsInGame.query.filter(game_id == CardsInGame.game_id).all()
-	piles = Pile.query.all()
-	log = GameLog.query \
-		.order_by(
-			GameLog.game_instance,
-			GameLog.timestamp.desc()
-		) \
-		.all()
-	return render_template('playturn.html', existingUser=existingUser, players=players, game=game, ginstance=ginstance, cards=cards, icard=icard, gcard=gcard, piles=piles, log=log)
+	playersThisGame = PlayersInGame.query.filter_by(game_instance=game_id).order_by(PlayersInGame.turn_order).all()
+	users = User.query.all()
+	usersPlaying = []
+	for p in playersThisGame:
+		for u in users:
+			if p.user_id == u.id:
+				usersPlaying.append(u)
+    # GameInstance/Game object
+	gameInfo = getGameInstance(game_id)
+
+    # Invalid instanceID
+	if not gameInfo:
+		dump = "Game Instance not found."
+		return redirect(url_for('login'))
+
+    # GameInstance is Uno 
+	if gameInfo.Game.name == 'Uno':
+		game = Uno(game_id)
+		active_player = game.getCurrentPlayerID()
+		if request.method == 'POST':
+			if 'drawCard' in request.form:
+				game.draw(active_player)
+			elif 'playCard' in request.form:
+				wc = None
+
+			# Wild card was played, get color
+			if 'wildColor' in request.form:
+				wc = request.form["wildColor"]
+
+			# playCard returned false; move is illegal
+			if not game.playCard(active_player, request.form["cid"], wildColor=wc):
+				flash('Can\'t play that card')
+
+		g = game.getThisGame(active_player)
+
+		discard = g["Discard Top"]
+
+		players = g["Players"]
+
+		hand = g["Player Hand"]
+
+		deck_count = g["Deck Count"]
+		discard_count = g["Discard Count"]
+
+		logs = game.getLogs()
+
+	else:
+		dump = "That is not a game we have right now."
+		return redirect(url_for('login'))
+
+	return render_template('playturn.html', existingUser=existingUser, players=players, usersPlaying=usersPlaying, dump=dump, logs=logs, discard=discard, deck=True, deck_count=deck_count, discard_count=discard_count, hand=hand, gid=instanceID, active=active_player, endgame=True)
 
 if __name__ == "__main__":
 	#db.create_all()

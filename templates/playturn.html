@@ -40,7 +40,8 @@
                         <br>Turn: {{ p[0].turn_order }}
                         <br>Hand: {{ p[1] }} cards
                         {% if p[1] == 0 %}
-                            <!-- Display winner and end game -->
+                        <form action="/winner" method="POST">
+                        </form>
                         {% endif %}
                     </td>
                     {% endfor %}
@@ -52,68 +53,70 @@
         <p><b>Active Player: {{ active }}</b></p>
         {% endif %}
 
-        {% if deck %}
-        <p><table border=1 cellpadding=5>
-            <tr>
-                <td>
-                    <b>Deck</b>
-                    <br>Count: {{ deck_count }}
-                    <br><img src="{{ url_for('static', filename='UnoCardImages/CardBack.gif') }}">
-                </td>
-                <td>
-                    <b>Discard</b>
-                    <br>Count: {{ discard_count }}
-                    <br><img src="{{ url_for('static', filename=discard.Card.img_front) }}">
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <form action="/uno/{{ gid }}/sandbox/" method="POST">
-                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-                        <input type="hidden" name="drawCard">
-                        <input type="submit" value="Draw Card">
-                    </form>
-                </td>
-                <td>
-                    {% if discard %}
-                    {{ discard.Card.name }}
-                    {% if discard.Card.card_type == 'Wild' %}
-                    <br>Color: {{ discard.card_status }}
-                    {% endif %}
-                    {% endif %}
-                </td>
-            </tr>
-        </table></p>     
-        {% endif %}
+        {% if active == existingUser.id %}
+            {% if deck %}
+            <p><table border=1 cellpadding=5>
+                <tr>
+                    <td>
+                        <b>Deck</b>
+                        <br>Count: {{ deck_count }}
+                        <br><img src="{{ url_for('static', filename='UnoCardImages/CardBack.gif') }}">
+                    </td>
+                    <td>
+                        <b>Discard</b>
+                        <br>Count: {{ discard_count }}
+                        <br><img src="{{ url_for('static', filename=discard.Card.img_front) }}">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <form action="{{ game_id }}" method="POST">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                            <input type="hidden" name="drawCard">
+                            <input type="submit" value="Draw Card">
+                        </form>
+                    </td>
+                    <td>
+                        {% if discard %}
+                        {{ discard.Card.name }}
+                        {% if discard.Card.card_type == 'Wild' %}
+                        <br>Color: {{ discard.card_status }}
+                        {% endif %}
+                        {% endif %}
+                    </td>
+                </tr>
+            </table></p>     
+            {% endif %}
                 <h2> Select Card:</h2> <p><select name="card" id="playcard">
                     {% if hand %}
                     <p><table border=1 cellpadding=5>
-                        <tr>
+                    <tr>
                     {% for c in hand %}
-                            <td>
-                                {{ c.Card.name }}
-                                <br><img src="{{ url_for('static', filename=c.Card.img_front) }}">
-                                <form action="/uno/{{ gid }}/sandbox/" method="POST">
-                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-                                    <input type="hidden" name="cid" value="{{ c.id }}">
-                                    <input type="hidden" name="playCard">
-                                    {% if c.Card.card_type == 'Wild' %}
-                                    <select name="wildColor">
-                                        <option value="Red">Red</option>
-                                        <option value"Blue">Blue</option>
-                                        <option value="Green">Green</option>
-                                        <option value"Yellow">Yellow</option>
-                                    </select>
-                                    {% endif %}
-                                    {% if active == passedUserName %}
-                                        <input type="submit" value="Play Card">
-                                    {% endif %}
-                                </form>
-                            </td>
-                    {% endfor %}
-                        </tr>
+                        <td>
+                        {{ c.Card.name }}
+                        <br><img src="{{ url_for('static', filename=c.Card.img_front) }}">
+                        <form action="/uno/{{ gid }}/sandbox/" method="POST">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                            <input type="hidden" name="cid" value="{{ c.id }}">
+                            <input type="hidden" name="playCard">
+                            {% if c.Card.card_type == 'Wild' %}
+                            <select name="wildColor">
+                                <option value="Red">Red</option>
+                                <option value"Blue">Blue</option>
+                                <option value="Green">Green</option>
+                                <option value"Yellow">Yellow</option>
+                            </select>
+                            {% endif %}
+                                <input type="submit" value="Play Card">
+                        </form>
+                        </td>
+                        {% endfor %}
+                    </tr>
                     </table></p>
-                    {% endif %}  
+                    {% endif %}
+        {% else %}
+            <h2> Waiting on other players...</h2> 
+        {% endif %}  
             <h2 role="button"><a href="login">Back To Login Page </a></h2>
         </div>
  
