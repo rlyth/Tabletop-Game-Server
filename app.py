@@ -256,7 +256,7 @@ def playturn(game_id):
     # GameInstance/Game object
 	gameInfo = GameFunctions.getGameInstance(game_id)
 
-    # Invalid instanceID
+    # Invalid Game ID
 	if not gameInfo:
 		dump = "Game Instance not found."
 		return redirect(url_for('login'))
@@ -296,7 +296,7 @@ def playturn(game_id):
 		dump = "That is not a game we have right now."
 		return redirect(url_for('login'))
 
-	return render_template('playturn.html', existingUser=existingUser, players=players, usersPlaying=usersPlaying, dump=dump, logs=logs, discard=discard, deck=True, deck_count=deck_count, discard_count=discard_count, hand=hand, gid=instanceID, active=active_player, endgame=True)
+	return render_template('playturn.html', existingUser=existingUser, players=players, usersPlaying=usersPlaying, dump=dump, logs=logs, discard=discard, deck=True, deck_count=deck_count, discard_count=discard_count, hand=hand, active=active_player, endgame=True)
 
 if __name__ == "__main__":
 	#db.create_all()
