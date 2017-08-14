@@ -255,7 +255,7 @@ def playturn(game_id):
 				usersPlaying.append(u)
     # GameInstance/Game object
 	gameInfo = GameFunctions.getGameInstance(game_id)
-
+	thisGame = GameFunctions.gamePlay(game_id)
     # Invalid Game ID
 	if not gameInfo:
 		dump = "Game Instance not found."
@@ -268,18 +268,18 @@ def playturn(game_id):
 		if request.method == 'POST':
 			if 'drawCard' in request.form:
 				game.draw(active_player)
-				gameInfo.endTurn()
+				thisGame.endTurn()
 				active_player = game.getCurrentPlayerID()
 				return redirect(url_for('playturn/<game_id>'))
 			elif 'playCard' in request.form:
 				wc = None
-				gameInfo.endTurn()
+				thisGame.endTurn()
 				active_player = game.getCurrentPlayerID()
 				return redirect(url_for('playturn/<game_id>'))
 			# Wild card was played, get color
 			if 'wildColor' in request.form:
 				wc = request.form["wildColor"]
-				gameInfo.endTurn()
+				thisGame.endTurn()
 				active_player = game.getCurrentPlayerID()
 				return redirect(url_for('playturn/<game_id>'))
 			# playCard returned false; move is illegal
