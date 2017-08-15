@@ -156,27 +156,27 @@
                 </div>
             </div></p>     
             {% endif %}
-                    {% if hand %}
-                    <p><div class="container">
-                    <div class="row marketing">
-                    {% for c in hand %}
-                        <div class="col-xs-2 col-sm-2">
-                        {{ c.Card.name }}
-                        <br><img src="{{ url_for('static', filename=c.Card.img_front) }}">
-                            {% if c.Card.card_type == 'Wild' %}
-                            <select name="wildColor">
-                                <option value="Select">Select</option>                              
-                                <option value="Red">Red</option>
-                                <option value"Blue">Blue</option>
-                                <option value="Green">Green</option>
-                                <option value"Yellow">Yellow</option>
-                            </select>
-                            {% endif %}
-                        </div>
-                        {% endfor %}
+                {% if hand %}
+                <p><div class="container">
+                <div class="row marketing">
+                {% for c in hand %}
+                    <div class="col-xs-2 col-sm-2">
+                    {{ c.Card.name }}
+                    <br><img src="{{ url_for('static', filename=c.Card.img_front) }}">
+                        {% if c.Card.card_type == 'Wild' %}
+                        <select name="wildColor">
+                            <option value="Select">Select</option>                              
+                            <option value="Red">Red</option>
+                            <option value"Blue">Blue</option>
+                            <option value="Green">Green</option>
+                            <option value"Yellow">Yellow</option>
+                        </select>
+                        {% endif %}
                     </div>
-                    </div></p>
-                    {% endif %}
+                    {% endfor %}
+                </div>
+                </div></p>
+                {% endif %}
         {% endif %}  
             <h2 role="button" align="right"><a href="login">Back to Your Page </a></h2>
         </div>
