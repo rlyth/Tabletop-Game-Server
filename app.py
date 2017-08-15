@@ -96,7 +96,7 @@ def newGame():
 		playerNum3 = newGameForm.player3.data
 		playerNum4 = newGameForm.player4.data
 		if gamePlayers == '03':
-			if playerNum2 == 0 or playerNum3 == 0:
+			if playerNum2 == 0 or playerNum3 == 0 or playerNum2 == playerNum3:
 				return render_template('newgame.html')
 			else:
 				inviteList = [playerNum2, playerNum3]
@@ -104,7 +104,7 @@ def newGame():
 				return redirect(url_for('login'))
 
 		if gamePlayers == '04':
-			if playerNum2 == 0 or playerNum3 == 0 or playerNum4 == 0:				
+			if playerNum2 == 0 or playerNum3 == 0 or playerNum4 == 0 or playerNum2 == playerNum3 or playerNum2 == playerNum4 or playerNum4 == playerNum3:				
 				return render_template('newgame.html')
 			else:
 				inviteList = [playerNum2, playerNum3, playerNum4]
