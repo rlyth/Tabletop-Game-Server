@@ -36,25 +36,25 @@
             </p>
           {% endif %}
         {% endwith %}
-        <div>
+        <div class="row marketing">
             {% if players %}
-            <table border=1 cellpadding=5>
-                <tr>
-                    <td><b>Players</b></td>
-                </tr>
-                <tr>
+            <div class="container">
+                <div class="row">
+                    <div class="col-xs-4 col-sm-4"><b>Players</b></div>
+                </div>
+                <div class="row">
                     {% for p in players %}
-                    <td>
+                    <div class="col-xs-4 col-sm-4">
                         Username: {{ p[0].User.username }}
                         <br>ID: {{ p[0].user_id }}
                         <br>Turn Order: {{ p[0].turn_order }}
                         <br>Cards in Hand: {{ p[1] }} cards
                         {% if p[1] == 0 %}
                         {% endif %}
-                    </td>
+                    </div>
                     {% endfor %}
-                </tr>
-            </table>
+                </div>
+            </div>
             {% endif %}
 
         {% if active %}
@@ -67,45 +67,45 @@
 
         {% if active == existingUser.id %}
             {% if deck %}
-            <p><table>
-                <tr>
-                    <td>
+            <p><div class="container">
+                <div class="row">
+                    <div class="col-xs-4 col-sm-4">
                         <b>Deck</b>
                         <br>Count: {{ deck_count }}
                         <br><img src="{{ url_for('static', filename='UnoCardImages/CardBack.gif') }}">
-                    </td>
-                    <td>
+                    </div>
+                    <div class="col-xs-4 col-sm-4">
                         <b>Discard</b>
                         <br>Count: {{ discard_count }}
                         <br><img src="{{ url_for('static', filename=discard.Card.img_front) }}">
-                    </td>
-                </tr>
-                <tr>
-                    <td>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-4 col-sm-4">
                         <form action="{{ game_id }}" method="POST">
                         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                         <input type="hidden" name="drawCard">
                         <input type="submit" value="Draw Card">
 
                         </form>
-                    </td>
-                    <td>
+                    </div>
+                    <div class="col-xs-4 col-sm-4">
                         {% if discard %}
                         {{ discard.Card.name }}
                         {% if discard.Card.card_type == 'Wild' %}
                         <br>Color: {{ discard.card_status }}
                         {% endif %}
                         {% endif %}
-                    </td>
-                </tr>
-            </table></p>     
+                    </div>
+                </div>
+            </div></p>     
             {% endif %}
                 <h2> Select Card:</h2>
                     {% if hand %}
-                    <p><table>
-                    <tr>
+                    <p><div class="container">
+                    <div class="row">
                     {% for c in hand %}
-                        <td>
+                        <div class="col-xs-4 col-sm-4">
                         {{ c.Card.name }}
                         <br><img src="{{ url_for('static', filename=c.Card.img_front) }}">
                         <form action="{{ game_id }}" method="POST">
@@ -123,44 +123,44 @@
                             {% endif %}
                                 <input type="submit" value="Play Card">
                         </form>
-                        </td>
+                        </div>
                         {% endfor %}
-                    </tr>
-                    </table></p>
+                    </div>
+                    </div></p>
                     {% endif %}
         {% else %}
             <h2> Waiting on other players...</h2>
             {% if deck %}
-            <p><table>
-                <tr>
-                    <td>
+            <p><div class="container">
+                <div class="row">
+                    <div class="col-xs-4 col-sm-4">
                         <b>Deck</b>
                         <br>Count: {{ deck_count }}
                         <br><img src="{{ url_for('static', filename='UnoCardImages/CardBack.gif') }}">
-                    </td>
-                    <td>
+                    </div>
+                    <div class="col-xs-4 col-sm-4">
                         <b>Discard</b>
                         <br>Count: {{ discard_count }}
                         <br><img src="{{ url_for('static', filename=discard.Card.img_front) }}">
-                    </td>
-                </tr>
-                <tr>
-                    <td>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-4 col-sm-4">
                         {% if discard %}
                         {{ discard.Card.name }}
                         {% if discard.Card.card_type == 'Wild' %}
                         <br>Color: {{ discard.card_status }}
                         {% endif %}
                         {% endif %}
-                    </td>
-                </tr>
-            </table></p>     
+                    </div>
+                </div>
+            </div></p>     
             {% endif %}
                     {% if hand %}
-                    <p><table>
-                    <tr>
+                    <p><div class="container">
+                    <div class="row">
                     {% for c in hand %}
-                        <td>
+                        <div class="col-xs-4 col-sm-4">
                         {{ c.Card.name }}
                         <br><img src="{{ url_for('static', filename=c.Card.img_front) }}">
                             {% if c.Card.card_type == 'Wild' %}
@@ -172,10 +172,10 @@
                                 <option value"Yellow">Yellow</option>
                             </select>
                             {% endif %}
-                        </td>
+                        </div>
                         {% endfor %}
-                    </tr>
-                    </table></p>
+                    </div>
+                    </div></p>
                     {% endif %}
         {% endif %}  
             <h2 role="button" align="right"><a href="login">Back to Your Page </a></h2>
