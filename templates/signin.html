@@ -38,7 +38,7 @@
               {% for message in form.password.errors %}
                  <div>Password: {{ message }}</div>
               {% endfor %}
-            <form action="signedin" method="post" id="loginForm">
+            <form action="signin" method="post" id="loginForm">
                 {{ form.csrf_token }}
                 <h2>{{ form.username.label }} {{ form.username }}</h2>
                 <h2>{{ form.password.label }} {{ form.password }}</h2><br>
