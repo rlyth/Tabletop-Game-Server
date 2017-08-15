@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+ 
+<head>
+    <title>Game Rules</title> 
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/style.css') }}">
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <nav>
+                <ul class="nav nav-pills pull-right">
+                		{% if passedUserName != None %}
+                    	<li role="button"><a href="login">My Page</a>
+                    	{% endif %}
+                        <li class="nav-link active"><a href="/">Home</a></li>
+                    </li>
+                </ul>
+            </nav>
+            <h3 class="text-muted">Available Card Game</h3>
+        </div>
+        <div class="row marketing">
+           	<h2>Uno like game</h2>
+            <p>Plays between 2-4 players</p>
+            <p>The Serpens team is working a card game, the game is similar Uno.</p>
+            <p>There are 4 colors, red, green, blue and yellow and 2 versions of wild cards.</p>              
+            <p>In each color there are cards ranging from 0-9.</p>
+            <p>In each color there is also a card that reverses the order of players, skips the next player’s turn, and the next player must draw two cards.</p>
+            <p>There is two of each card in the deck, except there is only 1 zero card.</p>
+            <p>At the start of the game each player draws 7 cards, and the next card is put face up on the discard pile if a wild card comes up first it is considered any color.</p>
+            <p>The order of players is randomized.</p>
+            <p>Each player may play one card from their hand, this card either needs to match the color or the number on the card face up on the discard pile. If the player cannot play a card the player must draw a card to end their turn, but the player may also draw a card instead of playing a card.</p>
+            <p>Wild cards may be played on any card including other wild cards; wild cards get a color when played by either the player selecting a color or randomly if a color is not selected. Wild draw 4 cards make the next player draw 4 cards.</p>
+            <p>The game ends when one player’s hand is empty.</p>
+            <p>The player who gets rid of all their cards first wins, and every other player loses.</p>
+        	{% if passedUserName != None %}
+            <h2 role="button"><a href="login">Back to Your Page </a></h2>
+            {% endif %}
+        </div>
+        <footer class="footer">
+            <p>Assignment for CS467 by Leanne Vermillion and Rebecca Thompson.</p>
+        </footer>
+ 
+    </div>
+
+</body>
+ 
+</html>

@@ -191,6 +191,14 @@ def statistics():
 			userRecord = 0		
 	return render_template('statistics.html', existingUser=existingUser, userRecord=userRecord)
 
+@app.route("/rules")
+def rules():
+	if('username' in session):
+		passedUserName = session['username']	
+	else:
+		passedUserName = None
+	return render_template('rules.html', passedUserName=passedUserName)
+
 @app.route("/login")
 def login():
 	if('username' in session):

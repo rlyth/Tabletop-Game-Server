@@ -27,35 +27,14 @@
             <p>Right now you may create an account, and login again once you have created an account.</p>              
             <p>You can play a game, but it might be a little buggy at the moment.</p>
 
+            <h2 role="button"><a href="rules">Game Rules </a></h2>        
         </div>
-        <button onclick="rulesText()">Game Instructions</button>
-        <p id="gameRules"></p>
- 
         <footer class="footer">
             <p>Assignment for CS467 by Leanne Vermillion and Rebecca Thompson.</p>
         </footer>
  
     </div>
-<script>
-function rulesText() {
-        var rules
-        rules = "Available Card Game/
-Uno like game/
-Plays between 2-4 players/
-There are 4 colors, red, green, blue and yellow and 2 versions of wild cards./
-In each color there are cards ranging from 0-9./
-In each color there is also a card that reverses the order of players, skips the next player’s turn, and the next player must draw two cards./
-There is two of each card in the deck, except there is only 1 zero card./
-At the start of the game each player draws 7 cards, and the next card is put face up on the discard pile if a wild card comes up first it is considered any color./
-The order of players is randomized./
-Each player may play one card from their hand, this card either needs to match the color or the number on the card face up on the discard pile. If the player cannot play a card the player must draw a card to end their turn, but the player may also draw a card instead of playing a card./
-Wild cards may be played on any card including other wild cards; wild cards get a color when played by either the player selecting a color or randomly if a color is not selected. Wild draw 4 cards make the next player draw 4 cards./
-The game ends when one player’s hand is empty./
-The player who gets rid of all their cards first wins, and every other player loses.
-"
-    document.getElementById("gameRules").innerHTML = rules;
-}
-</script>
+
 </body>
  
 </html>
