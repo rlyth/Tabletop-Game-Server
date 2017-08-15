@@ -51,7 +51,7 @@ p {
 .marketing p + h2 {
   	margin-top: 18px;
 }
-table {
+.marketing table {
     border: 1px solid black;
     padding: 15px;
     color: PeachPuff;
