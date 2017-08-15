@@ -57,7 +57,7 @@ p {
     color: PeachPuff;
     background-color: RebeccaPurple;
 }
-#gameStatus {
+.container table {
     border: 1px solid black;
     padding: 15px;
     color: PeachPuff;
