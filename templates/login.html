@@ -32,8 +32,17 @@
                 <h4>Play Game</h4>
                 {% if playableGame != None %}
                     {% for games in playableGame %}
-                        <a href ="playturn/{{ games.game_instance }}" onclick="waiting()"> {{ games.game_instance }} </a>
-                        <p id="text"></p>
+                        {% for p in players %}
+                            {% if games.game_instance == p.game_instance%}
+                            <a href ="playturn/{{ games.game_instance }}" onclick="waiting()"> {{ games.game_instance }} </a>
+                                {% for u in users %}
+                                    {% if u.id == p.user_id %}
+                                        <a> u.username </a>
+                                        <p id="text"></p>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}                                 
+                        {% endfor %}
                     {% endfor %}
                 {% endif %} 
 

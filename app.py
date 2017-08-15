@@ -197,6 +197,8 @@ def login():
 		passedUserName = session['username']
 		existingUser = User.query.filter_by(username=passedUserName).first()
 		gameids = PlayersInGame.query.filter(PlayersInGame.user_id == existingUser.id).all()
+		users = User.query.all()
+		players = PlayersInGame.query.all()
 		playableGame = []
 		for game in gameids:
 			thisGame = GameFunctions.gamePlay(game.game_instance)
@@ -204,9 +206,9 @@ def login():
 			if(thisGame.isPendingInvites() == False and gameInfo.status != 'Ended'):
 				playableGame.append(game)
 		if(existingUser.role == 'Admin'):
-			return render_template('adminLogin.html', passedUserName=passedUserName, gameids=gameids, playableGame=playableGame)
+			return render_template('adminLogin.html', passedUserName=passedUserName, gameids=gameids, playableGame=playableGame, users=users, players=players)
 		else:
-			return render_template('login.html', passedUserName=passedUserName, gameids=gameids, playableGame=playableGame)
+			return render_template('login.html', passedUserName=passedUserName, gameids=gameids, playableGame=playableGame, users=users, players=players)
 	else:
 		return render_template('index.html')
 
