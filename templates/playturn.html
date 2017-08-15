@@ -84,7 +84,7 @@
                 </tr>
                 <tr>
                     <td>
-                        <form action="{{ game_id }}" onlcick="reloadPage()" method="POST">
+                        <form action="#" onlcick="reloadPage()" method="POST">
                         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                         <input type="hidden" name="drawCard">
                         <input type="submit" value="Draw Card">
@@ -110,7 +110,7 @@
                         <td>
                         {{ c.Card.name }}
                         <br><img src="{{ url_for('static', filename=c.Card.img_front) }}">
-                        <form action="{{ game_id }}" onlcick="reloadPage()" method="POST">
+                        <form action="#" onlcick="reloadPage()" method="POST">
                             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                             <input type="hidden" name="cid" value="{{ c.id }}">
                             <input type="hidden" name="playCard">
