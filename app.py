@@ -63,7 +63,7 @@ def newGame():
 		playerNum4 = newGameForm.player4.data
 		if gamePlayers == '03':
 			if playerNum2 == 0 or playerNum3 == 0 or playerNum2 == playerNum3:
-				return render_template('newgame.html')
+				return render_template('error.html')
 			else:
 				inviteList = [playerNum2, playerNum3]
 				GameFunctions.initGameInstance(baseGameID, existingUser.id, inviteList)
@@ -71,14 +71,14 @@ def newGame():
 
 		if gamePlayers == '04':
 			if playerNum2 == 0 or playerNum3 == 0 or playerNum4 == 0 or playerNum2 == playerNum3 or playerNum2 == playerNum4 or playerNum4 == playerNum3:				
-				return render_template('newgame.html')
+				return render_template('error.html')
 			else:
 				inviteList = [playerNum2, playerNum3, playerNum4]
 				GameFunctions.initGameInstance(baseGameID, existingUser.id, inviteList)
 				return redirect(url_for('login'))
 		else:
 			if playerNum2 == 0:				
-				return render_template('newgame.html')
+				return render_template('error.html')
 			else:
 				inviteList = [playerNum2]
 				GameFunctions.initGameInstance(baseGameID, existingUser.id, inviteList)
@@ -296,8 +296,22 @@ def playturn(game_id):
 
 	return render_template('playturn.html', existingUser=existingUser, turnForm=turnForm, players=players, usersPlaying=usersPlaying, dump=dump, logs=logs, discard=discard, deck=True, deck_count=deck_count, discard_count=discard_count, hand=hand, active=active_player, endgame=True)
 
+@app.route("/error", methods = ['GET', 'POST'])
+def error():
+	if('username' in session):
+		passedUserName = session['username']
+	else:
+		passedUserName = None
+	return render_template('error.html', passedUserName=passedUserName)
+
+@app.errorhandler(404)
+def page_not_found(e):
+    """Return a custom 404 error."""
+    return 'Sorry, nothing at this URL.', 404
+
 if __name__ == "__main__":
 	#db.create_all()
 	if 'liveconsole' not in gethostname():
 		app.run(debug = True)
     #app.run()
+
