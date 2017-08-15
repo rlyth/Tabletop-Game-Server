@@ -13,40 +13,6 @@ CSRFProtect(app)
 
 db = SQLAlchemy(app)
 
-###Creates Local database for testing##################
-#app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/testuser.db'
-#db = SQLAlchemy(app)
-
-#class User(db.Model):
-#    id = db.Column(db.Integer, primary_key=True)
-#    username = db.Column(db.String(80), unique=True)
-#    password = db.Column(db.String(120))
-
-#    def __init__(self, username, password):
-#        self.username = username
-#        self.password = password
-
-#    def __repr__(self):
-#        return '<User %r>' % self.username
-
-
-#db.create_all()
-
-#dmin = User('admin', 'test')
-#db.session.add(admin)
-#db.session.commit()
-
-#users = User.query.all()
-#print(users[0].password)       
-
-#def addUserToDB(userName, password):
-#	user = User(userName, password)
-#	db.session.add(user)
-#	db.session.commit()
-###REMOVE THIS PURELY FOR TESTING##################
-
-#db.init_app(app)
-
 # Register blueprints
 from gameDB import gameDB
 app.register_blueprint(gameDB)
@@ -153,20 +119,20 @@ def profile():
 	passedUserName = session['username']
 	return render_template('profile.html', passedUserName=passedUserName)
 
-@app.route("/signedin", methods = ['GET', 'POST'])
+@app.route("/signin", methods = ['GET', 'POST'])
 def signIn():
 	logInForm = userForm()
 	if request.method == 'POST':
 		if logInForm.validate() == False:
 			flash('There was a problem with data that was entered.')
-			return render_template('signedin.html', form = logInForm)
+			return render_template('signin.html', form = logInForm)
 		else:
 			existingUser = User.query.filter_by(username=logInForm.username.data).first()
 
 			if(not existingUser.check_password(logInForm.password.data)):
 
 				flash('There was a problem with the password you entered.')
-				return render_template('signedin.html', form = logInForm)
+				return render_template('signin.html', form = logInForm)
 
 			if(existingUser):
 				session['username'] = existingUser.username
@@ -174,9 +140,9 @@ def signIn():
 			else:
 				flash('Username does not exist.')
 
-				return render_template('signedin.html', form = logInForm)
+				return render_template('signin.html', form = logInForm)
 	else:
-		return render_template('signedin.html', form = logInForm)
+		return render_template('signin.html', form = logInForm)
 
 @app.route("/statistics")
 def statistics():
@@ -211,12 +177,13 @@ def login():
 		for game in gameids:
 			thisGame = GameFunctions.gamePlay(game.game_instance)
 			gameInfo = GameFunctions.getGameInstance(game.game_instance)
+			gname = gameInfo.Game.name 
 			if(thisGame.isPendingInvites() == False and gameInfo.status != 'Ended'):
 				playableGame.append(game)
 		if(existingUser.role == 'Admin'):
-			return render_template('adminLogin.html', passedUserName=passedUserName, gameids=gameids, playableGame=playableGame, users=users, players=players)
+			return render_template('adminLogin.html', passedUserName=passedUserName, gname=gname, gameids=gameids, playableGame=playableGame, users=users, players=players)
 		else:
-			return render_template('login.html', passedUserName=passedUserName, gameids=gameids, playableGame=playableGame, users=users, players=players)
+			return render_template('login.html', passedUserName=passedUserName, gname=gname, gameids=gameids, playableGame=playableGame, users=users, players=players)
 	else:
 		return render_template('index.html')
 
@@ -242,7 +209,8 @@ def acceptgame(game_id):
 	if request.method == 'POST':
 		inviteStatus = acceptGameForm.status.data
 		thisGame = GameFunctions.gamePlay(game_id)
-
+		game = GameInstance.query.filter_by(id=game_id).first()
+		gname = Game.query.filter_by(game.base_game).first()
 		if inviteStatus == 'Accept':
 			#thisGame = PlayersInGame.query.filter(game_id).first()
 			thisGame.acceptInvite(existingUser.id)
@@ -253,7 +221,7 @@ def acceptgame(game_id):
 		else:
 			return redirect(url_for('login'))
 	else:
-		return render_template('acceptgame.html', passedUserName=passedUserName, acceptGameForm=acceptGameForm, game_id=game_id)
+		return render_template('acceptgame.html', passedUserName=passedUserName, gname=gname, acceptGameForm=acceptGameForm, game_id=game_id)
 
 @app.route("/winner", methods = ['GET', 'POST'])
 def winner():

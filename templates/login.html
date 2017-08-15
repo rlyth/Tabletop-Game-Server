@@ -30,10 +30,10 @@
         <div class="row marketing">
             <div class="col-sm-6 col-md-6 col-lg-6">
                 <h2>Play Game</h2>
-                <h4>ID | Players in Game</h4>
+                <h4>Name | ID | Players in Game</h4>
                 {% if playableGame != None %}
                     {% for games in playableGame %}
-                        <h4><a href ="playturn/{{ games.game_instance }}" onclick="waiting()"> {{ games.game_instance }}
+                        <h4><a href ="playturn/{{ games.game_instance }}" onclick="waiting()"> {{ gname }} | {{ games.game_instance }}
                         {% for p in players %}
                             {% if games.game_instance == p.game_instance%}
                                 {% for u in users %}
