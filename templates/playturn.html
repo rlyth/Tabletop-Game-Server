@@ -7,7 +7,12 @@
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/style.css') }}">
     <meta http-equiv="refresh" content="15" >
- 
+    <script>
+        function reloadPage() {
+            alert('Playing Your Turn.');
+            location.reload();
+        }
+    </script> 
 </head>
  
 <body>
@@ -184,10 +189,4 @@
  
     </div>
 </body>
-<script>
-    function reloadPage() {
-        alert('Playing Your Turn.');
-        location.reload();
-    }
-</script>
 </html>
