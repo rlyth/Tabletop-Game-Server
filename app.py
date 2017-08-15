@@ -274,6 +274,7 @@ def playturn(game_id):
     # GameInstance is Uno 
 	if gameInfo.Game.name == 'Uno':
 		game = Uno(game_id)
+		active_player = game.getCurrentPlayerID()
 		if request.method == 'POST':
 			if 'drawCard' in request.form:
 				game.draw(active_player)
