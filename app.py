@@ -273,8 +273,8 @@ def playturn(game_id):
     # GameInstance is Uno 
 	if gameInfo.Game.name == 'Uno':
 		game = Uno(game_id)
+		active_player = game.getCurrentPlayerID()
 		if request.method == 'POST':
-			active_player = game.getCurrentPlayerID()
 			if 'wildColor' in request.form:
 				if 'wildColor' == 'Select':
 					flash('You must choose a color to play a wild card.')
@@ -290,8 +290,6 @@ def playturn(game_id):
 				# playCard returned false; move is illegal
 				if not game.playCard(active_player, request.form["cid"], wildColor=wc):
 					flash('Can\'t play that card')
-		else:
-			active_player = game.getCurrentPlayerID()
 
 		g = game.getThisGame(existingUser.id)
 
