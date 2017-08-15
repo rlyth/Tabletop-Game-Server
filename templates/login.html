@@ -33,7 +33,7 @@
                 <p>ID | Players in Game</p>
                 {% if playableGame != None %}
                     {% for games in playableGame %}
-                        <h2><a href ="playturn/{{ games.game_instance }}" onclick="waiting()"> {{ games.game_instance }} </a>
+                        <p><a href ="playturn/{{ games.game_instance }}" onclick="waiting()"> {{ games.game_instance }} </a>
                         {% for p in players %}
                             {% if games.game_instance == p.game_instance%}
                                 {% for u in users %}
@@ -43,7 +43,7 @@
                                 {% endfor %}
                             {% endif %}                                 
                         {% endfor %}
-                        <p id="text"></p></h2>
+                        <p id="text"></p></p>
                     {% endfor %}
                 {% endif %} 
 
