@@ -290,8 +290,9 @@ def playturn(game_id):
 						wc = random.choice(colors)
 
 				# playCard returned false; move is illegal
-				if not game.playCard(active_player, request.form["cid"], wildColor=wc):
+				if game.playCard(active_player, request.form["cid"], wildColor=wc):
 					active_player = game.getCurrentPlayerID()
+				else:
 					flash('Can\'t play that card')
 
 		g = game.getThisGame(existingUser.id)
