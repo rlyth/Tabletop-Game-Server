@@ -39,12 +39,12 @@
         <div class="row marketing">
             {% if players %}
             <table border=1 cellpadding=5>
-                <tr>
-                    <td><b>Players</b></td>
+                <tr cellpadding=5>
+                    <td cellpadding=5><b>Players</b></td>
                 </tr>
-                <tr>
+                <tr cellpadding=5>
                     {% for p in players %}
-                    <td>
+                    <td cellpadding=5>
                         Username: {{ p[0].User.username }}
                         <br>ID: {{ p[0].user_id }}
                         <br>Turn Order: {{ p[0].turn_order }}
