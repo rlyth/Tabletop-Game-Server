@@ -40,11 +40,11 @@
             {% if players %}
             <div class="container">
                 <div class="row">
-                    <div class="col-xs-4 col-sm-4"><b>Players</b></div>
+                    <div class="col-xs-2 col-sm-2"><b>Players</b></div>
                 </div>
                 <div class="row">
                     {% for p in players %}
-                    <div class="col-xs-4 col-sm-4">
+                    <div class="col-xs-2 col-sm-2">
                         Username: {{ p[0].User.username }}
                         <br>ID: {{ p[0].user_id }}
                         <br>Turn Order: {{ p[0].turn_order }}
@@ -69,19 +69,19 @@
             {% if deck %}
             <p><div class="container">
                 <div class="row">
-                    <div class="col-xs-4 col-sm-4">
+                    <div class="col-xs-2 col-sm-2">
                         <b>Deck</b>
                         <br>Count: {{ deck_count }}
                         <br><img src="{{ url_for('static', filename='UnoCardImages/CardBack.gif') }}">
                     </div>
-                    <div class="col-xs-4 col-sm-4">
+                    <div class="col-xs-2 col-sm-2">
                         <b>Discard</b>
                         <br>Count: {{ discard_count }}
                         <br><img src="{{ url_for('static', filename=discard.Card.img_front) }}">
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-xs-4 col-sm-4">
+                    <div class="col-xs-2 col-sm-2">
                         <form action="{{ game_id }}" method="POST">
                         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                         <input type="hidden" name="drawCard">
@@ -89,7 +89,7 @@
 
                         </form>
                     </div>
-                    <div class="col-xs-4 col-sm-4">
+                    <div class="col-xs-2 col-sm-2">
                         {% if discard %}
                         {{ discard.Card.name }}
                         {% if discard.Card.card_type == 'Wild' %}
@@ -105,7 +105,7 @@
                     <p><div class="container">
                     <div class="row">
                     {% for c in hand %}
-                        <div class="col-xs-4 col-sm-4">
+                        <div class="col-xs-2 col-sm-2">
                         {{ c.Card.name }}
                         <br><img src="{{ url_for('static', filename=c.Card.img_front) }}">
                         <form action="{{ game_id }}" method="POST">
@@ -133,19 +133,19 @@
             {% if deck %}
             <p><div class="container">
                 <div class="row">
-                    <div class="col-xs-4 col-sm-4">
+                    <div class="col-xs-2 col-sm-2">
                         <b>Deck</b>
                         <br>Count: {{ deck_count }}
                         <br><img src="{{ url_for('static', filename='UnoCardImages/CardBack.gif') }}">
                     </div>
-                    <div class="col-xs-4 col-sm-4">
+                    <div class="col-xs-2 col-sm-2">
                         <b>Discard</b>
                         <br>Count: {{ discard_count }}
                         <br><img src="{{ url_for('static', filename=discard.Card.img_front) }}">
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-xs-4 col-sm-4">
+                    <div class="col-xs-2 col-sm-2">
                         {% if discard %}
                         {{ discard.Card.name }}
                         {% if discard.Card.card_type == 'Wild' %}
@@ -160,7 +160,7 @@
                     <p><div class="container">
                     <div class="row">
                     {% for c in hand %}
-                        <div class="col-xs-4 col-sm-4">
+                        <div class="col-xs-2 col-sm-2">
                         {{ c.Card.name }}
                         <br><img src="{{ url_for('static', filename=c.Card.img_front) }}">
                             {% if c.Card.card_type == 'Wild' %}
