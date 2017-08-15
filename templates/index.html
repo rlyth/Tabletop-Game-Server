@@ -29,6 +29,7 @@
 
         </div>
         <button onclick="rulesText()">Game Instructions</button>
+        <p id="gameRules"></p>
  
         <footer class="footer">
             <p>Assignment for CS467 by Leanne Vermillion and Rebecca Thompson.</p>
@@ -37,7 +38,8 @@
     </div>
 <script>
 function rulesText() {
-    alert("Available Card Game/
+        var rules
+        rules = "Available Card Game/
 Uno like game/
 Plays between 2-4 players/
 There are 4 colors, red, green, blue and yellow and 2 versions of wild cards./
@@ -50,7 +52,8 @@ Each player may play one card from their hand, this card either needs to match t
 Wild cards may be played on any card including other wild cards; wild cards get a color when played by either the player selecting a color or randomly if a color is not selected. Wild draw 4 cards make the next player draw 4 cards./
 The game ends when one player’s hand is empty./
 The player who gets rid of all their cards first wins, and every other player loses.
-");
+"
+    document.getElementById("gameRules").innerHTML = rules;
 }
 </script>
 </body>
