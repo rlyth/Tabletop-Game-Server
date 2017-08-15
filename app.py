@@ -213,6 +213,8 @@ def login():
 def adminDelete():
 	passedUserName = session['username']
 	users = User.query.all()
+	games = GameFunctions.getGameInstance(game_id)
+
 	return render_template('delete.html', passedUserName=passedUserName, users=users)
 
 @app.route("/logout")
