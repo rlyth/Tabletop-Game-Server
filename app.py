@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_wtf.csrf import CSRFProtect
 from userForm import userForm, gameForm, acceptForm, playTurnForm
 from socket import gethostname
+import random
 
 app = Flask(__name__)
 
@@ -273,22 +274,23 @@ def playturn(game_id):
     # GameInstance is Uno 
 	if gameInfo.Game.name == 'Uno':
 		game = Uno(game_id)
-		active_player = game.getCurrentPlayerID()
 		if request.method == 'POST':
-			if 'wildColor' in request.form:
-				if 'wildColor' == 'Select':
-					flash('You must choose a color to play a wild card.')
 			if 'drawCard' in request.form:
 				game.draw(active_player)
-				#active_player = game.getCurrentPlayerID()
+				active_player = game.getCurrentPlayerID()
 			elif 'playCard' in request.form:
 				wc = None
-				#active_player = game.getCurrentPlayerID()
 				# Wild card was played, get color
 				if 'wildColor' in request.form:
 					wc = request.form["wildColor"]
+					if 'wildColor' == 'Select':
+						#Mif the player doesn't pick the computer picks.
+						colors = ['Red', 'Yellow', 'Green', 'Blue']
+						wc = random.choice(colors)
+
 				# playCard returned false; move is illegal
 				if not game.playCard(active_player, request.form["cid"], wildColor=wc):
+					active_player = game.getCurrentPlayerID()
 					flash('Can\'t play that card')
 
 		g = game.getThisGame(existingUser.id)
