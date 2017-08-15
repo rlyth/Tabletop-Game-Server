@@ -280,10 +280,10 @@ def playturn(game_id):
 					flash('You must choose a color to play a wild card.')
 			if 'drawCard' in request.form:
 				game.draw(active_player)
-				active_player = game.getCurrentPlayerID()
+				#active_player = game.getCurrentPlayerID()
 			elif 'playCard' in request.form:
 				wc = None
-				active_player = game.getCurrentPlayerID()
+				#active_player = game.getCurrentPlayerID()
 				# Wild card was played, get color
 				if 'wildColor' in request.form:
 					wc = request.form["wildColor"]
