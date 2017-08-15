@@ -284,7 +284,7 @@ def playturn(game_id):
 				# Wild card was played, get color
 				if 'wildColor' in request.form:
 					wc = request.form["wildColor"]
-					if 'wildColor' == 'Select':
+					if wc == 'Select':
 						#Mif the player doesn't pick the computer picks.
 						colors = ['Red', 'Yellow', 'Green', 'Blue']
 						wc = random.choice(colors)
