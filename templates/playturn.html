@@ -36,15 +36,15 @@
             </p>
           {% endif %}
         {% endwith %}
-        <div class="row marketing">
+        <div>
             {% if players %}
             <table border=1 cellpadding=5>
-                <tr cellpadding=5>
-                    <td cellpadding=5><b>Players</b></td>
+                <tr>
+                    <td><b>Players</b></td>
                 </tr>
-                <tr cellpadding=5>
+                <tr>
                     {% for p in players %}
-                    <td cellpadding=5>
+                    <td>
                         Username: {{ p[0].User.username }}
                         <br>ID: {{ p[0].user_id }}
                         <br>Turn Order: {{ p[0].turn_order }}
