@@ -38,7 +38,7 @@
         {% endwith %}
         <div class="row marketing">
             {% if players %}
-            <table>
+            <table border=1 cellpadding=5>
                 <tr>
                     <td><b>Players</b></td>
                 </tr>
@@ -58,7 +58,11 @@
             {% endif %}
 
         {% if active %}
-        <p><b>Active Player: {{ active }}</b></p>
+            {% for u in usersPlaying %}
+                {% if active == u.id%}
+                <h3><b>Active Player: {{ u.username }}</b></h3>
+                {% endif %}
+            {% end for %}
         {% endif %}
 
         {% if active == existingUser.id %}

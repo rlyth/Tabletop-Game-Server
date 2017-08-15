@@ -57,12 +57,6 @@ p {
     color: PeachPuff;
     background-color: RebeccaPurple;
 }
-.container .marketing table {
-    border: 1px solid black;
-    padding: 15px;
-    color: PeachPuff;
-    background-color: RebeccaPurple;
-}
 th, td {
     padding: 15px;
 }
