@@ -9,7 +9,6 @@
     <meta http-equiv="refresh" content="15" >
     <script>
         function reloadPage() {
-            alert('Playing Your Turn.');
             location.reload();
         }
     </script> 
@@ -84,7 +83,7 @@
                 </tr>
                 <tr>
                     <td>
-                        <form action="{{ game_id }}" onlcick="reloadPage()" method="POST">
+                        <form action="{{ game_id }}" onclick="setTimeout(reloadPage, 3000)" method="POST">
                         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                         <input type="hidden" name="drawCard">
                         <input type="submit" value="Draw Card">
@@ -110,7 +109,7 @@
                         <td>
                         {{ c.Card.name }}
                         <br><img src="{{ url_for('static', filename=c.Card.img_front) }}">
-                        <form action="{{ game_id }}" onlcick="reloadPage()" method="POST">
+                        <form action="{{ game_id }}" onclick="setTimeout(reloadPage, 3000)" method="POST">
                             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                             <input type="hidden" name="cid" value="{{ c.id }}">
                             <input type="hidden" name="playCard">
