@@ -29,11 +29,11 @@
  
         <div class="row marketing">
             <div class="col-sm-6 col-md-6 col-lg-6">
-                <h4>Play Game</h4>
-                <p>ID | Players in Game</p>
+                <h2>Play Game</h4>
+                <h3>ID | Players in Game</h3>
                 {% if playableGame != None %}
                     {% for games in playableGame %}
-                        <p><a href ="playturn/{{ games.game_instance }}" onclick="waiting()"> {{ games.game_instance }} </a>
+                        <h3><a href ="playturn/{{ games.game_instance }}" onclick="waiting()"> {{ games.game_instance }} </a>
                         {% for p in players %}
                             {% if games.game_instance == p.game_instance%}
                                 {% for u in users %}
@@ -43,11 +43,11 @@
                                 {% endfor %}
                             {% endif %}                                 
                         {% endfor %}
-                        <p id="text"></p></p>
+                        <p id="text"></p></h3>
                     {% endfor %}
                 {% endif %} 
 
-                <h4>Invitations To Games</h4>
+                <h2>Invitations To Games</h4>
                 {% for invites in gameids %}
                     {% if invites.invite_status == 'Invited' %}
                         <a href ="acceptgame/{{ invites.game_instance }}"> {{ invites.game_instance }} </a>
