@@ -32,7 +32,8 @@
                 <h4>Play Game</h4>
                 {% if playableGame != None %}
                     {% for games in playableGame %}
-                        <a href ="playturn/{{ games.game_instance }}"> {{ games.game_instance }} </a>
+                        <a href ="playturn/{{ games.game_instance }}" onclick="waiting()"> {{ games.game_instance }} </a>
+                        <p id="text"></p>
                     {% endfor %}
                 {% endif %} 
 
@@ -56,6 +57,10 @@
         </footer>
  
     </div>
+<script>
+function waiting() {
+    document.getElementById("text").innerHTML = "Your Game is being Retrieved.";
+}
+</script>
 </body>
- 
 </html>
