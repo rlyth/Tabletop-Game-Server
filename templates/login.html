@@ -37,7 +37,7 @@
                             {% if games.game_instance == p.game_instance%}
                                 {% for u in users %}
                                     {% if u.id == p.user_id %}
-                                        <a> {{ u.username }}</a>
+                                        {{ u.username }}
                                         <p id="text"></p>
                                     {% endif %}
                                 {% endfor %}
