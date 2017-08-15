@@ -206,7 +206,7 @@ def acceptgame(game_id):
 	passedUserName = session['username']
 	existingUser = User.query.filter_by(username=passedUserName).first()
 	game = GameInstance.query.filter_by(id=game_id).first()
-	gname = Game.query.filter_by(game.base_game).first()
+	gname = Game.query.filter_by(id=game.base_game).first()
 
 	if request.method == 'POST':
 		inviteStatus = acceptGameForm.status.data
