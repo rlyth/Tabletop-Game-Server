@@ -30,7 +30,7 @@
         <div class="row marketing">
             <div class="col-sm-6 col-md-6 col-lg-6">
                 <h2>Play Game</h2>
-                <h3>ID | Players in Game</h3>
+                <h4>ID | Players in Game</h4>
                 {% if playableGame != None %}
                     {% for games in playableGame %}
                         <h4><a href ="playturn/{{ games.game_instance }}" onclick="waiting()"> {{ games.game_instance }}
@@ -48,9 +48,20 @@
                 {% endif %} 
 
                 <h2>Invitations To Games</h2>
+                <h4>ID | Players for Game</h4>
                 {% for invites in gameids %}
                     {% if invites.invite_status == 'Invited' %}
-                        <a href ="acceptgame/{{ invites.game_instance }}"> {{ invites.game_instance }} </a>
+                        <h4><a href ="acceptgame/{{ invites.game_instance }}"> {{ invites.game_instance }} 
+                        {% for p in players %}
+                            {% if invites.game_instance == p.game_instance%}
+                                {% for u in users %}
+                                    {% if u.id == p.user_id %}
+                                        | {{ u.username }}
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}                                 
+                        {% endfor %}
+                        </a></h4>
                     {% endif %}
                 {% endfor %}
             </div>
