@@ -70,14 +70,14 @@ def newGame():
 				return redirect(url_for('login'))
 
 		if gamePlayers == '04':
-			if playerNum2 == 0 or playerNum3 == 0 or playerNum4 == 0 or playerNum2 == playerNum3 or playerNum2 == playerNum4 or playerNum4 == playerNum3:				
+			if playerNum2 == 0 or playerNum3 == 0 or playerNum4 == 0 or playerNum2 == playerNum3 or playerNum2 == playerNum4 or playerNum4 == playerNum3:
 				return render_template('error.html')
 			else:
 				inviteList = [playerNum2, playerNum3, playerNum4]
 				GameFunctions.initGameInstance(baseGameID, existingUser.id, inviteList)
 				return redirect(url_for('login'))
 		else:
-			if playerNum2 == 0:				
+			if playerNum2 == 0:
 				return render_template('error.html')
 			else:
 				inviteList = [playerNum2]
@@ -114,10 +114,18 @@ def newUser():
 	else:
 		return render_template('newuser.html', form = logInForm)
 
-@app.route("/profile")
+@app.route("/profile", methods = ['GET', 'POST'])
 def profile():
-	passedUserName = session['username']
-	return render_template('profile.html', passedUserName=passedUserName)
+    logInForm = userForm()
+
+    if request.method == 'POST':
+        if request.form["password"] == request.form["password2"]:
+            user = User.query.filter_by(username=session['username']).one()
+            user.set_password(request.form["password"])
+            db.session.commit()
+
+    passedUserName = session['username']
+    return render_template('profile.html', passedUserName=passedUserName, form = logInForm)
 
 @app.route("/signin", methods = ['GET', 'POST'])
 def signIn():
@@ -154,13 +162,13 @@ def statistics():
 		if (userGames > 0):
 			userRecord = 100 * (userWins/userGames)
 		else:
-			userRecord = 0		
+			userRecord = 0
 	return render_template('statistics.html', existingUser=existingUser, userRecord=userRecord)
 
 @app.route("/rules")
 def rules():
 	if('username' in session):
-		passedUserName = session['username']	
+		passedUserName = session['username']
 	else:
 		passedUserName = None
 	return render_template('rules.html', passedUserName=passedUserName)
@@ -177,7 +185,7 @@ def login():
 		for game in gameids:
 			thisGame = GameFunctions.gamePlay(game.game_instance)
 			gameInfo = GameFunctions.getGameInstance(game.game_instance)
-			gname = gameInfo.Game.name 
+			gname = gameInfo.Game.name
 			if(thisGame.isPendingInvites() == False and gameInfo.status != 'Ended'):
 				playableGame.append(game)
 		if(existingUser.role == 'Admin'):
@@ -249,7 +257,7 @@ def playturn(game_id):
 		dump = "Game Instance not found."
 		return redirect(url_for('login'))
 
-    # GameInstance is Uno 
+    # GameInstance is Uno
 	if gameInfo.Game.name == 'Uno':
 		game = Uno(game_id)
 		active_player = game.getCurrentPlayerID()

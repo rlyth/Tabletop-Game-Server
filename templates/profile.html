@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
- 
+
 <head>
-    <title>{{ passedUserName }}'s Profile</title> 
- 
+    <title>{{ passedUserName }}'s Profile</title>
+
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/style.css') }}">
- 
+
 </head>
- 
+
 <body>
- 
+
     <div class="container">
         <div class="header">
             <nav>
@@ -25,23 +25,26 @@
             </nav>
             <h3 class="text-muted">Update Profile</h3>
         </div>
- 
+
         <div class="row marketing">
-            <form action="" method="patch" id="loginForm">
-                <h2> THIS PAGE DOES NOT WORK!</h2>
-                <h2> Update Password: </h2><br>
-                <h2> Check Password: </h2><br>
+            <form action="/profile" method="POST" id="loginForm">
+                {{ form.csrf_token }}
+                <h2>Update Password</h2>
+                <h2> New Password: </h2>
+                {{ form.password }}<br>
+                <h2> Repeat New Password: </h2>
+                {{ form.password2 }}<br>
                 <!-- Check \password fits requirements -->
                 <input type="submit" value="Submit">  <!-- on successful submit open login.html -->
             </form>
             <h2 role="button"><a href="login">Back to Your Page  </a></h2>
         </div>
- 
+
         <footer class="footer">
             <p>Assignment for CS467 by Leanne Vermillion and Rebecca Thompson.</p>
         </footer>
- 
+
     </div>
 </body>
- 
+
 </html>
