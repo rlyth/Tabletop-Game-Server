@@ -20,3 +20,8 @@ class acceptForm(Form):
 class playTurnForm(Form):
 	draw = SubmitField(label='Draw Card')
 	play = SelectField(coerce=int)
+
+class updatePassword(Form):
+	PW = StringField('Password', validators=[DataRequired()])
+	NewPW = StringField('NewPassword', validators=[DataRequired()])
+    newPW2 = StringField('NewPassword2')

@@ -1,7 +1,7 @@
 from flask import Flask, render_template, session, request, flash, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf.csrf import CSRFProtect
-from userForm import userForm, gameForm, acceptForm, playTurnForm
+from userForm import userForm, gameForm, acceptForm, playTurnForm, updatePassword
 from socket import gethostname
 import random
 
@@ -139,7 +139,7 @@ def profile():
 					flash('Password sucessfully updated.')
 					return render_template('profile.html', updatePW=updatePW)
 
-	return render_template('profile.html', passedUserName=passedUserName, form = logInForm)
+	return render_template('profile.html', passedUserName=passedUserName, updatePW=updatePW)
 
 @app.route("/signin", methods = ['GET', 'POST'])
 def signIn():
