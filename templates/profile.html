@@ -34,21 +34,21 @@
                 {% endfor %}
               {% endif %}
             {% endwith %}
-            {% for message in updatePW.password.errors %}
+            {% for message in updatePW.PW.errors %}
                 <div>Password: {{ message }}</div>
             {% endfor %}
       
-            {% for message in updatePW.newPassword.errors %}
+            {% for message in updatePW.NewPW.errors %}
                  <div>NewPassword: {{ message }}</div>
             {% endfor %}
-            {% for message in updatePW.newPassword2.errors %}
+            {% for message in updatePW.NewPW2.errors %}
                  <div>NewPassword2: {{ message }}</div>
               {% endfor %}
             <form action="profile" method="post" id="updatePW">
                 {{ updatePW.csrf_token }}
-                <h2> Old Password: {{ updatePW.password }}</h2>
-                <h2> Change Password: {{ updatePW.newPassword }}</h2>
-                <h2> Check Password: {{ updatePW.newPassword2 }}</h2><br>
+                <h2> Old Password: {{ updatePW.PW }}</h2>
+                <h2> Change Password: {{ updatePW.NewPW }}</h2>
+                <h2> Check Password: {{ updatePW.NewPW2 }}</h2><br>
                 <!-- Check against the exisiting user database that user name is unique and password fits requirements -->
                 <input type="submit" value="Submit">  <!-- on successful submit open login.html -->
             </form>
