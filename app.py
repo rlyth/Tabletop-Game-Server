@@ -299,6 +299,12 @@ def playturn(game_id):
 				else:
 					flash('Can\'t play that card')
 
+        # Makes moves for AI until next human player's turn
+		while game.getCurrentPlayer().User.role == 'AI':
+		    game.autoplay()
+
+		active_player = game.getCurrentPlayerID()
+
 		g = game.getThisGame(existingUser.id)
 
 		discard = g["Discard Top"]

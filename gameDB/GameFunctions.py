@@ -32,7 +32,12 @@ def initGameInstance(baseGameID, creatorID, inviteList):
 
     # Add all players to PlayersInGame with invite status
     for p in inviteList:
-        newPlayer = PlayersInGame(newGame.id, p, invite_status='Invited')
+        # AI players auto-accept invites
+        if User.query.filter_by(id=p).first().role == 'AI':
+            newPlayer = PlayersInGame(newGame.id, p, invite_status='Accepted')
+        else:
+            newPlayer = PlayersInGame(newGame.id, p, invite_status='Invited')
+
         db.session.add(newPlayer)
 
     db.session.commit()
@@ -636,6 +641,18 @@ class gamePlay:
         return CardInstance.query \
                     .filter_by(**filters) \
                     .join(Card) \
+                    .first()
+
+
+    # Returns: A PlayersInGame/User object of the Player whose turn order matches
+    #   the current turn order
+    def getCurrentPlayer(self):
+        return PlayersInGame.query \
+                    .filter_by(
+                        game_instance=self.game.id,
+                        turn_order=self.game.current_turn_order
+                        ) \
+                    .join(User) \
                     .first()
 
 

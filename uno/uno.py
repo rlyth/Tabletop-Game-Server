@@ -276,8 +276,13 @@ class Uno(gamePlay):
 
 
     # A naive AI
-    def autoplay(self, playerID):
-        handPile = self.getPile(pile_type="Hand", pile_owner=playerID)
+    def autoplay(self, playerID=None):
+        if playerID:
+            player = playerID
+        else:
+            player = self.getCurrentPlayerID()
+
+        handPile = self.getPile(pile_type="Hand", pile_owner=player)
         hand = self.getCards(pile=handPile.id)
 
         top = self.getTopCard(self.discard.id)
@@ -292,11 +297,11 @@ class Uno(gamePlay):
                     random.shuffle(colors)
                     wc = colors[0]
 
-                self.playCard(playerID, card.id, wildColor=wc)
+                self.playCard(player, card.id, wildColor=wc)
                 return
 
         # No valid plays, draw a card
-        self.draw(playerID)
+        self.draw(player)
 
 
     # Retrieves any information needed to display this game
