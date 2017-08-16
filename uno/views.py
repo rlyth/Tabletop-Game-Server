@@ -73,7 +73,7 @@ def sandbox(instanceID):
             game.resetGame()
 
         elif 'autoplay' in request.form:
-            game.autoplay(active_player)
+            game.autoplay(playerID=active_player)
 
     # temporary hack, remove it later
     active_player = game.getCurrentPlayerID()
