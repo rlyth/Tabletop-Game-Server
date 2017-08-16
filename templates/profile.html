@@ -34,6 +34,16 @@
                 {% endfor %}
               {% endif %}
             {% endwith %}
+            {% for message in updatePW.username.errors %}
+                <div>Password: {{ message }}</div>
+            {% endfor %}
+      
+            {% for message in updatePW.password.errors %}
+                 <div>NewPassword: {{ message }}</div>
+            {% endfor %}
+            {% for message in updatePW.password2.errors %}
+                 <div>NewPassword2: {{ message }}</div>
+              {% endfor %}
             <form action="profile" method="post" id="updatePW">
                 {{ updatePW.csrf_token }}
                 <h2> Old Password: {{ updatePW.password }}</h2>
