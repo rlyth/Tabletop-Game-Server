@@ -31,14 +31,19 @@ def initGameInstance(baseGameID, creatorID, inviteList):
     db.session.commit()
 
     # Add all players to PlayersInGame with invite status
+    AI_count = 0
     for p in inviteList:
         # AI players auto-accept invites
         if User.query.filter_by(id=p).first().role == 'AI':
             newPlayer = PlayersInGame(newGame.id, p, invite_status='Accepted')
+            AI_count += 1
         else:
             newPlayer = PlayersInGame(newGame.id, p, invite_status='Invited')
 
         db.session.add(newPlayer)
+
+    newGame.num_players += AI_count
+    db.session.add(newGame)
 
     db.session.commit()
 
