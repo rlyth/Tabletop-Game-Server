@@ -126,17 +126,17 @@ def profile():
 			if(not existingUser.check_password(updatePW.PW.data)):
 
 				flash('There was a problem with the password you entered.')
-				return render_template('profile.html')
+				return render_template('profile.html', updatePW=updatePW)
 			else:
 				#check entered passwords match
 				if(updatePW.NewPW.data != updatePW.NewPW2.data):
 					flash('The passwords do not match.')
-					return render_template('profile.html')
+					return render_template('profile.html', updatePW=updatePW)
 				else:
 					existingUser.set_password(updatePW.NewPW.data)
 					db.session.commit()
 					flash('Password sucessfully updated.')
-					return render_template('profile.html')
+					return render_template('profile.html', updatePW=updatePW)
 
 	return render_template('profile.html', passedUserName=passedUserName, updatePW=updatePW)
 
