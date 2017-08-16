@@ -34,14 +34,14 @@
                 {% endfor %}
               {% endif %}
             {% endwith %}
-            {% for message in updatePW.username.errors %}
+            {% for message in updatePW.password.errors %}
                 <div>Password: {{ message }}</div>
             {% endfor %}
       
-            {% for message in updatePW.password.errors %}
+            {% for message in updatePW.newPassword.errors %}
                  <div>NewPassword: {{ message }}</div>
             {% endfor %}
-            {% for message in updatePW.password2.errors %}
+            {% for message in updatePW.newPassword2.errors %}
                  <div>NewPassword2: {{ message }}</div>
               {% endfor %}
             <form action="profile" method="post" id="updatePW">
