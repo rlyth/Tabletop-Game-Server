@@ -24,4 +24,4 @@ class playTurnForm(Form):
 class updatePassword(Form):
 	PW = StringField('Password', validators=[DataRequired()])
 	NewPW = StringField('NewPassword', validators=[DataRequired()])
-	newPW2 = StringField('NewPassword2')
+	NewPW2 = StringField('NewPassword2')
