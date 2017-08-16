@@ -3,9 +3,9 @@ from wtforms import StringField, IntegerField, SelectField, SubmitField
 from wtforms.validators import DataRequired
 
 class userForm(Form):
-    username = StringField('Username', validators=[DataRequired()])
-    password = StringField('Password', validators=[DataRequired()])
-    password2 = StringField('Password2')
+	username = StringField('Username', validators=[DataRequired()])
+	password = StringField('Password', validators=[DataRequired()])
+	password2 = StringField('Password2')
 
 class gameForm(Form):
 	game = StringField('Game')
@@ -24,4 +24,4 @@ class playTurnForm(Form):
 class updatePassword(Form):
 	PW = StringField('Password', validators=[DataRequired()])
 	NewPW = StringField('NewPassword', validators=[DataRequired()])
-    newPW2 = StringField('NewPassword2')
+	newPW2 = StringField('NewPassword2')
