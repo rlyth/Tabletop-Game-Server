@@ -183,19 +183,17 @@
                 </div></p>
                 {% endif %}
         {% endif %}  
-            <h2 role="button" align="right"><a href="login">Back to Your Page </a></h2>
+        <h2 role="button" align="right"><a href="login">Back to Your Page </a></h2>
         
         </div>
+        <!-- A Model from Boostrap similar to the one at W3School -->
         <div class="container">
-          <h2>Modal Example</h2>
-          <!-- Trigger the modal with a button -->
-          <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">See Log</button>
+          <h2>Game Play Log</h2>
+          <button type="button" lass="active" data-toggle="modal" data-target="#myModal">See Log</button>
 
-          <!-- Modal -->
           <div class="modal fade" id="myModal" role="dialog">
             <div class="modal-dialog">
             
-              <!-- Modal content-->
               <div class="modal-content">
                 <div class="modal-header">
                   <button type="button" class="close" data-dismiss="modal">&times;</button>
@@ -221,17 +219,6 @@
           </div>
           
         </div>
-        {% if existingUser.role == 'Admin' %}
-        <p>{{ dump }}</p>
-
-        <p>
-        {% if logs %}
-        {% for log in logs %}
-            {{ log.timestamp }} | {{ log.message }}<br>
-        {% endfor %}
-        {% endif %}
-        </p>
-        {% endif %}
         <footer class="footer">
             <p>Assignment for CS467 by Leanne Vermillion and Rebecca Thompson.</p>
         </footer>
