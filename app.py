@@ -139,8 +139,7 @@ def profile():
 					flash('Password sucessfully updated.')
 					return render_template('profile.html', updatePW=updatePW)
 
-    passedUserName = session['username']
-    return render_template('profile.html', passedUserName=passedUserName, form = logInForm)
+	return render_template('profile.html', passedUserName=passedUserName, form = logInForm)
 
 @app.route("/signin", methods = ['GET', 'POST'])
 def signIn():
