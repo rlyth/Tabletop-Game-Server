@@ -12,9 +12,13 @@
         <div class="header">
             <nav>
                 <ul class="nav nav-pills pull-right">
-                        <li class="nav-link"><a href="signin">Log In</a></li>
-                        <li class="nav-link"><a href="newuser">New User</a></li>
-                        <li class="nav-link active"><a href="/">Home</a></li>
+                    {% if passedUserName != None %}
+                    <li role="button"><a href="login">My Page</a>
+                    <li role="button"><a href="logout">Log Out</a>
+                    {% endif %}
+                    <li class="nav-link"><a href="signin">Log In</a></li>
+                    <li class="nav-link"><a href="newuser">New User</a></li>
+                    <li class="nav-link active"><a href="/">Home</a></li>
                     </li>
                 </ul>
             </nav>
