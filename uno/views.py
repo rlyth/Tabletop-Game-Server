@@ -72,6 +72,9 @@ def sandbox(instanceID):
         elif 'resetGame' in request.form:
             game.resetGame()
 
+        elif 'autoplay' in request.form:
+            game.autoplay(active_player)
+
     # temporary hack, remove it later
     active_player = game.getCurrentPlayerID()
 
@@ -102,5 +105,6 @@ def sandbox(instanceID):
                                 hand=hand,
                                 gid=instanceID,
                                 active=active_player,
-                                endgame=True
+                                endgame=True,
+                                endturn=True
                             )

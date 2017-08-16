@@ -105,6 +105,11 @@
                 <input type="hidden" name="endTurn">
                 <input type="submit" value="End Turn">
 		    </form>
+		    <form action="/uno/{{ gid }}/sandbox/" method="POST">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                <input type="hidden" name="autoplay">
+                <input type="submit" value="autoplay()">
+		    </form>
         </p>
         {% endif %}
 

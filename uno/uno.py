@@ -1,4 +1,5 @@
 from gameDB.GameFunctions import gamePlay
+import random
 
 # Uno extends gamePlay
 class Uno(gamePlay):
@@ -131,17 +132,8 @@ class Uno(gamePlay):
         top = self.getTopCard(self.discard.id)
         played = self.getCard(id=cardID)
 
-        if top.Card.card_type == 'Wild':
-            # Assigned color for Wild card
-            top_type = top.card_status
-        else:
-            top_type = top.Card.card_type
-
         # Moves are valid if they match value, type, or are wild
-        if played.Card.card_type == 'Wild' \
-                or top_type == played.Card.card_type \
-                or top.card_value == played.card_value \
-                or top_type == 'Any':
+        if self.isValidPlay(top, played):
 
             player = self.getPlayer(user_id=playerID)
 
@@ -192,10 +184,33 @@ class Uno(gamePlay):
         return False
 
 
+
+    # Determines whether a card can be played
+    # Parameters:
+    #   top: a CardInstance/Card object of the top card on the discard pile
+    #   played: a CardInstance/Card object of the card to play
+    # Returns: True if a valid move, False if invalid
+    def isValidPlay(self, top, played):
+        if top.Card.card_type == 'Wild':
+            # Assigned color for Wild card
+            top_type = top.card_status
+        else:
+            top_type = top.Card.card_type
+
+        # Moves are valid if they match value, type, or are wild
+        if played.Card.card_type == 'Wild' \
+                or top_type == played.Card.card_type \
+                or top.card_value == played.card_value \
+                or top_type == 'Any':
+            return True
+
+        return False
+
+
     # Skip card effect
     def skip(self):
         nextPlayer = self.getNextPlayer()
-        self.addLog(nextPlayer.User.username + " turn was skipped.")
+        self.addLog(nextPlayer.User.username + "\'s turn was skipped.")
 
         self.endTurnMsg()
         self.incrementTurnsPlayed()
@@ -236,6 +251,8 @@ class Uno(gamePlay):
             self.setPlayerTurn(id, i)
             i += 1
 
+        self.addLog("The turn order was reversed.")
+
         self.endTurn()
 
 
@@ -256,6 +273,30 @@ class Uno(gamePlay):
             self.addLog(nextPlayer.User.username + " drew four cards.")
 
         self.endTurn()
+
+
+    # A naive AI
+    def autoplay(self, playerID):
+        handPile = self.getPile(pile_type="Hand", pile_owner=playerID)
+        hand = self.getCards(pile=handPile.id)
+
+        top = self.getTopCard(self.discard.id)
+
+        # Play the first valid card from hand
+        for card in hand:
+            if self.isValidPlay(top, card):
+                wc = None
+
+                if card.Card.card_type == 'Wild':
+                    colors = ['Red', 'Blue', 'Green', 'Yellow']
+                    random.shuffle(colors)
+                    wc = colors[0]
+
+                self.playCard(playerID, card.id, wildColor=wc)
+                return
+
+        # No valid plays, draw a card
+        self.draw(playerID)
 
 
     # Retrieves any information needed to display this game
