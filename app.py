@@ -182,6 +182,7 @@ def login():
 		users = User.query.all()
 		players = PlayersInGame.query.all()
 		playableGame = []
+		gname = ''
 		for game in gameids:
 			thisGame = GameFunctions.gamePlay(game.game_instance)
 			gameInfo = GameFunctions.getGameInstance(game.game_instance)
