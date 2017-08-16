@@ -115,12 +115,11 @@ def newUser():
 
 @app.route("/profile", methods = ['GET', 'POST'])
 def profile():
-
 	passedUserName = session['username']
 	updatePW = updatePassword()
 	if request.method == 'POST':
 		if updatePW.validate() == False:
-			return render_template('profile.html', fupdatePW=updatePW)
+			return render_template('profile.html', updatePW=updatePW)
 		else:
 			existingUser = User.query.filter_by(username=passedUserName).one()
 
@@ -134,7 +133,7 @@ def profile():
 					flash('The passwords do not match.')
 					return render_template('profile.html')
 				else:
-					existingUser.set_password(request.form["password"])
+					existingUser.set_password(updatePW.NewPW.data)
 					db.session.commit()
 					flash('Password sucessfully updated.')
 					return render_template('profile.html')
