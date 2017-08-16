@@ -134,8 +134,8 @@ def profile():
 					flash('The passwords do not match.')
 					return render_template('profile.html', updatePW=updatePW)
 				else:
-		            existingUser.set_password(request.form["password"])
-		            db.session.commit()
+					existingUser.set_password(request.form["password"])
+					db.session.commit()
 					flash('Password sucessfully updated.')
 					return render_template('profile.html', updatePW=updatePW)
 
