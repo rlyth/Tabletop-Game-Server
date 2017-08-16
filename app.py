@@ -93,7 +93,6 @@ def newUser():
 		if logInForm.validate() == False:
 			return render_template('newuser.html', form = logInForm)
 		else:
-			#will want to replace with calls to user object
 			existingUser = User.query.filter_by(username=logInForm.username.data).first()
 			if(existingUser):
 				flash('Sorry, username already exists.')
@@ -116,13 +115,29 @@ def newUser():
 
 @app.route("/profile", methods = ['GET', 'POST'])
 def profile():
-    logInForm = userForm()
 
-    if request.method == 'POST':
-        if request.form["password"] == request.form["password2"]:
-            user = User.query.filter_by(username=session['username']).one()
-            user.set_password(request.form["password"])
-            db.session.commit()
+	passedUserName = session['username']
+	updatePW = updatePassword()
+	if request.method == 'POST':
+		if updatePW.validate() == False:
+			return render_template('profile.html', fupdatePW=updatePW)
+		else:
+			existingUser = User.query.filter_by(username=passedUserName).one()
+
+			if(not existingUser.check_password(updatePW.PW.data)):
+
+				flash('There was a problem with the password you entered.')
+				return render_template('profile.html', updatePW=updatePW)
+			else:
+				#check entered passwords match
+				if(updatePW.NewPW.data != updatePW.NewPW2.data):
+					flash('The passwords do not match.')
+					return render_template('profile.html', updatePW=updatePW)
+				else:
+		            existingUser.set_password(request.form["password"])
+		            db.session.commit()
+					flash('Password sucessfully updated.')
+					return render_template('profile.html', updatePW=updatePW)
 
     passedUserName = session['username']
     return render_template('profile.html', passedUserName=passedUserName, form = logInForm)
