@@ -38,7 +38,7 @@ def main():
 		passedUserName = session['username']
 	else:
 		passedUserName = None
-    return render_template('index.html', passedUserName=passedUserName)
+	return render_template('index.html', passedUserName=passedUserName)
 
 @app.route("/newgame", methods = ['GET', 'POST'])
 def newGame():
