@@ -224,7 +224,7 @@ def adminDelete():
 @app.route("/logout")
 def logout():
 	session['username'] = None
-	return render_template('index.html')
+	return redirect(url_for('index.html'))
 
 @app.route("/acceptgame/<game_id>", methods = ['GET', 'POST'])
 def acceptgame(game_id):
