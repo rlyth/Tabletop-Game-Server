@@ -20,9 +20,7 @@ class Uno(gamePlay):
             hands.append(newHand)
 
         # Move all cards to main deck
-        cards = self.getCards()
-        for c in cards:
-            self.moveCard(c.id, deck)
+        self.moveAll(deck)
 
         # Shuffle deck
         self.shufflePile(deck)
@@ -53,9 +51,7 @@ class Uno(gamePlay):
         self.setTurnsPlayed(0)
 
         # Move all cards to main deck
-        cards = self.getCards()
-        for c in cards:
-            self.moveCard(c.id, self.deck.id)
+        self.moveAll(self.deck.id)
 
         self.shufflePile(self.deck.id)
 
@@ -112,7 +108,7 @@ class Uno(gamePlay):
             top = self.getTopCard(self.discard.id)
 
             # Move all cards from discard to deck
-            self.moveAll(self.discard.id, self.deck.id)
+            self.moveAll(self.deck.id, pileFrom=self.discard.id)
 
             # Move top discard card back to discard
             self.moveCard(top.id, self.discard.id)

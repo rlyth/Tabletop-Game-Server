@@ -31,12 +31,10 @@ def initGameInstance(baseGameID, creatorID, inviteList):
     db.session.commit()
 
     # Add all players to PlayersInGame with invite status
-    players = []
     for p in inviteList:
         newPlayer = PlayersInGame(newGame.id, p, invite_status='Invited')
-        players.append(newPlayer)
+        db.session.add(newPlayer)
 
-    db.session.bulk_save_objects(players)
     db.session.commit()
 
     # Retrieve list of cards associated with baseGame
@@ -48,7 +46,8 @@ def initGameInstance(baseGameID, creatorID, inviteList):
             newCard = CardInstance(newGame.id, card.card_id, card_value=card.card_value)
 
             db.session.add(newCard)
-            db.session.commit()
+
+    db.session.commit()
 
     initMessage = GameLog(newGame.id, "Game created.")
     db.session.add(initMessage)
@@ -125,6 +124,7 @@ class gamePlay:
         try:
             self.game = GameInstance.query \
                             .filter_by(id=instanceID) \
+                            .join(Game) \
                             .one()
         except MultipleResultsFound:
                 return None
@@ -132,7 +132,9 @@ class gamePlay:
                 return None
 
         # Checks whether game is ready to begin
-        if self.game.status == 'Created' and not self.isPendingInvites():
+        if self.game.status == 'Created' \
+            and not self.isPendingInvites() \
+            and self.isValidNumPlayers():
             self.setStatus('Waiting on Setup')
 
         # Will only run once all the invites have been accepted or declined
@@ -240,49 +242,12 @@ class gamePlay:
         self.addLog(currentPlayer.User.username + " ended their turn.")
 
 
-    # Moves the specified CardInstance to a different Pile
-    # Parameters:
-    #   cardID: the ID of the CardInstance to move
-    #   pileTo: the destination Pile
-    # The card will be placed on the top of its destination pile
-    def moveCard(self, cardID, pileTo):
-        # Check that the CardInstance exists
-        try:
-            card = CardInstance.query \
-                        .filter_by(id=cardID) \
-                        .one()
-        except NoResultFound:
-            return None
+    def isValidNumPlayers(self):
+        if self.game.num_players >= self.game.Game.min_players \
+            and self.game.num_players <= self.game.Game.max_players:
+                return True
 
-        # Check that the destination Pile exists
-        try:
-            Pile.query.filter_by(id=pileTo).one()
-        except NoResultFound:
-            return None
-
-        card.pile_order = self.getMaxOrder(pileTo) + 1
-        card.in_pile = pileTo
-        db.session.commit()
-
-
-    # NB: find a way to do this with a bulk update to reduce queries
-    # Moves every card in a Pile to a different Pile
-    # Parameters:
-    #   pileFrom: the source pile to move all cards from
-    #   pileTo: the destination pile for the moved cards
-    # The moved cards will be added to the top of the destination Pile, starting
-    #   from the top of the source pile
-    def moveAll(self, pileFrom, pileTo):
-        try:
-            Pile.query.filter_by(id=pileFrom).one()
-            Pile.query.filter_by(id=pileTo).one()
-        except NoResultFound:
-            return None
-
-        cardsFrom = CardInstance.query.filter_by(in_pile=pileFrom).all()
-        for card in cardsFrom:
-            self.moveCard(card.id, pileTo)
-
+        return False
 
 
     ########################################
@@ -331,10 +296,21 @@ class gamePlay:
 
 
     def invitePlayer(self, userID):
+        # Include invited players in the total count
+        all_players = PlayersInGame.query \
+                            .filter_by(game_instance=self.game.id) \
+                            .count()
+
+        # Too many players invited; can't invite more
+        if all_players >= self.game.Game.max_players:
+            return False
+
         newPlayer = PlayersInGame(self.game.id, userID, invite_status="Invited")
 
         db.session.add(newPlayer)
         db.session.commit()
+
+        return True
 
 
     # Returns: True if not all players have accepted the game invite, False otherwise
@@ -394,18 +370,70 @@ class gamePlay:
                 .order_by(CardInstance.pile_order.desc()) \
                 .first()
 
-        # Card's new order at destination is one higher than current highest
-        # NB: replace this with moveCard call
-        newOrder = self.getMaxOrder(pileTo) + 1
-
-        card.pile_order = newOrder
-        card.in_pile = pileTo
-        db.session.commit()
+        # Move card to destination
+        self.moveCard(card.id, pileTo)
 
         return True
 
 
-    # NB: this could also become a bulk update
+    # Moves every card in a Pile to a different Pile
+    # Parameters:
+    #   pileFrom: the source pile to move all cards from
+    #   pileTo: the destination pile for the moved cards
+    # The moved cards will be added to the top of the destination Pile, starting
+    #   from the top of the source pile
+    def moveAll(self, pileTo, pileFrom=None):
+        # Check that both piles exist
+        try:
+            Pile.query.filter_by(id=pileTo).one()
+
+            if pileFrom:
+                Pile.query.filter_by(id=pileFrom).one()
+        except NoResultFound:
+            return False
+
+        filters = {}
+        filters["game_instance"] = self.game.id
+
+        if pileFrom:
+            filters["in_pile"] = pileFrom
+
+        cardsFrom = CardInstance.query \
+                            .filter_by(**filters) \
+                            .all()
+
+        for card in cardsFrom:
+            card.in_pile = pileTo
+            db.session.add(card)
+
+        db.session.commit()
+
+
+    # Moves the specified CardInstance to a different Pile
+    # Parameters:
+    #   cardID: the ID of the CardInstance to move
+    #   pileTo: the destination Pile
+    # The card will be placed on the top of its destination pile
+    def moveCard(self, cardID, pileTo):
+        # Check that the CardInstance exists
+        try:
+            card = CardInstance.query \
+                        .filter_by(id=cardID) \
+                        .one()
+        except NoResultFound:
+            return None
+
+        # Check that the destination Pile exists
+        try:
+            Pile.query.filter_by(id=pileTo).one()
+        except NoResultFound:
+            return None
+
+        card.pile_order = self.getMaxOrder(pileTo) + 1
+        card.in_pile = pileTo
+        db.session.commit()
+
+
     # Randomizes the order of the CardInstances associated with a pile
     # Parameters:
     #   pileID: the ID of the pile to shuffle
@@ -420,7 +448,9 @@ class gamePlay:
 
         for i, card in enumerate(cards):
             card.pile_order = order[i]
-            db.session.commit()
+            db.session.add(card)
+
+        db.session.commit()
 
 
     ########################################
