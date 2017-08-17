@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
- 
+
 <head>
-    <title>{{ existingUser.username }}'s Game</title> 
- 
+    <title>{{ existingUser.username }}'s Game</title>
+
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/style.css') }}">
     <meta charset="utf-8">
@@ -13,17 +13,17 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
 </head>
- 
+
 <body>
- 
+
     <div class="container">
         <div class="header">
             <nav>
                 <ul class="nav nav-pills pull-right">
                     <li role="button"><a href="login">My Page</a>
-                    </li> 
+                    </li>
                     <li role="button"><a href="../profile">Profile</a>
-                    </li>                  
+                    </li>
                     <li role="button"><a href="../logout">Log Out</a>
                     </li>
                     <li role="button" class="active"><a href="/">Home</a>
@@ -45,15 +45,15 @@
             {% if players %}
             <div class="container">
                 <div class="row">
-                    <div class="col-xs-2 col-sm-2"><b>Players</b></div>
+                    <div class="col-xs-2 col-sm-2"><h2>Players</h2></div>
                 </div>
                 <div class="row">
                     {% for p in players %}
                     <div class="col-xs-2 col-sm-2">
-                        Username: {{ p[0].User.username }}
+                        <b>{{ p[0].User.username }}</b>
                         <br>ID: {{ p[0].user_id }}
                         <br>Turn Order: {{ p[0].turn_order }}
-                        <br>Cards in Hand: {{ p[1] }} cards
+                        <br>{{ p[1] }} cards in hand
                         {% if p[1] == 0 %}
                         {% endif %}
                     </div>
@@ -65,7 +65,7 @@
         {% if active %}
             {% for u in usersPlaying %}
                 {% if active == u.id%}
-                <h3><b>Active Player: {{ u.username }}</b></h3>
+                <h3><b>Current Turn: {{ u.username }}</b></h3>
                 {% endif %}
             {% endfor %}
         {% endif %}
@@ -103,7 +103,7 @@
                         {% endif %}
                     </div>
                 </div>
-            </div></p>     
+            </div></p>
             {% endif %}
                 <h2> Select Card:</h2>
                     {% if hand %}
@@ -119,7 +119,7 @@
                             <input type="hidden" name="playCard">
                             {% if c.Card.card_type == 'Wild' %}
                             <select name="wildColor">
-                                <option value="Select">Select</option>                              
+                                <option value="Select">Select</option>
                                 <option value="Red">Red</option>
                                 <option value"Blue">Blue</option>
                                 <option value="Green">Green</option>
@@ -159,7 +159,7 @@
                         {% endif %}
                     </div>
                 </div>
-            </div></p>     
+            </div></p>
             {% endif %}
                 {% if hand %}
                 <p><div class="container">
@@ -170,7 +170,7 @@
                     <br><img src="{{ url_for('static', filename=c.Card.img_front) }}">
                         {% if c.Card.card_type == 'Wild' %}
                         <select name="wildColor">
-                            <option value="Select">Select</option>                              
+                            <option value="Select">Select</option>
                             <option value="Red">Red</option>
                             <option value"Blue">Blue</option>
                             <option value="Green">Green</option>
@@ -182,8 +182,8 @@
                 </div>
                 </div></p>
                 {% endif %}
-        {% endif %}  
-        
+        {% endif %}
+
         </div>
         <!-- A Model from Boostrap similar to the one at W3School -->
         <div class="container">
@@ -192,7 +192,7 @@
 
           <div class="modal fade" id="myModal" role="dialog">
             <div class="modal-dialog">
-            
+
               <div class="modal-content">
                 <div class="modal-header">
                   <button type="button" class="close" data-dismiss="modal">&times;</button>
@@ -213,15 +213,15 @@
                   <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                 </div>
               </div>
-              
+
             </div>
           </div>
-        <h2 role="button" align="right"><a href="login">Back to Your Page </a></h2>         
+        <h2 role="button" align="right"><a href="login">Back to Your Page </a></h2>
         </div>
         <footer class="footer">
             <p>Assignment for CS467 by Leanne Vermillion and Rebecca Thompson.</p>
         </footer>
- 
+
     </div>
 </body>
 </html>
