@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block content %}
+    <h4>Statistics</h4>
+    Played: {{ user.games_played }}
+    <br>Won: {{ user.wins }}
+    <br>Lost: {{ user.losses }}
+    <br>Tied: {{ user.draws }}
+    <br>Win Rate: {{ win_rate }}%
+{% endblock %}

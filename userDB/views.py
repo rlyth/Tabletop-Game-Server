@@ -33,24 +33,24 @@ def newUser():
     return render_template('user/create.html', form=form, htitle="Create New Account")
 
 
-# NB: roll statistics into a "true" profile page with user info
-@userDB.route("/statistics")
-def statistics():
-	if('username' in session):
-		passedUserName = session['username']
-		existingUser = User.query.filter_by(username=passedUserName).first()
-		userGames = existingUser.games_played
-		userWins = existingUser.wins
-		if (userGames > 0):
-			userRecord = 100 * (userWins/userGames)
-		else:
-			userRecord = 0
-	return render_template('statistics.html', existingUser=existingUser, userRecord=userRecord)
+@userDB.route("/profile/<int:userID>/", methods=['GET'])
+def profile(userID):
+    user = User.query.filter_by(id=userID).first()
+
+    if user:
+        if user.games_played > 0:
+            win_rate = round(100 * (user.wins/user.games_played), 2)
+        else:
+            win_rate = 0.00
+
+        return render_template('user/profile.html', user=user, win_rate=win_rate, htitle=user.username)
+
+    # error message for invalid user id
 
 
 # NB: move password update functionality elsewhere
 @userDB.route("/profile", methods = ['GET', 'POST'])
-def profile():
+def myProfile():
 	passedUserName = session['username']
 	updatePW = updatePassword()
 	if request.method == 'POST':
