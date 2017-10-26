@@ -18,7 +18,7 @@ from gameDB import gameDB
 app.register_blueprint(gameDB)
 
 from gameDB import GameFunctions
-from gameDB import PlayersInGame, Game, GameInstance, Card, CardInstance, CardsInGame, Pile, GameLog
+from gameDB import PlayersInGame, Game, GameInstance
 
 from userDB import userDB
 app.register_blueprint(userDB)
@@ -38,7 +38,7 @@ def main():
 		passedUserName = session['username']
 	else:
 		passedUserName = None
-	return render_template('index.html', passedUserName=passedUserName)
+	return render_template('index.html', passedUserName=passedUserName, htitle="Welcome to Serpens Game Server")
 
 @app.route("/newgame", methods = ['GET', 'POST'])
 def newGame():
@@ -90,32 +90,6 @@ def newGame():
 
 	return render_template('newgame.html', passedUserName=passedUserName, users=users, newGameForm=newGameForm)
 
-@app.route("/newuser", methods = ['GET', 'POST'])
-def newUser():
-	logInForm = userForm()
-	if request.method == 'POST':
-		if logInForm.validate() == False:
-			return render_template('newuser.html', form = logInForm)
-		else:
-			existingUser = User.query.filter_by(username=logInForm.username.data).first()
-			if(existingUser):
-				flash('Sorry, username already exists.')
-				return render_template('newuser.html', form = logInForm)
-			else:
-				#check entered passwords and if they match add user to the database
-				if(logInForm.password.data != logInForm.password2.data):
-					flash('The passwords do not match.')
-					return render_template('newuser.html', form = logInForm)
-				else:
-					#addUserToDB(logInForm.username.data, logInForm.password.data)
-					newUser = User(logInForm.username.data, logInForm.password.data)
-					db.session.add(newUser)
-					db.session.commit()
-
-					session['username'] = logInForm.username.data
-					return redirect(url_for('login'))
-	else:
-		return render_template('newuser.html', form = logInForm)
 
 @app.route("/profile", methods = ['GET', 'POST'])
 def profile():
@@ -167,7 +141,7 @@ def signIn():
 
 				return render_template('signin.html', form = logInForm)
 	else:
-		return render_template('signin.html', form = logInForm)
+		return render_template('signin.html', form = logInForm, htitle="Login")
 
 @app.route("/statistics")
 def statistics():
@@ -180,7 +154,7 @@ def statistics():
 			userRecord = 100 * (userWins/userGames)
 		else:
 			userRecord = 0
-	return render_template('statistics.html', existingUser=existingUser, userRecord=userRecord)
+	return render_template('statistics.html', existingUser=existingUser, userRecord=userRecord, htitle="Statistics")
 
 @app.route("/rules")
 def rules():

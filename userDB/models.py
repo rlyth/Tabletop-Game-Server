@@ -14,6 +14,8 @@ class User(db.Model):
     wins = db.Column(db.Integer)
     losses = db.Column(db.Integer)
     draws = db.Column(db.Integer)
+    # account creation date
+    # last login?
 
     _password = db.Column(db.String(100), nullable=False)
 

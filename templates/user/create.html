@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block content %}
+
+            {% with messages = get_flashed_messages() %}
+              {% if messages %}
+                {% for message in messages %}
+                    <div>{{ message }}</div>
+                {% endfor %}
+              {% endif %}
+            {% endwith %}
+
+            {% for message in form.username.errors %}
+                <div>Username: {{ message }}</div>
+            {% endfor %}
+
+            {% for message in form.password.errors %}
+                 <div>Password: {{ message }}</div>
+            {% endfor %}
+            {% for message in form.password2.errors %}
+                 <div>Password2: {{ message }}</div>
+              {% endfor %}
+            <form action="/user/new" method="post" id="createUserForm">
+                {{ form.csrf_token }}
+                <h2> New User Name: {{ form.username }} </h2>
+                <h2> Create Password: {{ form.password }}</h2>
+                <h2> Check Password: {{ form.password2 }}</h2><br>
+                <!-- Check against the exisiting user database that user name is unique and password fits requirements -->
+                <input type="submit" value="Submit">  <!-- on successful submit open login.html -->
+            </form>
+
+{% endblock %}

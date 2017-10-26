@@ -1,44 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
- 
-<head>
-    <title>Serpens Game Server</title> 
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/style.css') }}">
-</head>
-
-<body>
-    <div class="container">
-        <div class="header">
-            <nav>
-                <ul class="nav nav-pills pull-right">
-                    {% if passedUserName != None %}
-                    <li role="button"><a href="login">My Page</a>
-                    <li role="button"><a href="logout">Log Out</a>
-                    {% endif %}
-                    <li class="nav-link"><a href="signin">Log In</a></li>
-                    <li class="nav-link"><a href="newuser">New User</a></li>
-                    <li class="nav-link active"><a href="/">Home</a></li>
-                    </li>
-                </ul>
-            </nav>
-            <h3 class="text-muted">Welcome to Serpens Game Server</h3>
-        </div>
-        <div class="row marketing">
-            <h2>About The Game Server</h2>
-            <p>The Serpens team has completed a playable card game, similar to Uno.</p>
-            <p>In order to play you will need to have a user account on the server.</p>  
-            <p>Once you have logged in you can start a game with other users, or play against our AIs.</p>
-            <p>The AIs are Computer_1, Computer_2 and Computer_3, please be nice to the AIs we don't want to start the next Skynet.</p>            
-
-            <h2 role="button"><a href="rules">Game Rules </a></h2>        
-        </div>
-        <footer class="footer">
-            <p>Assignment for CS467 by Leanne Vermillion and Rebecca Thompson.</p>
-        </footer>
- 
-    </div>
-
-</body>
- 
-</html>
+{% extends "base.html" %}
+{% block content %}
+    <h2>About The Game Server</h2>
+    <p>The Serpens team has completed a playable card game, similar to Uno.</p>
+    <p>In order to play you will need to have a user account on the server.</p>
+    <p>Once you have logged in you can start a game with other users, or play against our AIs.</p>
+    <p>The AIs are Computer_1, Computer_2 and Computer_3, please be nice to the AIs we don't want to start the next Skynet.</p>
+    <h2 role="button"><a href="rules">Game Rules </a></h2>
+{% endblock %}

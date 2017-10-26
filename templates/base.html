@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Serpens Game Server</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/style.css') }}">
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <nav>
+                <ul class="nav nav-pills pull-right">
+                    {% if passedUserName != None %}
+                    <li role="button"><a href="login">My Page</a>
+                    <li role="button"><a href="logout">Log Out</a>
+                    {% endif %}
+                    {% if passedUserName == None %}
+                    <li class="nav-link"><a href="signin">Log In</a></li>
+                    <li class="nav-link"><a href="user/new">New User</a></li>
+                    {% endif %}
+                    <li class="nav-link active"><a href="/">Home</a></li>
+                    </li>
+                </ul>
+            </nav>
+            {% if htitle %}
+            <h3 class="text-muted">{{ htitle }}</h3>
+            {% endif %}
+        </div>
+        <div class="row marketing">
+            {% block content %}{% endblock %}
+        </div>
+        <footer class="footer">
+            <p>Assignment for CS467 by Leanne Vermillion and Rebecca Thompson.</p>
+        </footer>
+
+    </div>
+
+</body>
+
+</html>
