@@ -1,4 +1,9 @@
 {% extends "base.html" %}
+
+{% block header %}
+    Log In to Server
+{% endblock %}
+
 {% block content %}
     {% with messages = get_flashed_messages() %}
         {% if messages %}

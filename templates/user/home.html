@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block header %}
+    Welcome, {{ current_user }}
+{% endblock %}
+
+{% block content %}
+    <div class="col-sm-6 col-md-6 col-lg-6">
+        <h2>Play Game</h2>
+        <h4>Name | ID | Players in Game</h4>
+        {% if playableGame != None %}
+            {% for games in playableGame %}
+                <h4><a href ="playturn/{{ games.game_instance }}" onclick="waiting()"> {{ gname }} | {{ games.game_instance }}
+                {% for p in players %}
+                    {% if games.game_instance == p.game_instance%}
+                        {% for u in users %}
+                            {% if u.id == p.user_id %}
+                                | {{ u.username }}
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                {% endfor %}
+                </a> <p id="text"></p></h4>
+            {% endfor %}
+        {% endif %}
+
+        <h2>Invitations To Games</h2>
+        <h4>ID | Players for Game</h4>
+        {% for invites in gameids %}
+            {% if invites.invite_status == 'Invited' %}
+                <h4><a href ="acceptgame/{{ invites.game_instance }}"> {{ invites.game_instance }}
+                {% for p in players %}
+                    {% if invites.game_instance == p.game_instance%}
+                        {% for u in users %}
+                            {% if u.id == p.user_id %}
+                                | {{ u.username }}
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                {% endfor %}
+                </a></h4>
+            {% endif %}
+        {% endfor %}
+    </div>
+
+    <div class="col-sm-6 col-md-6 col-lg-6">
+        <h2 role="button"><a  href="newgame"> New Game</a></h2>
+
+        <h2 role="button"><a href="statistics">Statistics </a></h2>
+        <h2 role="button"><a href="rules">Game Rules </a></h2>
+    </div>
+{% endblock %}
+
+{% block script %}
+    <script>
+    function waiting() {
+        document.getElementById("text").innerHTML = "Your Game is being Retrieved.";
+    }
+    </script>
+{% endblock%}

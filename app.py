@@ -135,13 +135,13 @@ def signIn():
 
 			if(existingUser):
 				session['username'] = existingUser.username
-				return redirect(url_for('login'))
+				return redirect(url_for('userDB.home'))
 			else:
 				flash('Username does not exist.')
 
 				return render_template('signin.html', form = logInForm)
 	else:
-		return render_template('signin.html', form = logInForm, htitle="Login")
+		return render_template('signin.html', form = logInForm)
 
 @app.route("/statistics")
 def statistics():

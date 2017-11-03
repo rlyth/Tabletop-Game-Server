@@ -1,4 +1,9 @@
 {% extends "base.html" %}
+
+{% block header %}
+    {{ username }}
+{% endblock %}
+
 {% block content %}
     <h4>Statistics</h4>
     Played: {{ user.games_played }}

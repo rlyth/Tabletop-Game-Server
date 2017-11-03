@@ -5,7 +5,38 @@ from .forms import createUser, updatePassword
 from .models import User
 from app import db
 
+from gameDB import GameFunctions
+from gameDB.models import PlayersInGame
+
 userDB = Blueprint('userDB', __name__, url_prefix='/user')
+
+
+@userDB.route("/home", methods= ['GET'])
+def home():
+    if('username' in session):
+        passedUserName = session['username']
+        existingUser = User.query.filter_by(username=passedUserName).first()
+        gameids = PlayersInGame.query.filter(PlayersInGame.user_id == existingUser.id).all()
+        users = User.query.all()
+        players = PlayersInGame.query.all()
+        playableGame = []
+        gname = ''
+        for game in gameids:
+        	thisGame = GameFunctions.gamePlay(game.game_instance)
+        	gameInfo = GameFunctions.getGameInstance(game.game_instance)
+        	gname = gameInfo.Game.name
+        	if(thisGame.isPendingInvites() == False and gameInfo.status != 'Ended'):
+        		playableGame.append(game)
+
+        # find some other way to deal with admin users
+        if(existingUser.role == 'Admin'):
+        	return render_template('adminLogin.html', passedUserName=passedUserName, gname=gname, gameids=gameids, playableGame=playableGame, users=users, players=players)
+        else:
+        	return render_template('user/home.html', current_user=passedUserName, gname=gname, gameids=gameids, playableGame=playableGame, users=users, players=players)
+
+	# send user to login page instead?
+    else:
+    	return render_template('index.html')
 
 @userDB.route("/new", methods = ['GET', 'POST'])
 def newUser():
@@ -30,12 +61,18 @@ def newUser():
                 session['username'] = form.username.data
                 return redirect(url_for('login'))
 
-    return render_template('user/create.html', form=form, htitle="Create New Account")
+    return render_template('user/create.html', form=form)
 
 
 @userDB.route("/profile/<int:userID>/", methods=['GET'])
 def profile(userID):
     user = User.query.filter_by(id=userID).first()
+
+    # NB: not correctly checking logged-in status
+    if 'username' in session:
+        passedUserName = session['username']
+    else:
+        passedUserName = None
 
     if user:
         if user.games_played > 0:
@@ -43,9 +80,11 @@ def profile(userID):
         else:
             win_rate = 0.00
 
-        return render_template('user/profile.html', user=user, win_rate=win_rate, htitle=user.username)
+        return render_template('user/profile.html', user=user, win_rate=win_rate, username=user.username)
 
-    # error message for invalid user id
+    # Invalid user id
+    else:
+        return render_template('error.html', passedUserName=passedUserName, errormsg='That user does not exist.')
 
 
 # NB: move password update functionality elsewhere
