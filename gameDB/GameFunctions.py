@@ -120,6 +120,8 @@ def getPlayerGames(playerID, invite_status=None):
     if invite_status:
         filters["invite_status"] = invite_status
 
+    # NB: consider including a list of all the players in the game
+
     return PlayersInGame.query \
                 .filter_by(**filters) \
                 .join(GameInstance) \
@@ -554,6 +556,10 @@ class gamePlay:
     def setStatus(self, status):
         self.game.status = status
         db.session.commit()
+
+
+    def getStatus(self):
+        return self.game.status
 
 
     # Sets current_turn_order to new value if valid

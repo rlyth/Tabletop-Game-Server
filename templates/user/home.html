@@ -6,41 +6,50 @@
 
 {% block content %}
     <div class="col-sm-6 col-md-6 col-lg-6">
-        <h2>Play Game</h2>
-        <h4>Name | ID | Players in Game</h4>
-        {% if playableGame != None %}
-            {% for games in playableGame %}
-                <h4><a href ="playturn/{{ games.game_instance }}" onclick="waiting()"> {{ gname }} | {{ games.game_instance }}
-                {% for p in players %}
-                    {% if games.game_instance == p.game_instance%}
-                        {% for u in users %}
-                            {% if u.id == p.user_id %}
-                                | {{ u.username }}
-                            {% endif %}
-                        {% endfor %}
-                    {% endif %}
-                {% endfor %}
-                </a> <p id="text"></p></h4>
-            {% endfor %}
+        <h2>Your Games</h2>
+
+        {% if player_move %}
+        <h4>Waiting on your move</h4>
+        {% for game in player_move %}
+        <b><a href="{{ url_for('playturn', game_id=game.GameInstance.id) }}" onclick="waiting()">
+            {{ game.GameInstance.Game.name }} #{{ game.GameInstance.id }}</a></b>
+            <br/>
+        {% endfor %}
         {% endif %}
 
-        <h2>Invitations To Games</h2>
-        <h4>ID | Players for Game</h4>
-        {% for invites in gameids %}
-            {% if invites.invite_status == 'Invited' %}
-                <h4><a href ="acceptgame/{{ invites.game_instance }}"> {{ invites.game_instance }}
-                {% for p in players %}
-                    {% if invites.game_instance == p.game_instance%}
-                        {% for u in users %}
-                            {% if u.id == p.user_id %}
-                                | {{ u.username }}
-                            {% endif %}
-                        {% endfor %}
-                    {% endif %}
-                {% endfor %}
-                </a></h4>
-            {% endif %}
+        {% if other_move %}
+        <h4>Waiting on other players</h4>
+        {% for game in other_move %}
+        <b><a href="{{ url_for('playturn', game_id=game.GameInstance.id) }}" onclick="waiting()">
+            {{ game.GameInstance.Game.name }} #{{ game.GameInstance.id }}</a></b>
+            <br>
         {% endfor %}
+        {% endif %}
+
+        {% if waiting_join %}
+        <h4>Waiting for players to join</h4>
+        {% for game in waiting_join %}
+        <b>{{ game.GameInstance.Game.name }} #{{ game.GameInstance.id }}</b>
+        <br/>
+        {% endfor %}
+        {% endif %}
+
+        {% if invited %}
+        <h4>Invitation pending</h4>
+        {% for game in invited %}
+        <b>{{ game.GameInstance.Game.name }} #{{ game.GameInstance.id }}</b>
+        <br/>
+        {% endfor %}
+        {% endif %}
+
+        {% if completed %}
+        <h4>Review completed games</h4>
+        {% for game in completed %}
+        <b><a href="{{ url_for('playturn', game_id=game.GameInstance.id) }}" onclick="waiting()">
+            {{ game.GameInstance.Game.name }} #{{ game.GameInstance.id }}</a></b>
+            <br>
+        {% endfor %}
+        {% endif %}
     </div>
 
     <div class="col-sm-6 col-md-6 col-lg-6">

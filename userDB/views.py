@@ -1,4 +1,4 @@
-from flask import Blueprint, request, render_template, flash, session, redirect, url_for
+from flask import Blueprint, request, render_template, flash, session, redirect, url_for, g
 from sqlalchemy.orm.exc import NoResultFound
 
 from .forms import createUser, updatePassword
@@ -6,37 +6,68 @@ from .models import User
 from app import db
 
 from gameDB import GameFunctions
-from gameDB.models import PlayersInGame
 
 userDB = Blueprint('userDB', __name__, url_prefix='/user')
 
 
+# Sets the value of g.user to current user if logged in, and None otherwise
+@userDB.before_request
+def before_request():
+    try:
+        g.username = session['username']
+        g.userid = session['userid']
+    except:
+        g.username = None
+        g.userid = None
+
+
 @userDB.route("/home", methods= ['GET'])
 def home():
-    if('username' in session):
-        passedUserName = session['username']
-        existingUser = User.query.filter_by(username=passedUserName).first()
-        gameids = PlayersInGame.query.filter(PlayersInGame.user_id == existingUser.id).all()
-        users = User.query.all()
-        players = PlayersInGame.query.all()
-        playableGame = []
-        gname = ''
-        for game in gameids:
-        	thisGame = GameFunctions.gamePlay(game.game_instance)
-        	gameInfo = GameFunctions.getGameInstance(game.game_instance)
-        	gname = gameInfo.Game.name
-        	if(thisGame.isPendingInvites() == False and gameInfo.status != 'Ended'):
-        		playableGame.append(game)
+    if g.username is not None and g.userid is not None:
+        player_games = GameFunctions.getPlayerGames(g.userid)
 
-        # find some other way to deal with admin users
-        if(existingUser.role == 'Admin'):
-        	return render_template('adminLogin.html', passedUserName=passedUserName, gname=gname, gameids=gameids, playableGame=playableGame, users=users, players=players)
-        else:
-        	return render_template('user/home.html', current_user=passedUserName, gname=gname, gameids=gameids, playableGame=playableGame, users=users, players=players)
+        # Various game categories
+        player_move = []
+        other_move = []
+        waiting_join = []
+        invited = []
+        completed = []
+        # NB: move invites to notification tray?
 
-	# send user to login page instead?
+        for game in player_games:
+            if game.invite_status == 'Invited':
+                # Catches all games where player needs to accept invite
+                invited.append(game)
+            elif game.GameInstance.status == 'Ended':
+                # Catches all completed games
+                completed.append(game)
+            else:
+                # create gamePlay object to trigger setup, if needed
+                this_game = GameFunctions.gamePlay(game.GameInstance.id)
+
+                # game has not started
+                if this_game.getStatus == 'Created':
+                    waiting_join.append(game)
+
+                # this player's move
+                elif this_game.getCurrentPlayerID() == g.userid:
+                    player_move.append(game)
+
+                # other player's move
+                else:
+                    other_move.append(game)
+
+        return render_template('user/home.html',
+                                    current_user=g.username,
+                                    player_move=player_move,
+                                    other_move=other_move,
+                                    waiting_join=waiting_join,
+                                    completed=completed,
+                                    invited=invited)
+
+	# NB: send user to login page instead?
     else:
-    	return render_template('index.html')
+    	return redirect(url_for('main'))
 
 @userDB.route("/new", methods = ['GET', 'POST'])
 def newUser():
@@ -58,8 +89,9 @@ def newUser():
                 db.session.commit()
 
                 # redirect user
-                session['username'] = form.username.data
-                return redirect(url_for('login'))
+                session['username'] = newUser.username
+                session['userid'] = newUser.id
+                return redirect(url_for('userDB.home'))
 
     return render_template('user/create.html', form=form)
 
@@ -67,12 +99,6 @@ def newUser():
 @userDB.route("/profile/<int:userID>/", methods=['GET'])
 def profile(userID):
     user = User.query.filter_by(id=userID).first()
-
-    # NB: not correctly checking logged-in status
-    if 'username' in session:
-        passedUserName = session['username']
-    else:
-        passedUserName = None
 
     if user:
         if user.games_played > 0:
@@ -84,7 +110,7 @@ def profile(userID):
 
     # Invalid user id
     else:
-        return render_template('error.html', passedUserName=passedUserName, errormsg='That user does not exist.')
+        return render_template('error.html', current_user=g.username, errormsg='That user does not exist.')
 
 
 # NB: move password update functionality elsewhere

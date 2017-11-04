@@ -11,6 +11,7 @@ class Game(db.Model):
     description = db.Column(db.Text)
     min_players = db.Column(db.Integer)
     max_players = db.Column(db.Integer)
+    # text/blob with game rules
 
 
 # "Base Card"
@@ -38,6 +39,7 @@ class GameInstance(db.Model):
     turns_played = db.Column(db.Integer, default=0)
     current_turn_order = db.Column(db.Integer, default=1)
     status = db.Column(db.String(50))
+    # allow creators to name the game instance
 
     Game = db.relationship('Game', primaryjoin='GameInstance.base_game == Game.id', backref='game_instances')
 

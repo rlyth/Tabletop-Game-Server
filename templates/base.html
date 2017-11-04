@@ -12,14 +12,14 @@
         <div class="header">
             <nav>
                 <ul class="nav nav-pills pull-right">
-                    {% if passedUserName != None %}
-                    <li role="button"><a href="{{ url_for('login') }}">My Page</a>
+                    {% if current_user %}
+                    <li role="button"><a href="{{ url_for('userDB.home') }}">My Page</a>
                     <li role="button"><a href="{{ url_for('logout') }}">Log Out</a>
                     {% endif %}
 
-                    {% if passedUserName == None %}
-                    <li class="nav-link"><a href="signin">Log In</a></li>
-                    <li class="nav-link"><a href="user/new">New User</a></li>
+                    {% if not current_user %}
+                    <li class="nav-link"><a href="{{ url_for('signIn') }}">Log In</a></li>
+                    <li class="nav-link"><a href="{{ url_for('userDB.newUser') }}">New User</a></li>
                     {% endif %}
 
                     <li class="nav-link active"><a href="/">Home</a></li>

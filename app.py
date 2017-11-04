@@ -1,4 +1,4 @@
-from flask import Flask, render_template, session, request, flash, redirect, url_for
+from flask import Flask, render_template, session, request, flash, redirect, url_for, g
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf.csrf import CSRFProtect
 from userForm import userForm, gameForm, acceptForm, playTurnForm, updatePassword
@@ -30,15 +30,19 @@ app.register_blueprint(uno)
 
 from uno.uno import Uno
 
-passedUserName = None
+# Sets the value of g.user to current user if logged in, and None otherwise
+@app.before_request
+def before_request():
+    try:
+        g.username = session['username']
+        g.userid = session['userid']
+    except:
+        g.username = None
+        g.userid = None
 
 @app.route("/")
 def main():
-	if('username' in session):
-		passedUserName = session['username']
-	else:
-		passedUserName = None
-	return render_template('index.html', passedUserName=passedUserName, htitle="Welcome to Serpens Game Server")
+	return render_template('index.html', current_user=g.username)
 
 @app.route("/newgame", methods = ['GET', 'POST'])
 def newGame():
@@ -135,6 +139,7 @@ def signIn():
 
 			if(existingUser):
 				session['username'] = existingUser.username
+				session['userid'] = existingUser.id
 				return redirect(url_for('userDB.home'))
 			else:
 				flash('Username does not exist.')
@@ -198,6 +203,7 @@ def adminDelete():
 @app.route("/logout")
 def logout():
 	session['username'] = None
+	session['userid'] = None
 	return redirect(url_for('main'))
 
 @app.route("/acceptgame/<game_id>", methods = ['GET', 'POST'])
