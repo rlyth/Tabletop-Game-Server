@@ -1,5 +1,5 @@
 from flask import Blueprint, request, render_template, flash, session, redirect, url_for, g
-from sqlalchemy.orm.exc import NoResultFound
+#from sqlalchemy.orm.exc import NoResultFound
 
 from .forms import createUser, updatePassword
 from .models import User
@@ -110,7 +110,7 @@ def profile(userID):
 
     # Invalid user id
     else:
-        return render_template('error.html', current_user=g.username, errormsg='That user does not exist.')
+        return render_template('error.html', current_user=g.username, error_msg='That user does not exist.')
 
 
 # NB: move password update functionality elsewhere

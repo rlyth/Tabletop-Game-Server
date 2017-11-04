@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block head_tag %}
+    <meta http-equiv="refresh" content="15" >
+{% endblock %}
+
+{% block header %}
+    {{ game_type }} #{{ game_instance }} - {{ current_user }}
+{% endblock %}
+
+{% block content %}
+
+    <!-- to be implemented by individual games -->
+    {% block game_content %}
+    {% endblock %}
+
+    <!-- A Model from Boostrap similar to the one at W3School -->
+    <div class="container">
+        <h2>Game Play Log</h2>
+            <button type="button" class="active" data-toggle="modal" data-target="#myModal">See Log</button>
+
+        <div class="modal fade" id="myModal" role="dialog">
+            <div class="modal-dialog">
+
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Game Play Log</h4>
+                    </div>
+
+                    <div class="modal-body">
+                        <p>{{ dump }}</p>
+
+                        <p>
+                            {% if logs %}
+                            {% for log in logs %}
+                                {{ log.timestamp }} | {{ log.message }}<br>
+                            {% endfor %}
+                            {% endif %}
+                        </p>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block script %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+{% endblock %}

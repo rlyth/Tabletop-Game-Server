@@ -319,6 +319,7 @@ class Uno(gamePlay):
             Discard Top: (CardInstance/Card object)
             Players: ([0]: Player (PlayersInGame/User object), [1]: Player Hand Count (int))
             Player Hand: [if forPlayer provided] (CardInstance/Card object)
+            Logs: [] (GameLog objects)
         }
     """
     def getThisGame(self, forPlayer=None):
@@ -342,5 +343,7 @@ class Uno(gamePlay):
 
             if forPlayer and hand.pile_owner == forPlayer:
                 game["Player Hand"] = self.getCards(pile=hand.id)
+
+        game["Logs"] = self.getLogs()
 
         return game

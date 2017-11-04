@@ -1,0 +1,106 @@
+{% extends "game/play.html" %}
+
+{% block game_content %}
+
+    {% if game["Players"] %}
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-2 col-sm-2"><h2>Players</h2></div>
+            </div>
+
+            <div class="row">
+                {% for p in game["Players"] %}
+                    <div class="col-xs-2 col-sm-2">
+                        <b>{{ p[0].User.username }}</b>
+                        <br>ID: {{ p[0].user_id }}
+                        <br>Turn Order: {{ p[0].turn_order }}
+                        <br>{{ p[1] }} cards in hand
+                        {% if p[1] == 0 %}
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+
+    {% if active %}
+        {% for u in usersPlaying %}
+            {% if active == u.id%}
+            <h3><b>Current Turn: {{ u.username }}</b></h3>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+
+    {% if not active %}
+        <h2> Waiting on other players...</h2>
+    {% endif %}
+
+    <p>
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-2 col-sm-2">
+                    <b>Deck</b>
+                    <br>Count: {{ game["Deck Count"] }}
+                    <br><img src="{{ url_for('static', filename='UnoCardImages/CardBack.gif') }}" alt='Deck'>
+                </div>
+                <div class="col-xs-2 col-sm-2">
+                    <b>Discard</b>
+                    <br>Count: {{ game["Discard Count"] }}
+                    <br><img src="{{ url_for('static', filename=game['Discard Top'].Card.img_front) }}" alt="{{ game['Discard Top'].Card.name }}">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-2 col-sm-2">
+                    {% if active %}
+                    <form action="{{ game_id }}" method="POST">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                        <input type="hidden" name="drawCard">
+                        <input type="submit" value="Draw Card">
+                    </form>
+                    {% endif %}
+                </div>
+                <div class="col-xs-2 col-sm-2">
+                    {% if game['Discard Top'].Card.card_type == 'Wild' %}
+                        <br>Color: {{ game['Discard Top'].card_status }}
+                    {% endif %}
+                </div>
+            </div>
+
+        </div>
+    </p>
+
+    {% if active %}
+        <h2>Select Card:</h2>
+    {% endif %}
+
+    {% if game["Player Hand"] %}
+        <p>
+            <div class="container">
+                {% for card in game["Player Hand"] %}
+                    <div class="col-xs-2 col-sm-2">
+                        <img src="{{ url_for('static', filename=card.Card.img_front) }}" alt="{{ card.Card.name }}">
+
+                        {% if active %}
+                        <form action="{{ game_id }}" method="POST">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                            <input type="hidden" name="cid" value="{{ card.id }}">
+                            <input type="hidden" name="playCard">
+                            {% if card.Card.card_type == 'Wild' %}
+                            <select name="wildColor">
+                                <option value="Select" selected=True disabled=True>Select</option>
+                                <option value="Red">Red</option>
+                                <option value"Blue">Blue</option>
+                                <option value="Green">Green</option>
+                                <option value"Yellow">Yellow</option>
+                            </select>
+                            {% endif %}
+                                <input type="submit" value="Play Card">
+                        </form>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+        </p>
+    {% endif %}
+
+{% endblock %}

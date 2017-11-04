@@ -44,6 +44,38 @@ def before_request():
 def main():
 	return render_template('index.html', current_user=g.username)
 
+@app.route("/signin", methods = ['GET', 'POST'])
+def signIn():
+	logInForm = userForm()
+	if request.method == 'POST':
+		if logInForm.validate() == False:
+			flash('There was a problem with data that was entered.')
+			return render_template('signin.html', form = logInForm)
+		else:
+			existingUser = User.query.filter_by(username=logInForm.username.data).first()
+
+			if(not existingUser.check_password(logInForm.password.data)):
+
+				flash('There was a problem with the password you entered.')
+				return render_template('signin.html', form = logInForm)
+
+			if(existingUser):
+				session['username'] = existingUser.username
+				session['userid'] = existingUser.id
+				return redirect(url_for('userDB.home'))
+			else:
+				flash('Username does not exist.')
+
+				return render_template('signin.html', form = logInForm)
+	else:
+		return render_template('signin.html', form = logInForm)
+
+@app.route("/logout")
+def logout():
+	session['username'] = None
+	session['userid'] = None
+	return redirect(url_for('main'))
+
 @app.route("/newgame", methods = ['GET', 'POST'])
 def newGame():
 	passedUserName = session['username']
@@ -93,60 +125,6 @@ def newGame():
 				return redirect(url_for('login'))
 
 	return render_template('newgame.html', passedUserName=passedUserName, users=users, newGameForm=newGameForm)
-
-
-@app.route("/profile", methods = ['GET', 'POST'])
-def profile():
-	passedUserName = session['username']
-	updatePW = updatePassword()
-	if request.method == 'POST':
-		if updatePW.validate() == False:
-			return render_template('profile.html', updatePW=updatePW)
-		else:
-			existingUser = User.query.filter_by(username=passedUserName).one()
-
-			if(not existingUser.check_password(updatePW.PW.data)):
-
-				flash('There was a problem with the password you entered.')
-				return render_template('profile.html', updatePW=updatePW)
-			else:
-				#check entered passwords match
-				if(updatePW.NewPW.data != updatePW.NewPW2.data):
-					flash('The passwords do not match.')
-					return render_template('profile.html', updatePW=updatePW)
-				else:
-					existingUser.set_password(updatePW.NewPW.data)
-					db.session.commit()
-					flash('Password sucessfully updated.')
-					return render_template('profile.html', updatePW=updatePW)
-
-	return render_template('profile.html', passedUserName=passedUserName, updatePW=updatePW)
-
-@app.route("/signin", methods = ['GET', 'POST'])
-def signIn():
-	logInForm = userForm()
-	if request.method == 'POST':
-		if logInForm.validate() == False:
-			flash('There was a problem with data that was entered.')
-			return render_template('signin.html', form = logInForm)
-		else:
-			existingUser = User.query.filter_by(username=logInForm.username.data).first()
-
-			if(not existingUser.check_password(logInForm.password.data)):
-
-				flash('There was a problem with the password you entered.')
-				return render_template('signin.html', form = logInForm)
-
-			if(existingUser):
-				session['username'] = existingUser.username
-				session['userid'] = existingUser.id
-				return redirect(url_for('userDB.home'))
-			else:
-				flash('Username does not exist.')
-
-				return render_template('signin.html', form = logInForm)
-	else:
-		return render_template('signin.html', form = logInForm)
 
 @app.route("/statistics")
 def statistics():
@@ -200,11 +178,6 @@ def adminDelete():
 
 	return render_template('delete.html', passedUserName=passedUserName, users=users)
 
-@app.route("/logout")
-def logout():
-	session['username'] = None
-	session['userid'] = None
-	return redirect(url_for('main'))
 
 @app.route("/acceptgame/<game_id>", methods = ['GET', 'POST'])
 def acceptgame(game_id):
@@ -310,11 +283,7 @@ def playturn(game_id):
 
 @app.route("/error", methods = ['GET', 'POST'])
 def error():
-	if('username' in session):
-		passedUserName = session['username']
-	else:
-		passedUserName = None
-	return render_template('error.html', passedUserName=passedUserName)
+	return render_template('error.html', current_user=g.username)
 
 @app.errorhandler(404)
 def page_not_found(e):

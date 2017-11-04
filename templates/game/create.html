@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block header %}
+    Start a new game
+{% endblock %}
+
+{% block content %}
+
+    <form action="/game/new" method="POST" id="createGameForm">
+        {{ form.csrf_token }}
+        <h2>Game:</h2>
+        {{ form.game }}
+        <h2># Players:</h2>
+        {{ form.num_players }}
+        <p id="np"></p>
+        <p><input type="submit" value="Create Game">
+    </form>
+
+{% endblock %}
+
+{% block script %}
+<script>
+    function numPlayers(thisGame) {
+        document.getElementById("np").innerHTML = thisGame.value;
+    }
+</script>
+{% endblock %}
+
+
+<!--
+<form action="/game/new" method="POST" id="createGameForm">
+        {{ form.csrf_token }}
+        <h2>Game:</h2>
+        <select name="game"  onchange="numPlayers(this)">
+            <option selected=True disabled=True>Select a game</option>
+            {% for game in games %}
+                <option value="{{ game.id }}">{{ game.name }}</option>
+            {% endfor %}
+        </select>
+        <h2># Players:</h2>
+        {{ form.num_players }}
+        <p id="np"></p>
+        <p><input type="submit" value="Create Game">
+    </form>
+
+
+
+            <form action="newgame" method="post" id="newgameform">
+                {{ newGameForm.csrf_token }}
+                <h2> Select Game:</h2> <p><select name="game">
+                <option value="00">Select</option>
+                <option value="uno">Uno</option>
+                </select> </p>
+                <h2> Select Number of Players:</h2> {{ newGameForm.numberOfPlayers }}
+
+                <h2> Player 2:</h2> <p>{{ newGameForm.player2 }}</p>
+                <h2> Player 3:</h2> <p>{{ newGameForm.player3 }}</p>
+                <h2> Player 4:</h2> <p>{{ newGameForm.player4 }}</p>
+                <input type="submit" value="Submit">
+            </form>
+            <h2 role="button"><a href="{{ url_for('userDB.home') }}">< Back to Your Page </a></h2>
+-->

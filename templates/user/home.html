@@ -53,10 +53,10 @@
     </div>
 
     <div class="col-sm-6 col-md-6 col-lg-6">
-        <h2 role="button"><a  href="newgame"> New Game</a></h2>
+        <h2 role="button"><a  href="{{ url_for('newGame') }}"> New Game</a></h2>
 
-        <h2 role="button"><a href="statistics">Statistics </a></h2>
-        <h2 role="button"><a href="rules">Game Rules </a></h2>
+        <h2 role="button"><a href="{{ url_for('statistics') }}">Statistics </a></h2>
+        <h2 role="button"><a href="{{ url_for('rules') }}">Game Rules </a></h2>
     </div>
 {% endblock %}
 
